@@ -6,6 +6,7 @@
     <title>Navbar Test</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <header>
     <nav class="navbar">
         <div class="logo">
@@ -37,7 +38,6 @@
             </button>
         </div>
     </nav>
-
     <nav class="sousnavbar">
         <ol>
             <li><a href="">Accueil</a></li>
@@ -46,6 +46,8 @@
     </nav>
 </header>
 <body>
+
+
 <div class="stats">
     <div class="texte">
         <div class="surligne1">
@@ -67,6 +69,33 @@
             <p>associations</p>
         </section>
     </div>
+</div>
+
+<div class="header-don">
+    <h2 class="texte1">Mobilisons-nous ensemble !</h2>
+    <div class="choix">
+      <div class="choix1">
+        <input type="radio" id="unefois" checked />
+    <label>Je donne une fois</label>
+      </div>
+      <div class="choix2">
+        <input type="radio" id="touslesmois" />
+    <label>Je donne tous les mois</label>
+      </div>
     </div>
+    <div class="montant">
+      <button id="montant1">90 €</button>
+      <button id="montant2">130 €</button>
+      <button id="montant3">150 €</button>
+      <button id="montant4">200 €</button>
+    </div>
+    <div class="montant-libre-container">
+        <input class="montant-libre" type="text" placeholder="Montant libre">
+        <span>€</span>
+    </div>
+    
+    <h2 class="text2">Soit <span id="fiscal">22 €</span> après déduction fiscal</h2>
+    <button href="" class="bouton-donnation">Je donne</button>
+</div>
 </body>
 </html>
