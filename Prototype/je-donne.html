@@ -45,8 +45,46 @@
         </ol>
     </nav>
 </header>
-<body>
 
+<body>
+<div class="bloc-don">
+    <div class="bloc-inte">
+      <h1 class="hero">Grâce à vos dons nous <br> pouvons agir</h1>
+      
+      <div class="formulaire-don">
+        <h2 class="texte1">Mobilisons-nous ensemble !</h2>
+        <div class="choix">
+          <div class="choix1 active">
+            <input type="radio" id="unefois" name="type" checked />
+            <label for="unefois">Je donne une fois</label>
+          </div>
+          <div class="choix2">
+            <input type="radio" id="touslesmois" name="type" />
+            <label for="touslesmois">Je donne tous les mois</label>
+          </div>
+        </div>
+
+        <div class="montant">
+          <button id="montant1">90 €</button>
+          <button id="montant2" class="active">130 €</button>
+          <button id="montant3">150 €</button>
+          <button id="montant4">200 €</button>
+        </div>
+
+        <div class="montant-libre-container">
+          <input class="montant-libre" type="number" placeholder="Montant libre" />
+          <span>€</span>
+        </div>
+
+        <h2 class="texte2">
+          Soit <span id="fiscal">32 €</span> après déduction fiscale
+        </h2>
+
+        <button class="bouton-donation">Je donne</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="stats">
     <div class="texte">
@@ -71,31 +109,57 @@
     </div>
 </div>
 
-<div class="header-don">
-    <h2 class="texte1">Mobilisons-nous ensemble !</h2>
-    <div class="choix">
-      <div class="choix1">
-        <input type="radio" id="unefois" checked />
-    <label>Je donne une fois</label>
-      </div>
-      <div class="choix2">
-        <input type="radio" id="touslesmois" />
-    <label>Je donne tous les mois</label>
-      </div>
-    </div>
-    <div class="montant">
-      <button id="montant1">90 €</button>
-      <button id="montant2">130 €</button>
-      <button id="montant3">150 €</button>
-      <button id="montant4">200 €</button>
-    </div>
-    <div class="montant-libre-container">
-        <input class="montant-libre" type="text" placeholder="Montant libre">
-        <span>€</span>
-    </div>
-    
-    <h2 class="text2">Soit <span id="fiscal">22 €</span> après déduction fiscal</h2>
-    <button href="" class="bouton-donnation">Je donne</button>
+<div class="nous-soutenir">
+    <h2 class=titre>Comment <span class="surligne">nous soutenir</span> ?</h2>
+    <p class="texte1">En soutenant notre action, vous vous engagez auprès de nos 70 000 bénévoles, à apporter une aide inconditionnelle aux personnes vulnérables. <br>Comment ?</p>
+    <ul class="exemples">
+      <li>Transformez votre IFI en projets solidaires
+      <li>Vous n'avez pas utilisé tous vos titres restaurant ? Faites-en don à notre association pour soutenir l'aide alimentaire
+      <li>Contribuez à financer des projets près de chez vous !
+      <li>Devenez ambassadeur de la Croix-Rouge en crééant votre cagnotte solidaire
+    </ul>
 </div>
+
+
+<section class="agir">
+    <h2 class="titre">C'est grâce à <span class="surligne">vos dons</span> que nous pouvons agir</h2>
+    <p class="sous-titre">Comment faire un don à la Croix-Rouge ?</p>
+    <div class="blocks">
+      <div class="block">
+        <img src="https://images.ctfassets.net/ksb78y40v1oe/3sP6Y85LgDc0UrwUSdKqrf/3f339ca8e13e96b4b90cb91b3e0a20be/Page_Carrefour_Je_donne.png?fm=webp&q=85&w=404&h=350&fit=thumb" alt="Bénévoles distribuant de la nourriture">
+        <div class="texte">
+          <h3>Soutenez les actions de la Croix-Rouge française</h3>
+          <a href="#" class="bouton">Je fais un don</a>
+        </div>
+      </div>
+
+      <div class="block">
+        <img src="https://images.ctfassets.net/ksb78y40v1oe/4WRozyMoHt0zrkxpX4GFlb/733ae5e18bbcb81be4bea218f85f3c9e/Page_carrefour_Don_r__gulier.jpg?fm=webp&q=85&w=404&h=350&fit=thumb" alt="Équipe Croix-Rouge en intervention">
+        <div class="texte">
+          <h3>Choisissez le don par prélèvement automatique</h3>
+          <a href="#" class="bouton">Je fais un don régulier</a>
+        </div>
+      </div>
+    </div>
+</section>
+
+<section class="deduction-fiscale">
+    <h2>
+      Bénéficiez d'une
+      <span class="surligne">déduction fiscale de 75% !</span>
+    </h2>
+    <p>
+      Faire un don à la Croix-Rouge vous permet de bénéficier d'une déduction fiscale de 75% sur votre impôt sur le revenu.
+    </p>
+    <p class="important">
+      Un don de 100€ ne vous coûte donc que 25€.
+    </p>
+    <p>
+      Ensemble, faisons la différence ! C’est grâce à la générosité du grand public que nous venons en aide aux personnes démunies.
+      Prévenir, éduquer, protéger les populations, telles sont les missions que nous accomplissons tous les jours avec vous.
+    </p>
+  </section>
+
+<script src="style.js"></script>
 </body>
 </html>

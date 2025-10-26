@@ -2,8 +2,6 @@
 body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
 }
 /******************************* NAVBAR STYLES *******************************/
 
@@ -192,74 +190,120 @@ body {
 
 
 
-/******************************* HEADER DE DON STYLES *******************************/
+/******************************* Bloc du Formulaire STYLES *******************************/
 
-.header-don {
+    .bloc-don {
+      position: relative;
+      width: 100%;
+      height: 450px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-image: url("https://images.ctfassets.net/ksb78y40v1oe/3sP6Y85LgDc0UrwUSdKqrf/3f339ca8e13e96b4b90cb91b3e0a20be/Page_Carrefour_Je_donne.png?fm=webp&q=85&w=1440&h=601");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed; 
+      overflow: hidden;
+    }
+
+.bloc-inte {
+  position: relative;
+  z-index: 2;
+  padding: 20px 40px;
+  border-radius: 10px;
+  display: flex;               
+  justify-content: space-between; 
+  align-items: center;         
+  text-align: left;         
+  gap: 200px;               
+  max-width: 90%;
+}
+
+.hero{
+  margin-bottom: 1rem;
+  font-weight: bold;
+  font-size: 3rem;
+  line-height: 1.2;
+  color: white;
+  text-shadow: 0 6px 10px rgba(0, 0, 0, .45);
+}
+
+
+
+
+
+
+
+
+
+.formulaire-don {
   background-color: white;
   border-radius: 8px;
-  border: solid #E0E0E0;
+  border: 1px solid #e0e0e0;
   width: 320px;
   padding: 32px;
-  text-align: center
+  text-align: center;
+  font-family: sans-serif;
+  box-shadow: 0 2px 6px #0000001A;
 }
-
-.header-don h2 {
-      font-size: 18px;
-      margin-bottom: 16px;
-}
-
-.choix {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 25px;
-}
-
-.texte1{
-  margin: 0;
-  margin-bottom: 20px;
-  margin-left: auto;
-  font-size: 2.4 rem;
-  font-weight: 700;
-  line-height: 1.2;
+.texte1 {
+  margin: 0 0 20px;
+  font-size: 1.48rem;
+  font-weight: 600;
   text-align: center;
 }
 .choix {
   display: flex;
   justify-content: center;
-  cursor: pointer;
-  margin-bottom: 25px;
   gap: 10px;
-
+  margin-bottom: 25px;
 }
-
-.choix div{
+.choix div {
   flex: 1;
-  border: 1px solid #A8A8A8;
-  padding: 8px 2px;
+  border: 1px solid #a8a8a8;
   border-radius: 8px;
-  align-items: center;
+  padding: 10px 4px;
+  text-align: center;
 }
-.montant
-{
+.choix div label {
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.choix div input {
+  display: none;
+}
+.choix div.active {
+  background-color: #e60000;
+  color: white;
+  border-color: #e60000;
+}
+.montant {
   display: flex;
   justify-content: center;
-  cursor: pointer;
   margin-bottom: 25px;
   gap: 8px;
 }
-
-.montant button{
-  flex: 0 0 auto; 
+.montant button {
   background-color: #ffffff;
-  border: 1px solid #A8A8A8;
+  border: 1px solid #a8a8a8;
   padding: 2px 12px;
-  justify-content: center;
   min-width: 60px;
   min-height: 68px;
   border-radius: 4px;
   font-size: 16px;
-  cursor: pointer;
   font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.montant button:hover {
+  border-color: #e60000;
+  color: #e60000;
+}
+.montant button.active {
+  background-color: #e60000;
+  color: white;
+  border-color: #e60000;
 }
 .montant-libre-container {
   display: flex;
@@ -267,9 +311,8 @@ body {
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 8px 12px;
-  font-family: sans-serif;
+  margin-bottom: 20px;
 }
-
 .montant-libre {
   border: none;
   outline: none;
@@ -278,29 +321,24 @@ body {
   color: #555;
   text-align: center;
 }
-.montant-euro {
-  margin-left: 5px;
-  font-weight: bold;
-  color: #000;
-}
-.texte2{
-  margin: 0;
-  margin-bottom: 20px;
-  margin-left: auto;
-  font-size: 2.4 rem;
+.texte2 {
+  margin: 0 0 20px;
+  font-size: 1rem;
   font-weight: normal;
-  line-height: 1.2;
   text-align: center;
+  font-weight: bold;
+  color: #333;
 }
-
 #fiscal {
-      background-color: #d7e8f8;
-      color: #007bff;
-      font-weight: bold;
-      padding: 4px 8px;
-      border-radius: 4px;
-    }
-.bouton-donnation{
+  background-color: #e60000;
+  color: white;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 1.2rem;
+  vertical-align: middle;
+}
+.bouton-donation {
   background-color: #e60000;
   color: white;
   border: none;
@@ -310,13 +348,18 @@ body {
   font-size: 18px;
   cursor: pointer;
 }
+.bouton-donnation:hover {
+  background-color: #cc0000;
+}
+
 /******************************* STATISTIQUE STYLES *******************************/
 
 
 .stats {
-    background-color: #D7E4EC;
+    background-color: #E8F0F1;
     width: 100%;
-    margin: 10px 0px;
+    height: 300px;
+    margin: 70px 0px;
 }
 .texte{
     text-align: center;
@@ -372,4 +415,175 @@ body {
 }
 
 
+/********************************* Bloc Soutenir Styles *******************************/
+.nous-soutenir{
+    font-family:Inter, sans-serif;
+}
+.nous-soutenir .titre {
+  text-align:center;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-weight:700;
+}
 
+.nous-soutenir .titre .surligne {
+  background-color: #007C89;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.nous-soutenir .texte1 {
+  margin: 10px auto;
+  text-align:center;
+  font-size: 1.3rem;
+}
+
+.nous-soutenir ul {
+  list-style: none;
+  padding: 10px;
+  max-width: 600px;
+  margin: 20px auto;
+  text-align: left;
+}
+
+.nous-soutenir ul li {
+  margin: 10px 0;
+  padding-left: 20px;
+  padding-bottom: 15px;;
+  position: relative;
+  font-size: 1.2rem;
+}
+
+.nous-soutenir ul li::before {
+  content: "—";
+  color: #D32F2F;
+  position: absolute;
+  left: -10px;
+}
+
+
+/********************************* Bloc Agir Styles *******************************/
+
+.agir {
+    margin: 40px 0px;
+}
+
+.agir .titre{
+  text-align:center;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-weight:700;
+  font-family:Inter, sans-serif;
+}
+
+.agir .surligne {
+  background-color: #007C89;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.agir .sous-titre{
+  text-align:center;
+  font-size:1.4em;
+}
+
+.agir .blocks {
+  display: flex;
+  gap: 60px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-bottom: 60px;
+}
+
+.agir .block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 400px;
+  position: relative;
+}
+
+.agir .block img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+}
+
+.agir .texte {
+  background-color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 85%;         
+  margin-top: -40px;         
+  padding: 20px 10px 25px;
+  border-radius: 6px;
+  text-align: center;
+  position: relative;
+}
+
+
+.agir .texte h3 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.agir .bouton {
+  display: inline-block;
+  background-color: #D32F2F;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 4px;
+}
+
+.agir .bouton:hover {
+  background-color: #B71C1C;
+}
+
+
+/******************************* Bloc Déduction fiscal STYLES *******************************/
+
+.deduction-fiscale {
+  font-family: Arial, sans-serif;
+  background-color: #eef6f8;
+  border: 1px solid #afadaddf;
+  border-radius: 8px;
+  padding: 24px 90px;
+  max-width: 1200px;
+  margin: 0 auto;
+  line-height: 1.6;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.deduction-fiscale h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  text-align: center;
+  
+}
+
+.deduction-fiscale .surligne {
+  background-color: #007C89;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  
+}
+
+.deduction-fiscale p {
+  font-size: 1.4rem;
+  margin: 30px 0;
+}
+
+.deduction-fiscale .important {
+  color: #e60000;
+  font-weight: 700;
+  font-size: 1.4rem;
+}
