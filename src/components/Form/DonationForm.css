@@ -1,0 +1,163 @@
+.donation-container {
+    max-width: 360px;
+    margin: auto;
+    padding: 24px;
+    background: #fff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    color: #000;
+    font-family: Inter, sans-serif;
+    border-radius: 6px;
+    user-select: none;
+}
+
+@media (min-width: 700px) {
+    .donation-container {
+        padding: 32px;
+    }
+}
+
+.donation-header {
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.highlight {
+    background-color: #d8000c;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 3px;
+    margin-right: 6px;
+    font-size: 18px;
+    line-height: 1.2;
+}
+
+.frequency-options {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.radio-label {
+    font-weight: 400;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px; /* espace entre radio et texte */
+    border: 1.5px solid #ccc;
+    border-radius: 4px;
+    padding: 14px;
+    min-width: 145px;
+    background-color: white;
+    color: #000;
+    transition: background-color 0.25s, border-color 0.25s, color 0.25s, font-weight 0.25s;
+}
+
+.radio-label input[type="radio"] {
+    cursor: pointer;
+    accent-color: #075c68;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+}
+
+.radio-label:hover {
+    border-color: #075c68;
+}
+
+.radio-label.selected {
+    background-color: #d6e6e6;
+    border-color: #075c68;
+    color: #075c68;
+    font-weight: 700;
+}
+
+.amount-options {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+    margin-bottom: 16px;
+}
+
+.amount-btn {
+    flex: 1;
+    padding: 14px 0;
+    font-size: 16px;
+    font-weight: 400;
+    border: 1.5px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+    transition: background-color 0.25s, border-color 0.25s, color 0.25s;
+    user-select: none;
+    color: #000;
+}
+
+.amount-btn.selected,
+.amount-btn:hover {
+    border-color: #075c68;
+    background-color: #d6e6e6;
+    color: #075c68;
+    font-weight: 700;
+}
+
+.custom-amount {
+    width: 100%;
+    padding: 12px 10px;
+    font-size: 16px;
+    font-weight: 400;
+    border-radius: 4px;
+    border: 1.5px solid #ccc;
+    box-sizing: border-box;
+    outline-color: #075c68;
+    margin-bottom: 16px;
+    color: #000;
+}
+
+.custom-amount::placeholder {
+    color: #999;
+    font-weight: 400;
+}
+
+.tax-info {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.tax-amount {
+    padding: 4px 8px;
+    font-weight: 900;
+    color: #fff;
+    background-color: #075c68;
+    border-radius: 3px;
+    margin-left: 6px;
+    margin-right: 6px;
+    font-size: 14px;
+    display: inline-block;
+}
+
+.donate-btn {
+    width: 100%;
+    background-color: #d8000c;
+    color: white;
+    font-weight: 700;
+    font-size: 18px;
+    padding: 14px 0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.donate-btn:hover {
+    background-color: #b0000a;
+}
+
