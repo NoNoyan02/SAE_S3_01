@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useState, useRef } from "react";
 
 export default function ResponsiveOverflowAnalyzer() {
     const [zones, setZones] = useState([]);
@@ -10,25 +10,49 @@ export default function ResponsiveOverflowAnalyzer() {
         includeElements: true,
     });
     const [culprits, setCulprits] = useState([]);
-    const iframeRef = useRef(null);
     const [url, setUrl] = useState("");
+    const iframeRef = useRef(null);
 
-    const analyzeScroll = async (url = null) => {
+    // 🔹 Nouveau : importer un fichier HTML
+    const handleFileImport = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const htmlContent = event.target.result;
+            await analyzeScroll(null, htmlContent);
+        };
+        reader.readAsText(file);
+    };
+
+    // ✅ Analyse principale
+    const analyzeScroll = async (url = null, htmlContent = null) => {
         setAnalyzing(true);
         setProgress(0);
         const results = [];
         const elementIssues = new Map();
         let currentStart = null;
-        const tolerance = 2; // ← Tolérance anti faux positifs
+        const tolerance = 2;
 
-        // Créer un iframe
         const iframe = document.createElement("iframe");
         iframe.style.cssText =
             "position:fixed;top:-9999px;left:-9999px;width:100%;height:100vh;border:none;";
         document.body.appendChild(iframe);
 
-        // Charger la page ou le DOM actuel
-        if (!url) {
+        // Chargement du contenu
+        if (htmlContent) {
+            const iframeDoc = iframe.contentDocument;
+            iframeDoc.open();
+            iframeDoc.write(htmlContent);
+            iframeDoc.close();
+            await new Promise((resolve) => {
+                const checkReady = () => {
+                    if (iframe.contentDocument?.body) resolve();
+                    else setTimeout(checkReady, 20);
+                };
+                checkReady();
+            });
+        } else if (!url) {
             const iframeDoc = iframe.contentDocument;
             iframeDoc.open();
             iframeDoc.write(document.documentElement.outerHTML);
@@ -43,31 +67,28 @@ export default function ResponsiveOverflowAnalyzer() {
 
         const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
 
-        // Injection d’un reset CSS global pour fiabiliser les mesures
         const resetStyle = iframeDoc.createElement("style");
         resetStyle.textContent = `
-      html, body {
-        margin: 0 !important;
-        padding: 0 !important;
-        overflow-x: hidden !important;
-      }
-      * {
-        box-sizing: border-box !important;
-        max-width: 100vw !important;
-      }
-    `;
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow-x: hidden !important;
+          }
+          * {
+            box-sizing: border-box !important;
+            max-width: 100vw !important;
+          }
+        `;
         iframeDoc.head.appendChild(resetStyle);
 
-        const totalSteps = Math.ceil(config.maxWidth / config.step);
-
-        // Boucle de test responsive
+        // Boucle responsive
         for (let w = 0; w <= config.maxWidth; w += config.step) {
             iframe.style.width = `${w}px`;
-
             const body = iframeDoc.body;
             const html = iframeDoc.documentElement;
 
-            // Calcul consolidé du scrollWidth
+            if (!body || !html) continue;
+
             const scrollWidth = Math.max(
                 body.scrollWidth,
                 html.scrollWidth,
@@ -80,7 +101,6 @@ export default function ResponsiveOverflowAnalyzer() {
             const hasScroll = overflowValue > tolerance;
 
             if (hasScroll && currentStart === null) currentStart = w;
-
             if (!hasScroll && currentStart !== null) {
                 results.push({
                     start: currentStart,
@@ -96,7 +116,6 @@ export default function ResponsiveOverflowAnalyzer() {
             }
         }
 
-        // Fermer la dernière zone si encore active
         if (currentStart !== null) {
             const finalScroll = Math.max(
                 iframeDoc.body.scrollWidth,
@@ -109,7 +128,6 @@ export default function ResponsiveOverflowAnalyzer() {
             });
         }
 
-        // Nettoyage de l’iframe
         document.body.removeChild(iframe);
 
         setZones(results);
@@ -118,49 +136,15 @@ export default function ResponsiveOverflowAnalyzer() {
         setProgress(100);
     };
 
-    const getSelector = (el) => {
-        if (el.id) return `#${el.id}`;
-        if (el.className && typeof el.className === "string") {
-            const classes = el.className.trim().split(/\s+/).slice(0, 2).join(".");
-            return classes
-                ? `${el.tagName.toLowerCase()}.${classes}`
-                : el.tagName.toLowerCase();
-        }
-        return el.tagName.toLowerCase();
-    };
-
     const generateCSS = () => {
         if (zones.length === 0) return "";
         let css = "/* 🎯 Corrections suggérées pour le scroll horizontal */\n\n";
-        css += "/* 1. Solution globale préventive */\n";
-        css += "html, body {\n";
-        css += "  max-width: 100vw;\n";
-        css += "  overflow-x: hidden;\n";
-        css += "}\n\n";
-        css += "* {\n";
-        css += "  max-width: 100%;\n";
-        css += "  box-sizing: border-box;\n";
-        css += "}\n\n";
+        css += "html, body {\n  max-width: 100vw;\n  overflow-x: hidden;\n}\n\n";
+        css += "* {\n  max-width: 100%;\n  box-sizing: border-box;\n}\n\n";
 
         zones.forEach((z, i) => {
             css += `/* Zone ${i + 1}: ${z.start}px - ${z.end}px (overflow: +${z.overflow}px) */\n`;
-            css += `@media (max-width: ${z.end+1}px) {\n`;
-            css += `  /* Ajustez vos éléments larges ici */\n`;
-            if (culprits.length > 0) {
-                const relevantCulprits = culprits.slice(0, 3);
-                relevantCulprits.forEach((c) => {
-                    css += `  ${c.selector} {\n`;
-                    css += `    max-width: 100% !important;\n`;
-                    if (
-                        c.styles.width !== "auto" &&
-                        !c.styles.width.includes("%")
-                    ) {
-                        css += `    width: 100% !important;\n`;
-                    }
-                    css += `  }\n`;
-                });
-            }
-            css += `}\n\n`;
+            css += `@media (max-width: ${z.end + 1}px) {\n  /* Ajustez vos éléments larges ici */\n}\n\n`;
         });
         return css;
     };
@@ -179,19 +163,17 @@ export default function ResponsiveOverflowAnalyzer() {
                         📱 Analyseur de Scroll Horizontal
                     </h1>
                     <p className="text-slate-400">
-                        Détecte les débordements horizontaux sur toutes les résolutions et
-                        suggère des corrections CSS
+                        Détecte les débordements horizontaux sur toutes les résolutions et suggère des corrections CSS
                     </p>
                 </div>
 
                 {/* Configuration */}
                 <div className="bg-slate-800 rounded-xl p-6 mb-6 border border-slate-700">
                     <h2 className="text-xl font-semibold text-white mb-4">⚙️ Configuration</h2>
+
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label className="block text-sm text-slate-400 mb-2">
-                                Largeur maximale (px)
-                            </label>
+                            <label className="block text-sm text-slate-400 mb-2">Largeur maximale (px)</label>
                             <input
                                 type="number"
                                 value={config.maxWidth}
@@ -204,10 +186,9 @@ export default function ResponsiveOverflowAnalyzer() {
                                 disabled={analyzing}
                             />
                         </div>
+
                         <div>
-                            <label className="block text-sm text-slate-400 mb-2">
-                                Précision (px)
-                            </label>
+                            <label className="block text-sm text-slate-400 mb-2">Précision (px)</label>
                             <input
                                 type="number"
                                 value={config.step}
@@ -220,16 +201,14 @@ export default function ResponsiveOverflowAnalyzer() {
                                 disabled={analyzing}
                             />
                         </div>
+
                         <div className="flex items-end">
                             <label className="flex items-center gap-2 text-white cursor-pointer">
                                 <input
                                     type="checkbox"
                                     checked={config.includeElements}
                                     onChange={(e) =>
-                                        setConfig({
-                                            ...config,
-                                            includeElements: e.target.checked,
-                                        })
+                                        setConfig({ ...config, includeElements: e.target.checked })
                                     }
                                     className="w-4 h-4"
                                     disabled={analyzing}
@@ -239,10 +218,9 @@ export default function ResponsiveOverflowAnalyzer() {
                         </div>
                     </div>
 
+                    {/* URL à analyser */}
                     <div className="mb-4 mt-4">
-                        <label className="block mb-2 text-white">
-                            URL de la page à analyser :
-                        </label>
+                        <label className="block mb-2 text-white">URL de la page à analyser :</label>
                         <input
                             type="text"
                             className="w-full p-2 rounded border border-gray-300"
@@ -255,10 +233,20 @@ export default function ResponsiveOverflowAnalyzer() {
                             onClick={() => analyzeScroll(url)}
                             disabled={analyzing}
                         >
-                            {analyzing
-                                ? `Analyse en cours... ${progress}%`
-                                : "Analyser"}
+                            {analyzing ? `Analyse en cours... ${progress}%` : "Analyser"}
                         </button>
+                    </div>
+
+                    {/*Bouton pour importer un fichier HTML */}
+                    <div className="mt-4">
+                        <label className="block text-white mb-2">Importer un fichier HTML :</label>
+                        <input
+                            type="file"
+                            accept=".html"
+                            className="text-white"
+                            onChange={handleFileImport}
+                            disabled={analyzing}
+                        />
                     </div>
 
                     {analyzing && (
@@ -275,40 +263,26 @@ export default function ResponsiveOverflowAnalyzer() {
                 {!analyzing && zones.length > 0 && (
                     <>
                         <div className="bg-slate-800 rounded-xl p-6 mb-6 border border-slate-700">
-                            <h2 className="text-xl font-semibold text-white mb-4">
-                                📊 Zones avec scroll horizontal
-                            </h2>
-                            <div className="space-y-3">
-                                {zones.map((z, i) => (
-                                    <div
-                                        key={i}
-                                        className="bg-slate-700 rounded-lg p-4 border border-red-500/30"
-                                    >
-                                        <div className="flex items-center justify-between mb-2">
-                      <span className="text-white font-mono font-semibold">
-                        Zone #{i + 1}
-                      </span>
-                                            <span className="text-red-400 text-sm">
-                        Overflow: +{z.overflow}px
-                      </span>
-                                        </div>
-                                        <div className="text-slate-300 font-mono text-sm">
-                                            📐 {z.start}px → {z.end}px
-                                        </div>
-                                        <div className="mt-2 text-blue-400 text-sm font-mono">
-                                            @media (max-width: {z.end+1}px) &#123; /* corrections */ &#125;
-                                        </div>
+                            <h2 className="text-xl font-semibold text-white mb-4">📊 Zones avec scroll horizontal</h2>
+                            {zones.map((z, i) => (
+                                <div key={i} className="bg-slate-700 rounded-lg p-4 border border-red-500/30 mb-3">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <span className="text-white font-mono font-semibold">Zone #{i + 1}</span>
+                                        <span className="text-red-400 text-sm">Overflow: +{z.overflow}px</span>
                                     </div>
-                                ))}
-                            </div>
+                                    <div className="text-slate-300 font-mono text-sm">
+                                        📐 {z.start}px → {z.end}px
+                                    </div>
+                                    <div className="mt-2 text-blue-400 text-sm font-mono">
+                                        @media (max-width: {z.end + 1}px) &#123; /* corrections */ &#125;
+                                    </div>
+                                </div>
+                            ))}
                         </div>
 
-                        {/* Code CSS généré */}
                         <div className="bg-slate-800 rounded-xl p-6 border border-slate-700">
                             <div className="flex items-center justify-between mb-4">
-                                <h2 className="text-xl font-semibold text-white">
-                                    💡 Code CSS suggéré
-                                </h2>
+                                <h2 className="text-xl font-semibold text-white">💡 Code CSS suggéré</h2>
                                 <button
                                     onClick={copyCSS}
                                     className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition-all active:scale-95"
@@ -317,23 +291,10 @@ export default function ResponsiveOverflowAnalyzer() {
                                 </button>
                             </div>
                             <pre className="bg-slate-900 text-green-400 p-4 rounded-lg overflow-x-auto text-sm border border-slate-700">
-                <code>{generateCSS()}</code>
-              </pre>
+                                <code>{generateCSS()}</code>
+                            </pre>
                         </div>
                     </>
-                )}
-
-                {!analyzing && zones.length === 0 && progress === 100 && (
-                    <div className="bg-slate-800 rounded-xl p-8 border border-slate-700 text-center">
-                        <div className="text-6xl mb-4">✅</div>
-                        <h2 className="text-2xl font-semibold text-white mb-2">
-                            Aucun problème détecté !
-                        </h2>
-                        <p className="text-slate-400">
-                            Votre page ne présente pas de scroll horizontal sur les
-                            résolutions testées (0px - {config.maxWidth}px)
-                        </p>
-                    </div>
                 )}
             </div>
         </div>
