@@ -1,6 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@300&amp;display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@400&amp;display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@700&amp;display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Montserrat:wght@300&amp;display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Montserrat:wght@400&amp;display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Montserrat:wght@500&amp;display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Montserrat:ital@1&amp;display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Roboto+Condensed&amp;display=swap);
+@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css);
+
+html {
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px;
+    webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 0.625em;
+}
 
 .body {
   margin: 0;
