@@ -1,26 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Menu, X, Search, User } from 'lucide-react';
 import './Header.css';
 
 const Header = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [activeSubMenu, setActiveSubMenu] = useState(null);
 
     const menuItems = [
-        "Je m'engage",
-        "Je me forme",
-        "Nos actualités",
-        "Je trouve un service",
-        "Nos adresses",
-        "Contactez-nous"
+        {
+            title: "Je m'engage",
+            subItems: ["Je donne", "Je deviens bénévole"]
+        },
+        {
+            title: "Je me forme",
+            subItems: ["Formations aux premiers secours"]
+        },
+        {
+            title: "Je trouve un service",
+            subItems: ["Aides matérielles"]
+        },
+        { title: "Nos actualités" },
+        { title: "Nos adresses" },
+        { title: "Contactez-nous" }
     ];
+
+    const toggleSubMenu = (index) => {
+        setActiveSubMenu(activeSubMenu === index ? null : index);
+    };
 
     return (
         <header id="header" role="banner">
             <nav aria-label="Navigation principale" role="navigation" className="navigation-desktop">
                 <div className="header-container">
                     <div className="header-content">
+                        {/* LEFT SECTION */}
                         <div className="left-section">
-                            {/* Logo */}
                             <a href="/" className="logo-link" aria-label="Retour à l'accueil">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 321.832 95.929" aria-label="Croix-Rouge française accueil" role="img" className="logo-icon">
                                     <path fill="#E30613" d="M57.553 38.371V19.186H38.367v19.185H19.183v19.186h19.184v19.185h19.186V57.557h19.186V38.371z"></path>
@@ -28,45 +42,45 @@ const Header = () => {
                                 </svg>
                             </a>
 
-                            {/* Menu Desktop */}
+                            {/* Desktop Nav */}
                             <nav className="nav-desktop" aria-label="Menu principal">
                                 {menuItems.map((item, index) => (
-                                    <a key={index} href="#" className="nav-item">
-                                        {item}
-                                    </a>
+                                    <div className="nav-item-wrapper" style={{ position: 'relative' }}>
+                                        <a href="#" className="nav-item" onClick={(e) => { e.preventDefault(); toggleSubMenu(index); }}>
+                                            {item.title}
+                                        </a>
+                                        {item.subItems && activeSubMenu === index && (
+                                            <div className="submenu-desktop">
+                                                {item.subItems.map((sub, subIndex) => (
+                                                    <a key={subIndex} href="#" className="nav-item-sub">{sub}</a>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 ))}
                             </nav>
                         </div>
 
-                        {/* Right Section Desktop */}
+                        {/* RIGHT SECTION */}
                         <div className="right-section">
-                            {/* Search Bar */}
                             <div className="search-wrapper">
-                                <input
-                                    type="search"
-                                    placeholder="Recherche ..."
-                                    className="search-input"
-                                    aria-label="Rechercher sur le site"
-                                />
+                                <input type="search" placeholder="Recherche ..." className="search-input" aria-label="Rechercher sur le site" />
                                 <button className="search-button" aria-label="Lancer la recherche">
                                     <Search className="search-icon" />
                                 </button>
                             </div>
 
-                            {/* Espace Donateur */}
                             <a href="#" className="donor-space-button">
-                                <User className="donor-icon" aria-hidden="true" />
-                                <span>Espace donateur</span>
+                                <User className="donor-icon" /> <span>Espace donateur</span>
                             </a>
 
-                            {/* Donation Button */}
                             <a href="#" className="donation-button">
                                 <span className="donation-text-small">Pour soutenir la Croix-Rouge</span>
                                 <span className="donation-text-large">Je fais un don</span>
                             </a>
                         </div>
 
-                        {/* Mobile Menu Button */}
+                        {/* MOBILE MENU BUTTON */}
                         <button
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                             className="mobile-menu-button"
@@ -78,48 +92,58 @@ const Header = () => {
                     </div>
                 </div>
 
-                {/* Mobile Menu Overlay */}
-                <div className={`mobile-menu-overlay ${mobileMenuOpen ? 'active' : ''}`} onClick={() => setMobileMenuOpen(false)}>
-                    <div className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`} onClick={(e) => e.stopPropagation()}>
+                {/* MOBILE MENU OVERLAY */}
+                <div
+                    className={`mobile-menu-overlay ${mobileMenuOpen ? 'active' : ''}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                >
+                    <div
+                        className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`}
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <div className="mobile-menu-content">
-                            {/* Search Mobile */}
+
+                            {/* Mobile Search */}
                             <div className="search-wrapper-mobile">
-                                <input
-                                    type="search"
-                                    placeholder="Recherche ..."
-                                    className="search-input-mobile"
-                                    aria-label="Rechercher sur le site"
-                                />
-                                <button className="search-button-mobile" aria-label="Lancer la recherche">
+                                <input type="search" placeholder="Recherche ..." className="search-input-mobile" />
+                                <button className="search-button-mobile">
                                     <Search className="search-icon-mobile" />
                                 </button>
                             </div>
 
-                            {/* Menu Items Mobile */}
-                            <nav className="mobile-nav" aria-label="Menu mobile">
+                            {/* Mobile Nav Items */}
+                            <nav className="mobile-nav">
                                 {menuItems.map((item, index) => (
-                                    <a
-                                        key={index}
-                                        href="#"
-                                        className="nav-item-mobile"
-                                        onClick={() => setMobileMenuOpen(false)}
-                                    >
-                                        {item}
-                                    </a>
+                                    <div key={index}>
+                                        <div
+                                            className="nav-item-mobile"
+                                            onClick={() => toggleSubMenu(index)}
+                                        >
+                                            {item.title}
+                                        </div>
+                                        {item.subItems && activeSubMenu === index && (
+                                            <div className="submenu-mobile">
+                                                {item.subItems.map((sub, subIndex) => (
+                                                    <a key={subIndex} href="#" className="nav-item-mobile-sub" onClick={() => setMobileMenuOpen(false)}>
+                                                        {sub}
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
                                 ))}
                             </nav>
 
-                            {/* Espace Donateur Mobile */}
+                            {/* Mobile Donor & Donation */}
                             <a href="#" className="donor-space-button-mobile">
-                                <User className="donor-icon-mobile" aria-hidden="true" />
-                                <span>Espace donateur</span>
+                                <User className="donor-icon-mobile" /> <span>Espace donateur</span>
                             </a>
 
-                            {/* Donation Button Mobile */}
                             <a href="#" className="donation-button-mobile">
                                 <span className="donation-text-small-mobile">Pour soutenir la Croix-Rouge</span>
                                 <span className="donation-text-large-mobile">Je fais un don</span>
                             </a>
+
                         </div>
                     </div>
                 </div>
