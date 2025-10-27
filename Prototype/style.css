@@ -587,3 +587,236 @@ body {
   font-weight: 700;
   font-size: 1.4rem;
 }
+
+
+
+/******************************* Bloc Engager STYLES *******************************/
+
+.engager {
+  margin: 40px 0;
+}
+
+.engager .titre {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+  font-family: Inter, sans-serif;
+}
+
+.engager .surligne {
+  background-color: #007C89;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.engager .sous-titre {
+  text-align: center;
+  font-size: 1.6em;
+}
+
+.engager .carousel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.engager .arrow {
+  background: #222;
+  color: white;
+  border: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s;
+}
+
+.engager .hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.engager .affichage-carousel {
+  overflow: hidden;
+  width: 80%; /* ajustable */
+  max-width: 1500px;
+}
+
+.engager .mouvement-carousel {
+  display: flex;
+  gap: 60px;
+  transition: transform 0.5s ease;
+}
+
+.engager .block {
+  flex: 0 0 calc((100% - 120px) / 3); /* 3 visibles avec gap=60px */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.engager .block img {
+  width: 100%;
+  border-radius: 4px;
+  display: block;
+}
+
+.engager .texte {
+  background-color: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  width: 85%;
+  margin-top: -40px;
+  padding: 20px 10px 25px;
+  border-radius: 6px;
+  text-align: center;
+  position: relative;
+}
+
+.engager .texte h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.engager .bouton {
+  display: inline-block;
+  background-color: #D32F2F;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 4px;
+}
+
+.engager .bouton:hover {
+  background-color: #B71C1C;
+}
+
+
+/******************************* Bloc donner STYLES *******************************/
+.donner {
+    margin: 40px 0px;
+}
+
+.donner .titre{
+  text-align:center;
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  font-weight:700;
+  font-family:Inter, sans-serif;
+}
+
+.donner .surligne {
+  background-color: #007C89;
+  color: #ffffff;
+  padding: 4px 8px;
+  border-radius: 3px;
+}
+
+.donner .blocks {
+  display: flex;
+  gap: 60px;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding-bottom: 60px;
+}
+
+.donner .block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 500px;
+  position: relative;
+}
+
+.donner .block img {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+}
+
+.donner .texte {
+  background-color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 85%;         
+  margin-top: -40px;         
+  padding: 20px 10px 25px;
+  border-radius: 6px;
+  text-align: center;
+  position: relative;
+}
+
+
+.donner .texte h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: black;
+}
+
+.donner .bouton {
+  display: inline-block;
+  background-color: #D32F2F;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 4px;
+}
+
+.donner .bouton:hover {
+  background-color: #B71C1C;
+}
+
+
+/******************************* Bloc Patrimoine STYLES *******************************/
+.patrimoine {
+  font-family: Arial, sans-serif;
+  max-width: 1100px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+.patrimoine h2 {
+  text-align:center;
+  font-size: 1.8rem;
+  font-weight:700;
+  margin-bottom:-20px;
+}
+
+.patrimoine .surligne {
+  background-color: #005f66;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  top:20px;
+}
+
+.patrimoine h3 {
+  text-align:center;
+  font-size:1.3em;
+}
+
+.patrimoine p {
+  font-size: 1.3rem;
+  color: #333;
+  text-align:center;
+}
+
+.patrimoine .gras {
+  font-weight: bold;
+  text-align:center;
+}
+
+

@@ -1,3 +1,4 @@
+/******************************* Bloc HEADER DON *******************************/
 const choixDivs = document.querySelectorAll('.choix div');
 const montantBtns = document.querySelectorAll('.montant button');
 const montantLibre = document.querySelector('.montant-libre');
@@ -67,3 +68,37 @@ function updateFiscal() {
 
 // Init
 updateFiscal();
+
+/******************************* Bloc Engager STYLES *******************************/
+
+document.addEventListener('DOMContentLoaded', () => {
+  const track = document.getElementById('track');
+  const nextBtn = document.getElementById('nextBtn');
+  const prevBtn = document.getElementById('prevBtn');
+  const blocks = Array.from(track.children);
+  const visibleCount = 3;
+  let currentIndex = 0;
+
+  function updatePosition() {
+    const blockWidth = blocks[0].getBoundingClientRect().width + 60; // 60px = gap
+    track.style.transform = `translateX(-${currentIndex * blockWidth}px)`;
+    prevBtn.classList.toggle('hidden', currentIndex === 0);
+    nextBtn.classList.toggle('hidden', currentIndex >= blocks.length - visibleCount);
+  }
+
+  nextBtn.addEventListener('click', () => {
+    if (currentIndex < blocks.length - visibleCount) {
+      currentIndex++;
+      updatePosition();
+    }
+  });
+
+  prevBtn.addEventListener('click', () => {
+    if (currentIndex > 0) {
+      currentIndex--;
+      updatePosition();
+    }
+  });
+
+  updatePosition();
+});
