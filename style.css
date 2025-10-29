@@ -666,7 +666,7 @@ legend {
   display: block;
 }
 
-/* --- État ouvert (effet visuel léger) --- */
+/* --- État ouvert --- */
 .acc.open {
   border-color: rgba(255,255,255,0.25);
   box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
@@ -676,7 +676,255 @@ legend {
   transform: rotate(180deg);
 }
 
+/* ===== TABLETTES (≤1024px) ===== */
+@media (max-width: 1024px) {
+  .header h1 {
+    font-size: 1.8rem;
+    margin-top: 50px;
+  }
+  
+  .logo {
+    left: 20px;
+    width: 80px;
+    margin-top: 10px;
+  }
+  
+  .don-section {
+    margin-left: 40px;
+    gap: 20px;
+    margin-top: 80px;
+  }
+  
+  .don-module,
+  .don-container {
+    width: 340px;
+  }
+  
+  .don-coordonnees {
+    margin-top: -120px;
+    gap: 20px;
+  }
+  
+  .coordonnees-card {
+    width: 350px;
+  }
+  
+  .don-reglement {
+    margin-left: -40px;
+    margin-top: -140px;
+  }
+  
+  .reglement-card {
+    width: 350px;
+  }
+  
+  .don-footer .footer-inner {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
 
+/* ===== MOBILES (≤768px) ===== */
+@media (max-width: 768px) {
+  .donation-bar {
+    padding: 6px 8px;
+    height: 40px;
+    gap: 8px;
+  }
+  
+  .ticker {
+    min-width: 280px;
+  }
+  
+  .donation-text {
+    font-size: 12px;
+  }
+  
+  .header {
+    flex-direction: column;
+    padding: 15px 0;
+  }
+  
+  .header h1 {
+    font-size: 1.4rem;
+    margin-top: 60px;
+    white-space: normal;
+    text-align: center;
+    padding: 0 15px;
+  }
+  
+  .logo {
+    position: relative;
+    left: auto;
+    margin-top: 25px;
+    margin-bottom: 10px;
+  }
+  
+  .don-section {
+    flex-direction: column;
+    margin-left: 0;
+    align-items: center;
+    gap: 20px;
+    margin-top: 40px;
+    width: 100%;
+    padding: 0 15px;
+    box-sizing: border-box;
+  }
+  
+  .don-module {
+    margin-top: 0;
+    transform: scale(1);
+    width: 100%;
+    max-width: 100%;
+    margin-right: 0;
+    box-sizing: border-box;
+  }
+  
+  .don-container {
+    width: 100%;
+    max-width: 100%;
+    margin-right: 0;
+    box-sizing: border-box;
+  }
+  
+  .don-coordonnees {
+    flex-direction: column;
+    margin-top: 0;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    padding: 0 15px;
+    box-sizing: border-box;
+  }
+  
+  .coordonnees-card {
+    transform: scale(1);
+    width: 100%;
+    max-width: 100%;
+    margin-right: 0;
+    box-sizing: border-box;
+  }
+  
+  .don-reglement {
+    margin-left: 0;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    transform: scale(1);
+    justify-content: center;
+    width: 100%;
+    padding: 0 15px;
+    box-sizing: border-box;
+  }
+  
+  .reglement-card {
+    width: 100%;
+    max-width: 100%;
+    margin-right: 0;
+    box-sizing: border-box;
+  }
+  
+  .payment-methods {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .don-footer {
+    margin-top: 0;
+    padding: 30px 0;
+  }
+  
+  .don-footer .footer-inner {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+}
 
+/* ===== PETITS MOBILES (≤480px) ===== */
+@media (max-width: 480px) {
+  .ticker {
+    min-width: 200px;
+  }
+  
+  .header h1 {
+    font-size: 1.2rem;
+    margin-top: 50px;
+  }
+  
+  .header h1 .highlight,
+  .header h1 .whitebox {
+    padding: 8px 16px;
+    display: block;
+    border-radius: 6px;
+    margin-bottom: 5px;
+  }
+  
+  .logo {
+    margin-top: 30px;
+  }
 
-
+  .don-section,
+  .don-coordonnees,
+  .don-reglement {
+    width: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+  
+  .don-module,
+  .don-container,
+  .coordonnees-card,
+  .reglement-card {
+    width: 100%;
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box;
+  }
+  
+  .don-tabs {
+    flex-direction: column;
+  }
+  
+  .tab {
+    padding: 10px;
+  }
+  
+  .don-amounts {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .payment-option {
+    padding: 12px;
+  }
+  
+  .icon {
+    width: 30px;
+    height: 30px;
+  }
+  
+  [data-method="google-pay-apple-pay"] .icon {
+    width: 120px;
+  }
+  
+  .don-reglement {
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  
+  .don-footer {
+    padding: 25px 0;
+  }
+  
+  .don-footer .footer-inner {
+    padding: 0 15px;
+  }
+  
+  .acc-header {
+    padding: 12px 15px;
+  }
+}

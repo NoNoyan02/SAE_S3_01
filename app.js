@@ -376,34 +376,4 @@ document.addEventListener('DOMContentLoaded', () => {
         acc.classList.add('open');
         header.setAttribute('aria-expanded', 'true');
 
-        // ✅ Fait défiler la page jusqu’à l'accordéon ouvert
-        setTimeout(() => {
-          acc.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }, 300); // léger délai pour laisser l’animation d’ouverture se jouer
-      }
-    });
-  });
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        // ✅ Fait défiler la page jusqu�
