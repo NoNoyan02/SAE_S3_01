@@ -1,76 +1,176 @@
-/******************************* Bloc HEADER DON *******************************/
-const choixDivs = document.querySelectorAll('.choix div');
-const montantBtns = document.querySelectorAll('.montant button');
-const montantLibre = document.querySelector('.montant-libre');
-const fiscal = document.getElementById('fiscal');
+/******************************* Bloc Don *******************************/
+// Sélectionne les éléments des DEUX blocs
+const choixDivs = document.querySelectorAll('.formulaire-don .choix div, .bloc-don2 .choix div');
+const montantBtns = document.querySelectorAll('.formulaire-don .montant button, .bloc-don2 .montant button');
+const montantLibres = document.querySelectorAll('.montant-libre');
+const fiscals = document.querySelectorAll('.fiscal');
 
 let montantSelectionne = 130;
 let modePaiement = "unefois";
 
+// Initialisation des deux blocs
+function initialiserBlocs() {
+  // Active "Je donne une fois" dans les deux blocs
+  document.querySelectorAll('.choix .choix1').forEach(div => {
+    div.classList.add('active');
+  });
+  document.querySelectorAll('.choix .choix2').forEach(div => {
+    div.classList.remove('active');
+  });
+  
+  // Active 130€ dans les deux blocs
+  document.querySelectorAll('.montant button:nth-child(2)').forEach(btn => {
+    btn.classList.add('active');
+  });
+  document.querySelectorAll('.montant button:not(:nth-child(2))').forEach(btn => {
+    btn.classList.remove('active');
+  });
+  
+  // Vide les champs montant libre
+  montantLibres.forEach(input => {
+    input.value = "";
+  });
+  
+  updateFiscal();
+}
+
+// Synchronise les boutons de montant entre les blocs
+function synchroniserMontants(montantValue, modePaiementActuel) {
+  const tousLesBoutonsMontant = document.querySelectorAll('.montant button');
+  
+  tousLesBoutonsMontant.forEach(btn => {
+    // Trouve le bouton dans chaque bloc qui correspond au montant sélectionné
+    if (parseInt(btn.textContent) === montantValue) {
+      const bloc = btn.closest('.formulaire-don, .bloc-don2');
+      const montantBtnsBloc = bloc.querySelectorAll('.montant button');
+      
+      // Active seulement le bon bouton dans ce bloc
+      montantBtnsBloc.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      
+      // Vide le montant libre dans ce bloc
+      const montantLibreBloc = bloc.querySelector('.montant-libre');
+      if (montantLibreBloc) {
+        montantLibreBloc.value = "";
+      }
+    }
+  });
+}
+
+// Gestion des choix (une fois / tous les mois)
 choixDivs.forEach(div => {
   div.addEventListener('click', () => {
-    choixDivs.forEach(d => d.classList.remove('active'));
+    // Trouve le bloc parent
+    const bloc = div.closest('.formulaire-don, .bloc-don2');
+    
+    // Met à jour seulement dans le bloc cliqué
+    const choixDansBloc = bloc.querySelectorAll('.choix div');
+    choixDansBloc.forEach(d => d.classList.remove('active'));
     div.classList.add('active');
 
     modePaiement = div.querySelector('input').id;
 
-    // ✅ Met à jour les boutons de montant selon le mode de paiement
+    // Met à jour les boutons de montant selon le mode de paiement (dans TOUS les blocs)
+    const tousLesBoutonsMontant = document.querySelectorAll('.montant button');
     if (modePaiement === "unefois") {
-      montantBtns[0].textContent = "90 €";
-      montantBtns[1].textContent = "130 €";
-      montantBtns[2].textContent = "150 €";
-      montantBtns[3].textContent = "200 €";
-    } else {
-      montantBtns[0].textContent = "10 €";
-      montantBtns[1].textContent = "20 €";
-      montantBtns[2].textContent = "30 €";
-      montantBtns[3].textContent = "50 €";
-    }
-
-    // ✅ Réinitialise le montant sélectionné à 130 € si “une fois”
-    montantBtns.forEach(b => b.classList.remove('active'));
-    if (modePaiement === "unefois") {
+      // Réorganise tous les boutons pour "une fois"
+      const montantsUneFois = [90, 130, 150, 200];
+      tousLesBoutonsMontant.forEach((btn, index) => {
+        const groupeIndex = index % 4; // 4 boutons par bloc
+        btn.textContent = `${montantsUneFois[groupeIndex]} €`;
+      });
+      
+      // Active 130€ partout
+      synchroniserMontants(130, modePaiement);
       montantSelectionne = 130;
-      montantBtns[1].classList.add('active');
+      
     } else {
-      montantSelectionne = parseInt(montantBtns[0].textContent);
-      montantBtns[0].classList.add('active');
+      // Réorganise tous les boutons pour "tous les mois"
+      const montantsMensuels = [10, 20, 30, 50];
+      tousLesBoutonsMontant.forEach((btn, index) => {
+        const groupeIndex = index % 4; // 4 boutons par bloc
+        btn.textContent = `${montantsMensuels[groupeIndex]} €`;
+      });
+      
+      // Active 10€ partout
+      synchroniserMontants(10, modePaiement);
+      montantSelectionne = 10;
     }
 
     updateFiscal();
   });
 });
 
-// --- Sélection d’un montant ---
+// Gestion des boutons de montant
 montantBtns.forEach(btn => {
   btn.addEventListener('click', () => {
-    montantBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    montantLibre.value = "";
-    montantSelectionne = parseInt(btn.textContent);
+    const montantValue = parseInt(btn.textContent);
+    montantSelectionne = montantValue;
+    
+    // Synchronise ce montant dans les DEUX blocs
+    synchroniserMontants(montantValue, modePaiement);
+    
+    // Vide tous les champs montant libre
+    montantLibres.forEach(input => {
+      input.value = "";
+    });
+    
     updateFiscal();
   });
 });
 
-// --- Montant libre ---
-montantLibre.addEventListener('input', () => {
-  montantBtns.forEach(b => b.classList.remove('active'));
-  const val = parseFloat(montantLibre.value);
-  montantSelectionne = isNaN(val) ? 0 : val;
-  updateFiscal();
+// Gestion des montants libres - SYNCHRONISATION COMPLÈTE
+montantLibres.forEach(input => {
+  input.addEventListener('input', () => {
+    const val = parseFloat(input.value);
+    montantSelectionne = isNaN(val) ? 0 : val;
+    
+    // Désactive tous les boutons de montant dans les deux blocs
+    montantBtns.forEach(b => b.classList.remove('active'));
+    
+    // Synchronise le montant libre dans TOUS les autres blocs
+    montantLibres.forEach(otherInput => {
+      if (otherInput !== input) {
+        otherInput.value = input.value;
+      }
+    });
+    
+    updateFiscal();
+  });
+
+  // Ajoute aussi l'événement 'change' pour plus de fiabilité
+  input.addEventListener('change', () => {
+    const val = parseFloat(input.value);
+    montantSelectionne = isNaN(val) ? 0 : val;
+    
+    montantBtns.forEach(b => b.classList.remove('active'));
+    
+    // Synchronisation
+    montantLibres.forEach(otherInput => {
+      if (otherInput !== input) {
+        otherInput.value = input.value;
+      }
+    });
+    
+    updateFiscal();
+  });
 });
 
-// --- Calcul déduction fiscale ---
+// Met à jour l'affichage fiscal dans TOUS les blocs
 function updateFiscal() {
   const deduction = Math.floor(montantSelectionne * 0.25); 
-  fiscal.textContent = `${deduction} €`;
+  fiscals.forEach(fiscal => {
+    fiscal.textContent = `${deduction} €`;
+  });
 }
 
-// Init
-updateFiscal();
+// Initialisation au chargement
+document.addEventListener('DOMContentLoaded', () => {
+  initialiserBlocs();
+});
 
-/******************************* Bloc Engager STYLES *******************************/
 
+/******************************* Bloc engager *******************************/
 document.addEventListener('DOMContentLoaded', () => {
   const track = document.getElementById('track');
   const nextBtn = document.getElementById('nextBtn');
@@ -101,4 +201,24 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   updatePosition();
+});
+
+
+
+
+/******************************* Bloc Question-frequente *******************************/
+
+document.addEventListener("DOMContentLoaded", () => {
+  const questions = document.querySelectorAll(".question-bloc");
+
+  questions.forEach((bloc) => {
+    const question = bloc.querySelector(".question");
+    const reponse = bloc.querySelector(".reponse");
+    const fleche = bloc.querySelector(".fleche");
+
+    question.addEventListener("click", () => {
+      reponse.classList.toggle("ouverte");
+      fleche.classList.toggle("ouverte");
+    });
+  });
 });

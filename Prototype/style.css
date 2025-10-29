@@ -164,20 +164,6 @@ body {
     font-weight: 500;
 }
 
-@media (max-width: 1200px) {
-    .elements a {
-        font-size: 13px;
-        padding: 10px 10px;
-    }
-}
-
-@media (max-width: 992px) {
-    .navbar {
-        flex-wrap: wrap;
-        padding: 15px 20px;
-    }
-}
-
  .elements {
     width: 100%;
     margin-top: 15px;
@@ -192,21 +178,21 @@ body {
 
 /******************************* Bloc du Formulaire STYLES *******************************/
 
-    .bloc-don {
-      position: relative;
-      width: 100%;
-      height: 450px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-image: url("https://images.ctfassets.net/ksb78y40v1oe/3sP6Y85LgDc0UrwUSdKqrf/3f339ca8e13e96b4b90cb91b3e0a20be/Page_Carrefour_Je_donne.png?fm=webp&q=85&w=1440&h=601");
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed; 
-      overflow: hidden;
-    }
+.bloc-don {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("https://images.ctfassets.net/ksb78y40v1oe/3sP6Y85LgDc0UrwUSdKqrf/3f339ca8e13e96b4b90cb91b3e0a20be/Page_Carrefour_Je_donne.png?fm=webp&q=85&w=1440&h=601");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; 
+  overflow: hidden;
+}
 
-.bloc-inte {
+.bloc-don .bloc-inter {
   position: relative;
   z-index: 2;
   padding: 20px 40px;
@@ -219,7 +205,7 @@ body {
   max-width: 90%;
 }
 
-.hero{
+.bloc-don .hero{
   margin-bottom: 1rem;
   font-weight: bold;
   font-size: 3rem;
@@ -228,15 +214,9 @@ body {
   text-shadow: 0 6px 10px rgba(0, 0, 0, .45);
 }
 
+/****** Bloc Formulaire de don *******/
 
-
-
-
-
-
-
-
-.formulaire-don {
+.bloc-don .formulaire-don {
   background-color: white;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
@@ -246,45 +226,45 @@ body {
   font-family: sans-serif;
   box-shadow: 0 2px 6px #0000001A;
 }
-.texte1 {
+.bloc-don .formulaire-don .texte1 {
   margin: 0 0 20px;
   font-size: 1.48rem;
   font-weight: 600;
   text-align: center;
 }
-.choix {
+.bloc-don .formulaire-don .choix {
   display: flex;
   justify-content: center;
   gap: 10px;
   margin-bottom: 25px;
 }
-.choix div {
+.bloc-don .formulaire-don .choix div {
   flex: 1;
   border: 1px solid #a8a8a8;
   border-radius: 8px;
   padding: 10px 4px;
   text-align: center;
 }
-.choix div label {
+.bloc-don .formulaire-don .choix div label {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
 }
-.choix div input {
+.bloc-don .formulaire-don .choix div input {
   display: none;
 }
-.choix div.active {
+.bloc-don .formulaire-don .choix div.active {
   background-color: #e60000;
   color: white;
   border-color: #e60000;
 }
-.montant {
+.bloc-don .formulaire-don .montant {
   display: flex;
   justify-content: center;
   margin-bottom: 25px;
   gap: 8px;
 }
-.montant button {
+.bloc-don .formulaire-don .montant button {
   background-color: #ffffff;
   border: 1px solid #a8a8a8;
   padding: 2px 12px;
@@ -296,16 +276,16 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.montant button:hover {
+.bloc-don .formulaire-don .montant button:hover {
   border-color: #e60000;
   color: #e60000;
 }
-.montant button.active {
+.bloc-don .formulaire-don .montant button.active {
   background-color: #e60000;
   color: white;
   border-color: #e60000;
 }
-.montant-libre-container {
+.bloc-don .formulaire-don .montant-libre-container {
   display: flex;
   align-items: center;
   border: 1px solid #ccc;
@@ -313,7 +293,7 @@ body {
   padding: 8px 12px;
   margin-bottom: 20px;
 }
-.montant-libre {
+.bloc-don .formulaire-don .montant-libre {
   border: none;
   outline: none;
   flex: 1;
@@ -321,7 +301,7 @@ body {
   color: #555;
   text-align: center;
 }
-.texte2 {
+.bloc-don .formulaire-don .texte2 {
   margin: 0 0 20px;
   font-size: 1rem;
   font-weight: normal;
@@ -329,7 +309,7 @@ body {
   font-weight: bold;
   color: #333;
 }
-#fiscal {
+.bloc-don .formulaire-don .fiscal {
   background-color: #e60000;
   color: white;
   font-weight: bold;
@@ -338,7 +318,7 @@ body {
   font-size: 1.2rem;
   vertical-align: middle;
 }
-.bouton-donation {
+.bloc-don .formulaire-don .bouton-donation {
   background-color: #e60000;
   color: white;
   border: none;
@@ -348,9 +328,10 @@ body {
   font-size: 18px;
   cursor: pointer;
 }
-.bouton-donnation:hover {
+.bloc-don .formulaire-don .bouton-donnation:hover {
   background-color: #cc0000;
 }
+
 
 /******************************* STATISTIQUE STYLES *******************************/
 
@@ -360,29 +341,30 @@ body {
     width: 100%;
     height: 300px;
     margin: 70px 0px;
+    font-family: "Inter", sans-serif;
 }
-.texte{
+.stats .texte{
     text-align: center;
 }
 
-.texte .surligne1 h2{
+.stats .texte .surligne{
     background-color: #075C68;
     color: #FFFFFF;
     padding: 6px 8px;
     display: inline-block;
-    font-size: 25px;
+    font-size: 1.4em;
     font-weight: bold;
     margin-bottom: 0px;
 }
 
-.texte h1 {
-    font-size: 18px;
+.stats .texte p {
+    font-size: 1.3em;
     font-weight: normal;
     font-family: "Georgia", "Times New Roman", serif;
     color: #222;
 }
 
-.chiffres {
+.stats .chiffres {
     display: flex;
     justify-content: center;
     text-align: center;
@@ -391,7 +373,7 @@ body {
     padding: 10px 10px;
 }
 
-.chiffres section {
+.stats .chiffres section {
     background-color: #FFFFFF;
     border-radius: 10px;
     border: 1px solid #A8A8A8;
@@ -399,24 +381,22 @@ body {
     min-width: 160px;
 }
 
-.chiffres h3 {
+.stats .chiffres h3 {
     color: #075C68;
-    font-size: 50px;
+    font-size: 3em;
     font-weight: bold;
     margin: 0 0 8px;
-    font-family: "Inter", sans-serif;
 }
 
-.chiffres p {
-    font-size: 16px;
+.stats .chiffres p {
+    font-size: 1.2  em;
     margin: 0;
     color: #333;
-    font-family: "Inter", sans-serif;
 }
 
 
 /********************************* Bloc Soutenir Styles *******************************/
-.nous-soutenir{
+.nous-soutenir {
     font-family:Inter, sans-serif;
 }
 .nous-soutenir .titre {
@@ -452,7 +432,7 @@ body {
   padding-left: 20px;
   padding-bottom: 15px;;
   position: relative;
-  font-size: 1.2rem;
+  font-size: 1.3rem;
 }
 
 .nous-soutenir ul li::before {
@@ -461,7 +441,6 @@ body {
   position: absolute;
   left: -10px;
 }
-
 
 /********************************* Bloc Agir Styles *******************************/
 
@@ -525,8 +504,8 @@ body {
 }
 
 
-.agir .texte h3 {
-  font-size: 1rem;
+.agir .texte p {
+  font-size: 1.25rem;
   font-weight: 700;
   margin-bottom: 20px;
   color: black;
@@ -593,7 +572,7 @@ body {
 /******************************* Bloc Engager STYLES *******************************/
 
 .engager {
-  margin: 40px 0;
+  margin: 100px 0;
 }
 
 .engager .titre {
@@ -677,11 +656,13 @@ body {
   padding: 20px 10px 25px;
   border-radius: 6px;
   text-align: center;
+  font-size: 1.25rem;
+  font-weight: 700;
   position: relative;
 }
 
 .engager .texte h3 {
-  font-size: 1.3rem;
+  font-size: 1.3em;
   font-weight: 700;
   margin-bottom: 20px;
   color: black;
@@ -704,7 +685,7 @@ body {
 
 /******************************* Bloc donner STYLES *******************************/
 .donner {
-    margin: 40px 0px;
+    margin: 50px 0;
 }
 
 .donner .titre{
@@ -754,6 +735,8 @@ body {
   padding: 20px 10px 25px;
   border-radius: 6px;
   text-align: center;
+  font-size: 1.3em;
+  font-weight: 700;
   position: relative;
 }
 
@@ -819,4 +802,384 @@ body {
   text-align:center;
 }
 
+/******************************* Bloc Transmettre STYLES *******************************/
+.transmettre {
+  padding: 40px 20px;
+  background-color: #fff;
+  font-family: "Inter", sans-serif;
+  margin: 20px;
+  margin-top: 80px;
+}
 
+.transmettre .bloc-transmettre {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  gap: 100px;
+  flex-wrap: wrap;
+}
+
+.transmettre .donation-image {
+  flex: 1 1 450px;
+}
+
+.transmettre .donation-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  display: block;
+}
+
+.transmettre .contenu {
+  flex: 1 1 450px;
+  position: relative;
+}
+
+
+.transmettre .contenu h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 15px;
+  line-height: 1.3;
+}
+
+.transmettre .contenu p {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 25px;
+}
+
+.transmettre .bouton {
+  display: block;
+  margin: 0 auto;
+  width: fit-content;
+  background-color: #D32F2F;
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.transmettre .bouton:hover {
+  background-color: #B71C1C;
+}
+
+/*************************************** Bloc Philanthrope STYLES *******************************/
+
+.philanthrope {
+  padding: 40px 20px;
+  background-color: #fff;
+  font-family: "Inter", sans-serif;
+}
+
+.philanthrope .bloc-philanthrope {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  gap: 100px;
+}
+
+.philanthrope .philanthrope-image {
+  flex: 1 1 450px;
+}
+
+.philanthrope .philanthrope-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  display: block;
+}
+
+.philanthrope .contenu {
+  flex: 1 1 450px;
+  position: relative;
+}
+
+
+.philanthrope .contenu h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 15px;
+  line-height: 1.3;
+}
+
+.philanthrope .contenu p {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: #333;
+  margin-bottom: 25px;
+}
+
+.philanthrope .bouton {
+  display: block;
+  margin: 0 auto;
+  width: fit-content;
+  background-color: #D32F2F;
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.philanthrope .bouton:hover {
+  background-color: #B71C1C;
+}
+
+
+/******************************* Bloc Question-frequente STYLES *******************************/
+
+.question-frequente {
+  font-family: "Inter", sans-serif;
+  max-width: 900px;
+  margin: 100px auto;
+  color: #101010;
+  line-height: 1.5;
+}
+
+.question-frequente .titre {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.question-frequente .surligne {
+  background-color: #005f66;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.question-frequente .sous-titre {
+  text-align: center;
+  color: #666;
+  margin-bottom: 35px;
+  font-size: 1.25rem;
+}
+
+.question-frequente .questions {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.question-frequente .question {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.question-frequente .question:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.question-frequente .question {
+  background-color: #fafafa;
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease;
+}
+
+.question-frequente .question:hover {
+  background-color: #f0f0f0;
+}
+
+.question-frequente .fleche {
+  font-size: 20px;
+  transition: transform 0.3s ease;
+}
+
+.question-frequente .fleche.ouverte {
+  transform: rotate(180deg);
+}
+
+.question-frequente .reponse {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  padding: 0 20px;
+  background-color: #fff;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.question-frequente .reponse.ouverte {
+  max-height: 600px;
+  opacity: 1;
+  padding: 16px 20px;
+}
+
+.question-frequente .reponse p {
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.question-frequente ul {
+  list-style: none;
+  padding: 10px;
+  max-width: 600px;
+  margin: 20px auto;
+  text-align: left;
+}
+
+.question-frequente ul li {
+  margin: 10px 0;
+  padding-left: 20px;
+  padding-bottom: 15px;;
+  position: relative;
+  font-size: 1.1rem;
+}
+
+.question-frequente ul li::before {
+  content: "—";
+  color: #D32F2F;
+  position: absolute;
+  left: -10px;
+}
+
+
+/******************************* Bloc don2 STYLES *******************************/
+.bloc-don2 {
+  font-family: "Arial", sans-serif;
+  padding: 20px 30px;
+  margin:0 auto;
+  margin-top:50px;
+  margin-bottom: 100px;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px #0000001a;
+  text-align: center;
+  width: fit-content;
+}
+
+.bloc-don2 .texte1 {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 25px;
+}
+
+.bloc-don2 .formulaire-don2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+
+.bloc-don2 .choix {
+  display: flex;
+  gap:15px;
+}
+
+.bloc-don2 .choix div {
+  padding: 8px 16px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #fff;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.bloc-don2 .choix div.active {
+  background-color: #e60000;
+  color: white;
+  border-color: #e60000;
+}
+
+.bloc-don2 .choix input {
+  display: none;
+}
+
+.bloc-don2 .montant {
+  display: flex;
+  gap: 8px;
+}
+
+.bloc-don2 .montant button {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.bloc-don2 .montant button:hover {
+  border-color: #e60000;
+  color: #e60000;
+}
+
+.bloc-don2 .montant button.active {
+  background-color: #e60000;
+  color: white;
+  border-color: #e60000;
+}
+
+
+.bloc-don2 .montant-libre-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 8px 12px;
+}
+.bloc-don2 .montant-libre {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+  color: #555;
+  text-align: center;
+}
+
+
+.bloc-don2 .bouton-donation {
+  background: #e60000;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.bloc-don2 .bouton-donation:hover {
+  background-color: #cc0000;
+}
+
+
+.bloc-don2 .texte2 {
+  margin-top: 15px;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.bloc-don2 .fiscal {
+  background-color: #e60000;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+}
