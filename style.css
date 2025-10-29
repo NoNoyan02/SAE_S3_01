@@ -74,7 +74,7 @@ video-container {
   padding: 20px 0;
 }
 
-/* Le logo reste fixé à gauche sans gêner le centrage du texte */
+/* Le Logo */
 .logo {
   position: absolute;
   margin-top: 30px;
@@ -93,21 +93,37 @@ video-container {
   margin-top: 60px;
   position: relative;
   z-index: 10;
-  text-shadow: 0 2px 4px rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
 }
 
+/* === Bloc rouge === */
 .header h1 .highlight {
-  background: linear-gradient(180deg, #d53c3c 0%, #b52c2c 100%); 
+  background: linear-gradient(180deg, #d53c3c 0%, #b52c2c 100%);
   color: #fff;
   padding: 10px 22px;
-  border-radius: 6px;
-  margin-right: 8px;
+  border-radius: 6px 0 0 6px;
   display: inline-block;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+  margin: 0; 
+  vertical-align: middle;
 }
 
-.header h1 .highlight:hover {
+/* === Bloc blanc === */
+.header h1 .whitebox {
+  background: rgba(255, 255, 255, 0.95);
+  color: #000;
+  padding: 10px 22px;
+  border-radius: 0 6px 6px 0;
+  display: inline-block;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  margin: 0;
+  vertical-align: middle;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* === Effet hover commun (optionnel) === */
+.header h1 span:hover {
   transform: scale(1.04);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
@@ -543,6 +559,7 @@ legend {
   pointer-events: auto;
 }
 
+/* --- Conteneur principal --- */
 .don-footer .footer-inner {
   max-width: 1100px;
   margin: 0 auto;
@@ -550,18 +567,20 @@ legend {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 28px;
+  align-items: start;
 }
 
-/* Carte/section */
-.acc{
+/* --- Bloc accordéon --- */
+.don-footer .acc {
   background: rgba(255,255,255,0.04);
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 10px;
   overflow: hidden;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-/* En-tête cliquable */
-.acc-header{
+/* --- En-tête cliquable --- */
+.acc-header {
   width: 100%;
   text-align: left;
   display: flex;
@@ -572,51 +591,71 @@ legend {
   background: transparent;
   color: #fff;
   font-weight: 700;
-  border: 0;
+  border: none;
   cursor: pointer;
+  transition: background 0.25s ease;
 }
-.acc-header:hover{
+
+.acc-header:hover {
   background: rgba(255,255,255,0.06);
 }
 
-.acc-caret{
-  transition: transform .25s ease;
+/* --- Flèche (caret) --- */
+.acc-caret {
+  transition: transform 0.25s ease;
 }
 
-/* Corps */
-.acc-body{
-  padding: 0 18px 16px;
+/* --- Corps masqué --- */
+.acc-body {
+  padding: 0 18px 0;
   max-height: 0;
   overflow: hidden;
-  transition: max-height .4s ease;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
 }
-.acc-list{
+
+/* --- Corps ouvert --- */
+.acc.open .acc-body {
+  max-height: 500px;
+  opacity: 1;
+  padding: 0 18px 16px;
+}
+
+/* --- Liste interne --- */
+.acc-list {
   margin: 11px 0 0;
   padding-left: 20px;
 }
-.acc-list li{
+
+.acc-list li {
   margin: 8px 0;
   line-height: 1.5;
 }
 
-/* Logos optionnels */
-.acc-logos{
+/* --- Logos optionnels --- */
+.acc-logos {
   display: flex;
   align-items: center;
   gap: 16px;
   margin-top: 10px;
 }
-.acc-logos img{
-  height: 40px; width: auto; display: block;
+
+.acc-logos img {
+  height: 40px;
+  width: auto;
+  display: block;
 }
 
-/* État ouvert (ajouté par JS) */
-.acc.open .acc-body{
-  max-height: 500px;
+/* --- État ouvert (effet visuel léger) --- */
+.acc.open {
+  border-color: rgba(255,255,255,0.25);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
 }
-.acc.open .acc-header .acc-caret{
+
+.acc.open .acc-header .acc-caret {
   transform: rotate(180deg);
 }
+
 
 
 

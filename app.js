@@ -356,41 +356,34 @@ validateButton.addEventListener("click", () => {
 
 // ===== Footer Accordéon =====
 document.addEventListener('DOMContentLoaded', () => {
-  const sections = document.querySelectorAll('.don-footer .acc');
-  if (!sections.length) return;
+  const accordions = document.querySelectorAll('.don-footer .acc');
+  if (!accordions.length) return;
 
-  sections.forEach(sec => {
-    const header = sec.querySelector('.acc-header');
-    const body = sec.querySelector('.acc-body');
-
-    // Initialise tout fermé
-    sec.classList.remove('open');
-    header.setAttribute('aria-expanded', 'false');
-    body.style.maxHeight = '0';
-    body.style.overflow = 'hidden';
-    body.style.transition = 'max-height 0.4s ease';
+  accordions.forEach(acc => {
+    const header = acc.querySelector('.acc-header');
 
     header.addEventListener('click', () => {
-      const isOpen = sec.classList.contains('open');
+      const isOpen = acc.classList.contains('open');
 
-      // Ferme tous les panneaux
-      sections.forEach(s => {
-        s.classList.remove('open');
-        const h = s.querySelector('.acc-header');
-        const b = s.querySelector('.acc-body');
-        h.setAttribute('aria-expanded', 'false');
-        b.style.maxHeight = '0';
+      // Ferme tous les autres
+      accordions.forEach(a => {
+        a.classList.remove('open');
+        a.querySelector('.acc-header').setAttribute('aria-expanded', 'false');
       });
 
-      // Ouvre celui cliqué (si fermé)
+      // Ouvre uniquement celui cliqué (s’il n’était pas déjà ouvert)
       if (!isOpen) {
-        sec.classList.add('open');
+        acc.classList.add('open');
         header.setAttribute('aria-expanded', 'true');
-        body.style.maxHeight = body.scrollHeight + 'px';
       }
     });
   });
 });
+
+
+
+
+
 
 
 
