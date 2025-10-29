@@ -75,9 +75,15 @@ video-container {
 }
 
 /* Le Logo */
+
+.logo-link {
+  display: inline-block;
+  text-decoration: none;
+}
+
 .logo {
   position: absolute;
-  margin-top: 30px;
+  margin-top: -30px;
   left: 40px;     
   width: 100px;
   height: auto;
@@ -169,7 +175,7 @@ video-container {
 
 .don-header h2 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
 }
 
@@ -478,10 +484,18 @@ legend {
   border-color: #d40000;
 }
 
+/* === Icônes images === */
 .icon {
-  font-size: 2rem;
   display: block;
-  margin-bottom: 6px;
+  width: 40px;
+  height: 40px;
+  margin: 0 auto 6px;
+  object-fit: contain;
+}
+
+[data-method="google-pay-apple-pay"] .icon {
+  width: 150px;
+  margin-top: 5px;
 }
 
 /* Bloc virement */
@@ -544,8 +558,14 @@ legend {
 }
 
 .lock {
-  font-size: 1.5rem;
-  color: #00b050;
+  flex-shrink: 0;
+}
+
+.lock-icon {
+  width: 24px;
+  height: 24px;
+  display: block;
+  margin-top: 20px;
 }
 
 /* ===== Footer Accordéon ===== */

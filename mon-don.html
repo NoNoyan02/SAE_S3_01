@@ -28,7 +28,9 @@
 
   <!-- H1 -->
   <div class="header">
+    <a href="index.html" class="logo-link">
     <img src="img/Logo_Croix-Rouge_Française.svg" alt="Logo Croix-Rouge Française" class="logo">
+    </a>
     <h1>
   <span class="highlight">Votre Générosité</span><span class="whitebox">sauve des vies</span>
     </h1>
@@ -170,23 +172,26 @@
         </div>
 
         <div class="payment-methods">
-          <button class="payment-option active" data-method="card">
-            <i class="icon">💳</i>
-            <span>Carte bancaire</span>
-          </button>
-          <button class="payment-option" data-method="googlepay">
-            <i class="icon">🅖</i>
-            <span>Google Pay</span>
-          </button>
-          <button class="payment-option" data-method="paypal">
-            <i class="icon">🅟</i>
-            <span>PayPal</span>
-          </button>
-          <button class="payment-option" data-method="virement">
-            <i class="icon">🏦</i>
-            <span>Virement instantané</span>
-          </button>
-        </div>
+  <button class="payment-option active" data-method="card">
+    <img src="img/carte-de-credit.svg" alt="Carte bancaire" class="icon">
+    <span>Carte bancaire</span>
+  </button>
+
+  <button class="payment-option" data-method="google-pay-apple-pay">
+    <img src="img/gg-pay-app-pay.svg" alt="Pay" class="icon">
+    <span>Google Pay / Apple Pay</span>
+  </button>
+
+  <button class="payment-option" data-method="paypal">
+    <img src="img/paypal.svg" alt="PayPal" class="icon">
+    <span>PayPal</span>
+  </button>
+
+  <button class="payment-option" data-method="virement">
+    <img src="img/virement.svg" alt="Virement" class="icon">
+    <span>Virement instantané</span>
+  </button>
+</div>
 
         <div class="virement-box" style="display:none;">
           <div class="bank-select">
@@ -215,10 +220,13 @@
         </button>
 
         <div class="secure-box">
-          <div class="lock">🔒</div>
-          <p>Paiements sécurisés avec les derniers protocoles de chiffrement, conçus pour respecter les normes les plus élevées de l’industrie.</p>
-        </div>
-      </div>
+  <div class="lock">
+    <img src="img/bouclier.svg" alt="Lock" class="lock-icon">
+  </div>
+  <p>
+    Paiements sécurisés avec les derniers protocoles de chiffrement, conçus pour respecter les normes les plus élevées de l’industrie.
+  </p>
+</div>
     </section>
 
   </section>
