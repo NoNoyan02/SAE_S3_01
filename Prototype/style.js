@@ -68,7 +68,8 @@ choixDivs.forEach(div => {
     choixDansBloc.forEach(d => d.classList.remove('active'));
     div.classList.add('active');
 
-    modePaiement = div.querySelector('input').id;
+  const input = div.querySelector('input');
+  modePaiement = input ? input.value : modePaiement;
 
     // Met à jour les boutons de montant selon le mode de paiement (dans TOUS les blocs)
     const tousLesBoutonsMontant = document.querySelectorAll('.montant button');
@@ -171,37 +172,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /******************************* Bloc engager *******************************/
-document.addEventListener('DOMContentLoaded', () => {
-  const track = document.getElementById('track');
-  const nextBtn = document.getElementById('nextBtn');
-  const prevBtn = document.getElementById('prevBtn');
-  const blocks = Array.from(track.children);
-  const visibleCount = 3;
-  let currentIndex = 0;
+const track = document.querySelector('.mouvement-carousel');
+const blocks = document.querySelectorAll('.engager .block');
+const prevBtn = document.querySelector('.prevBtn');
+const nextBtn = document.querySelector('.nextBtn');
 
-  function updatePosition() {
-    const blockWidth = blocks[0].getBoundingClientRect().width + 60; // 60px = gap
-    track.style.transform = `translateX(-${currentIndex * blockWidth}px)`;
-    prevBtn.classList.toggle('hidden', currentIndex === 0);
-    nextBtn.classList.toggle('hidden', currentIndex >= blocks.length - visibleCount);
+let index = 0;
+
+function getVisibleCount() {
+  const width = window.innerWidth;
+  if (width <= 500) return 1;
+  if (width <= 1080) return 2;
+  return 3;
+}
+
+function updateCarousel() {
+  const visibleCount = getVisibleCount();
+  const gap = 60;
+  const blockWidth = blocks[0].offsetWidth;
+  const moveX = (blockWidth + gap) * index;
+  track.style.transform = `translateX(-${moveX}px)`;
+
+  prevBtn.classList.toggle('hidden', index === 0);
+  nextBtn.classList.toggle('hidden', index >= blocks.length - visibleCount);
+}
+
+nextBtn.addEventListener('click', () => {
+  const visibleCount = getVisibleCount();
+  if (index < blocks.length - visibleCount) {
+    index++;
+    updateCarousel();
   }
-
-  nextBtn.addEventListener('click', () => {
-    if (currentIndex < blocks.length - visibleCount) {
-      currentIndex++;
-      updatePosition();
-    }
-  });
-
-  prevBtn.addEventListener('click', () => {
-    if (currentIndex > 0) {
-      currentIndex--;
-      updatePosition();
-    }
-  });
-
-  updatePosition();
 });
+
+prevBtn.addEventListener('click', () => {
+  if (index > 0) {
+    index--;
+    updateCarousel();
+  }
+});
+
+window.addEventListener('resize', updateCarousel);
+updateCarousel();
 
 
 

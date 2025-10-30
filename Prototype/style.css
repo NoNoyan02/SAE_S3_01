@@ -1,180 +1,176 @@
-
 body {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 /******************************* NAVBAR STYLES *******************************/
 
 .logo {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .logo img {
-    height: 45px;
+  height: 45px;
 }
 
 .navbar {
-    display: flex;
-    align-items: center;
-    padding: 15px 40px;
-    justify-content: space-between;
-    background-color: white;
+  display: flex;
+  align-items: center;
+  padding: 15px 40px;
+  justify-content: space-between;
+  background-color: white;
 }
 
 .elements {
-    display: flex;
-    gap: 10px;
-    flex: 1;
-    margin: 0 20px;
-    justify-content: center;
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  margin: 0 20px;
+  justify-content: center;
 }
 
 .elements a {
-    padding: 10px 15px;
-    font-size: 15px;
-    text-decoration: none;
-    color: black;
-    font-weight: 600;
-    white-space: nowrap;
-    transition: color 0.2s;
+  padding: 10px 15px;
+  font-size: 15px;
+  text-decoration: none;
+  color: black;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 0.2s;
 }
 
 .elements a:hover {
-    color: #e30613;
+  color: #e30613;
 }
 
 .navbar-right {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 .recherche {
-    display: flex;
-    align-items: center;
-    padding: 5px 15px;
-    border-radius: 20px;
-    border: 1px solid #ccc;
-    background-color: #f5f5f5;
+  display: flex;
+  align-items: center;
+  padding: 5px 15px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background-color: #f5f5f5;
 }
 
 .recherche input {
-    outline: none;
-    border: none;
-    background: none;
-    font-size: 13px;
-    width: 150px;
+  outline: none;
+  border: none;
+  background: none;
+  font-size: 13px;
+  width: 150px;
 }
 
 .recherche input::placeholder {
-    color: #999;
+  color: #999;
 }
 
 .recherche button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    color: #666;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
 }
 
 .compte {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
 }
 
 .compte-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 15px;
-    background-color: #e30613;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 15px;
+  background-color: #e30613;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
 }
 
 .compte span {
-    font-size: 13px;
-    color: #333;
-    font-weight: 500;
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
 }
 
 .jefaisundon {
-    background-color: #e30613;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-    text-align: center;
-    line-height: 1.3;
-    transition: background-color 0.2s;
+  background-color: #e30613;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+  transition: background-color 0.2s;
 }
 
 .jefaisundon:hover {
-    background-color: #c00511;
+  background-color: #c00511;
 }
 
 .sousnavbar {
-    padding: 12px 40px;
-    background-color: #f8f8f8;
-    border-bottom: 1px solid #e0e0e0;
-    border: none;
+  padding: 12px 40px;
+  background-color: #f8f8f8;
+  border-bottom: 1px solid #e0e0e0;
+  border: none;
 }
 .sousnavbar ol {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    gap: 5px;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .sousnavbar li {
-    display: flex;
-    align-items: center;
-    font-size: 13px;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
 }
 
 .sousnavbar a {
-    text-decoration: none;
-    color: black;
-    transition: color 0.2s;
+  text-decoration: none;
+  color: black;
+  transition: color 0.2s;
 }
 
 .sousnavbar a:hover {
-    color: #e30613;
+  color: #e30613;
 }
 
-
 .sousnavbar li:not(:last-child)::after {
-    content: ">";
-    margin: 0 8px;
-    color: #666;
-    font-weight: bold;
+  content: ">";
+  margin: 0 8px;
+  color: #666;
+  font-weight: bold;
 }
 
 .sousnavbar .jedonne {
-    color: #666;
-    font-weight: 500;
+  color: #666;
+  font-weight: 500;
 }
 
- .elements {
-    width: 100%;
-    margin-top: 15px;
-    justify-content: flex-start;
+.elements {
+  width: 100%;
+  margin-top: 15px;
+  justify-content: flex-start;
 }
 
 .recherche input {
-        width: 100px;
+  width: 100px;
 }
-
-
 
 /******************************* Bloc du Formulaire STYLES *******************************/
 
@@ -188,7 +184,7 @@ body {
   background-image: url("https://images.ctfassets.net/ksb78y40v1oe/3sP6Y85LgDc0UrwUSdKqrf/3f339ca8e13e96b4b90cb91b3e0a20be/Page_Carrefour_Je_donne.png?fm=webp&q=85&w=1440&h=601");
   background-size: cover;
   background-position: center;
-  background-attachment: fixed; 
+  background-attachment: fixed;
   overflow: hidden;
 }
 
@@ -197,21 +193,21 @@ body {
   z-index: 2;
   padding: 20px 40px;
   border-radius: 10px;
-  display: flex;               
-  justify-content: space-between; 
-  align-items: center;         
-  text-align: left;         
-  gap: 200px;               
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: left;
+  gap: 200px;
   max-width: 90%;
 }
 
-.bloc-don .hero{
+.bloc-don .hero {
   margin-bottom: 1rem;
   font-weight: bold;
   font-size: 3rem;
   line-height: 1.2;
   color: white;
-  text-shadow: 0 6px 10px rgba(0, 0, 0, .45);
+  text-shadow: 0 6px 10px rgba(0, 0, 0, 0.45);
 }
 
 /****** Bloc Formulaire de don *******/
@@ -224,7 +220,7 @@ body {
   padding: 32px;
   text-align: center;
   font-family: sans-serif;
-  box-shadow: 0 2px 6px #0000001A;
+  box-shadow: 0 2px 6px #0000001a;
 }
 .bloc-don .formulaire-don .texte1 {
   margin: 0 0 20px;
@@ -332,82 +328,81 @@ body {
   background-color: #cc0000;
 }
 
-
 /******************************* STATISTIQUE STYLES *******************************/
 
-
 .stats {
-    background-color: #E8F0F1;
-    width: 100%;
-    height: 300px;
-    margin: 70px 0px;
-    font-family: "Inter", sans-serif;
+  background-color: #e8f0f1;
+  width: 100%;
+  margin: 70px 0px;
+  font-family: "Inter", sans-serif;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
 }
-.stats .texte{
-    text-align: center;
+.stats .texte {
+  text-align: center;
 }
 
-.stats .texte .surligne{
-    background-color: #075C68;
-    color: #FFFFFF;
-    padding: 6px 8px;
-    display: inline-block;
-    font-size: 1.4em;
-    font-weight: bold;
-    margin-bottom: 0px;
+.stats .texte .surligne {
+  background-color: #075c68;
+  color: #ffffff;
+  padding: 6px 8px;
+  display: inline-block;
+  font-size: 1.4em;
+  font-weight: bold;
+  margin-bottom: 0px;
 }
 
 .stats .texte p {
-    font-size: 1.3em;
-    font-weight: normal;
-    font-family: "Georgia", "Times New Roman", serif;
-    color: #222;
+  font-size: 1.3em;
+  font-weight: normal;
+  font-family: "Georgia", "Times New Roman", serif;
+  color: #222;
 }
 
 .stats .chiffres {
-    display: flex;
-    justify-content: center;
-    text-align: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    padding: 10px 10px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 10px 10px;
 }
 
 .stats .chiffres section {
-    background-color: #FFFFFF;
-    border-radius: 10px;
-    border: 1px solid #A8A8A8;
-    padding: 24px 32px;
-    min-width: 160px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #a8a8a8;
+  padding: 24px 32px;
+  min-width: 160px;
 }
 
 .stats .chiffres h3 {
-    color: #075C68;
-    font-size: 3em;
-    font-weight: bold;
-    margin: 0 0 8px;
+  color: #075c68;
+  font-size: 3em;
+  font-weight: bold;
+  margin: 0 0 8px;
 }
 
 .stats .chiffres p {
-    font-size: 1.2  em;
-    margin: 0;
-    color: #333;
+  font-size: 1.2 em;
+  margin: 0;
+  color: #333;
 }
-
 
 /********************************* Bloc Soutenir Styles *******************************/
 .nous-soutenir {
-    font-family:Inter, sans-serif;
+  font-family: Inter, sans-serif;
 }
 .nous-soutenir .titre {
-  text-align:center;
+  text-align: center;
   font-size: 1.8rem;
   margin-bottom: 20px;
-  font-weight:700;
+  font-weight: 700;
 }
 
 .nous-soutenir .titre .surligne {
-  background-color: #007C89;
+  background-color: #007c89;
   color: #ffffff;
   padding: 4px 8px;
   border-radius: 4px;
@@ -415,7 +410,7 @@ body {
 
 .nous-soutenir .texte1 {
   margin: 10px auto;
-  text-align:center;
+  text-align: center;
   font-size: 1.3rem;
 }
 
@@ -430,14 +425,14 @@ body {
 .nous-soutenir ul li {
   margin: 10px 0;
   padding-left: 20px;
-  padding-bottom: 15px;;
+  padding-bottom: 15px;
   position: relative;
   font-size: 1.3rem;
 }
 
 .nous-soutenir ul li::before {
   content: "—";
-  color: #D32F2F;
+  color: #d32f2f;
   position: absolute;
   left: -10px;
 }
@@ -445,27 +440,27 @@ body {
 /********************************* Bloc Agir Styles *******************************/
 
 .agir {
-    margin: 40px 0px;
+  margin: 40px 0px;
 }
 
-.agir .titre{
-  text-align:center;
+.agir .titre {
+  text-align: center;
   font-size: 1.8rem;
   margin-bottom: 20px;
-  font-weight:700;
-  font-family:Inter, sans-serif;
+  font-weight: 700;
+  font-family: Inter, sans-serif;
 }
 
 .agir .surligne {
-  background-color: #007C89;
+  background-color: #007c89;
   color: #ffffff;
   padding: 4px 8px;
   border-radius: 3px;
 }
 
-.agir .sous-titre{
-  text-align:center;
-  font-size:1.4em;
+.agir .sous-titre {
+  text-align: center;
+  font-size: 1.4em;
 }
 
 .agir .blocks {
@@ -495,14 +490,13 @@ body {
   background-color: #ffffff;
   border: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 85%;         
-  margin-top: -40px;         
+  width: 85%;
+  margin-top: -40px;
   padding: 20px 10px 25px;
   border-radius: 6px;
   text-align: center;
   position: relative;
 }
-
 
 .agir .texte p {
   font-size: 1.25rem;
@@ -513,7 +507,7 @@ body {
 
 .agir .bouton {
   display: inline-block;
-  background-color: #D32F2F;
+  background-color: #d32f2f;
   color: #ffffff;
   text-decoration: none;
   font-weight: 600;
@@ -522,9 +516,8 @@ body {
 }
 
 .agir .bouton:hover {
-  background-color: #B71C1C;
+  background-color: #b71c1c;
 }
-
 
 /******************************* Bloc Déduction fiscal STYLES *******************************/
 
@@ -545,15 +538,13 @@ body {
   font-weight: 700;
   margin-bottom: 16px;
   text-align: center;
-  
 }
 
 .deduction-fiscale .surligne {
-  background-color: #007C89;
+  background-color: #007c89;
   color: #ffffff;
   padding: 4px 8px;
   border-radius: 4px;
-  
 }
 
 .deduction-fiscale p {
@@ -566,8 +557,6 @@ body {
   font-weight: 700;
   font-size: 1.4rem;
 }
-
-
 
 /******************************* Bloc Engager STYLES *******************************/
 
@@ -584,7 +573,7 @@ body {
 }
 
 .engager .surligne {
-  background-color: #007C89;
+  background-color: #007c89;
   color: #fff;
   padding: 4px 8px;
   border-radius: 3px;
@@ -635,7 +624,7 @@ body {
 }
 
 .engager .block {
-  flex: 0 0 calc((100% - 120px) / 3); /* 3 visibles avec gap=60px */
+  flex: 0 0 calc((100% - 120px) / 3);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -650,7 +639,7 @@ body {
 
 .engager .texte {
   background-color: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   width: 85%;
   margin-top: -40px;
   padding: 20px 10px 25px;
@@ -670,7 +659,7 @@ body {
 
 .engager .bouton {
   display: inline-block;
-  background-color: #D32F2F;
+  background-color: #d32f2f;
   color: #fff;
   text-decoration: none;
   font-weight: 600;
@@ -679,25 +668,25 @@ body {
 }
 
 .engager .bouton:hover {
-  background-color: #B71C1C;
+  background-color: #b71c1c;
 }
-
 
 /******************************* Bloc donner STYLES *******************************/
 .donner {
-    margin: 50px 0;
+  margin: 50px 0;
 }
 
-.donner .titre{
-  text-align:center;
+.donner .titre {
+  text-align: center;
+  margin: auto;
   font-size: 1.8rem;
   margin-bottom: 20px;
-  font-weight:700;
-  font-family:Inter, sans-serif;
+  font-weight: 700;
+  font-family: Inter, sans-serif;
 }
 
 .donner .surligne {
-  background-color: #007C89;
+  background-color: #007c89;
   color: #ffffff;
   padding: 4px 8px;
   border-radius: 3px;
@@ -730,8 +719,8 @@ body {
   background-color: #ffffff;
   border: none;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 85%;         
-  margin-top: -40px;         
+  width: 85%;
+  margin-top: -40px;
   padding: 20px 10px 25px;
   border-radius: 6px;
   text-align: center;
@@ -739,7 +728,6 @@ body {
   font-weight: 700;
   position: relative;
 }
-
 
 .donner .texte h3 {
   font-size: 1.3rem;
@@ -750,7 +738,7 @@ body {
 
 .donner .bouton {
   display: inline-block;
-  background-color: #D32F2F;
+  background-color: #d32f2f;
   color: #ffffff;
   text-decoration: none;
   font-weight: 600;
@@ -759,9 +747,8 @@ body {
 }
 
 .donner .bouton:hover {
-  background-color: #B71C1C;
+  background-color: #b71c1c;
 }
-
 
 /******************************* Bloc Patrimoine STYLES *******************************/
 .patrimoine {
@@ -772,10 +759,10 @@ body {
 }
 
 .patrimoine h2 {
-  text-align:center;
+  text-align: center;
   font-size: 1.8rem;
-  font-weight:700;
-  margin-bottom:-20px;
+  font-weight: 700;
+  margin-bottom: -20px;
 }
 
 .patrimoine .surligne {
@@ -783,23 +770,23 @@ body {
   color: white;
   padding: 2px 8px;
   border-radius: 4px;
-  top:20px;
+  top: 20px;
 }
 
 .patrimoine h3 {
-  text-align:center;
-  font-size:1.3em;
+  text-align: center;
+  font-size: 1.3em;
 }
 
 .patrimoine p {
   font-size: 1.3rem;
   color: #333;
-  text-align:center;
+  text-align: center;
 }
 
 .patrimoine .gras {
   font-weight: bold;
-  text-align:center;
+  text-align: center;
 }
 
 /******************************* Bloc Transmettre STYLES *******************************/
@@ -822,7 +809,7 @@ body {
 }
 
 .transmettre .donation-image {
-  flex: 1 1 450px;
+  flex: 1 1 500px;
 }
 
 .transmettre .donation-image img {
@@ -836,7 +823,6 @@ body {
   flex: 1 1 450px;
   position: relative;
 }
-
 
 .transmettre .contenu h2 {
   font-size: 1.8rem;
@@ -857,7 +843,7 @@ body {
   display: block;
   margin: 0 auto;
   width: fit-content;
-  background-color: #D32F2F;
+  background-color: #d32f2f;
   color: #fff;
   text-decoration: none;
   padding: 12px 24px;
@@ -866,7 +852,7 @@ body {
 }
 
 .transmettre .bouton:hover {
-  background-color: #B71C1C;
+  background-color: #b71c1c;
 }
 
 /*************************************** Bloc Philanthrope STYLES *******************************/
@@ -879,6 +865,7 @@ body {
 
 .philanthrope .bloc-philanthrope {
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
   max-width: 1100px;
@@ -902,7 +889,6 @@ body {
   position: relative;
 }
 
-
 .philanthrope .contenu h2 {
   font-size: 1.8rem;
   font-weight: 700;
@@ -922,7 +908,7 @@ body {
   display: block;
   margin: 0 auto;
   width: fit-content;
-  background-color: #D32F2F;
+  background-color: #d32f2f;
   color: #fff;
   text-decoration: none;
   padding: 12px 24px;
@@ -931,9 +917,8 @@ body {
 }
 
 .philanthrope .bouton:hover {
-  background-color: #B71C1C;
+  background-color: #b71c1c;
 }
-
 
 /******************************* Bloc Question-frequente STYLES *******************************/
 
@@ -1043,25 +1028,24 @@ body {
 .question-frequente ul li {
   margin: 10px 0;
   padding-left: 20px;
-  padding-bottom: 15px;;
+  padding-bottom: 15px;
   position: relative;
   font-size: 1.1rem;
 }
 
 .question-frequente ul li::before {
   content: "—";
-  color: #D32F2F;
+  color: #d32f2f;
   position: absolute;
   left: -10px;
 }
-
 
 /******************************* Bloc don2 STYLES *******************************/
 .bloc-don2 {
   font-family: "Arial", sans-serif;
   padding: 20px 30px;
-  margin:0 auto;
-  margin-top:50px;
+  margin: 0 auto;
+  margin-top: 50px;
   margin-bottom: 100px;
   border-radius: 6px;
   box-shadow: 0 2px 6px #0000001a;
@@ -1083,10 +1067,9 @@ body {
   justify-content: center;
 }
 
-
 .bloc-don2 .choix {
   display: flex;
-  gap:15px;
+  gap: 15px;
 }
 
 .bloc-don2 .choix div {
@@ -1136,7 +1119,6 @@ body {
   border-color: #e60000;
 }
 
-
 .bloc-don2 .montant-libre-container {
   display: flex;
   align-items: center;
@@ -1153,7 +1135,6 @@ body {
   text-align: center;
 }
 
-
 .bloc-don2 .bouton-donation {
   background: #e60000;
   color: #fff;
@@ -1163,12 +1144,16 @@ body {
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-}
+  }
 
 .bloc-don2 .bouton-donation:hover {
   background-color: #cc0000;
 }
 
+body {
+  background-image: url("");
+
+}
 
 .bloc-don2 .texte2 {
   margin-top: 15px;
@@ -1182,4 +1167,100 @@ body {
   padding: 2px 6px;
   border-radius: 4px;
   font-weight: bold;
+}
+
+/******************************* Responsive STYLES *******************************/
+/*Tablette*/
+@media (max-width: 1080px) {
+  .bloc-don .formulaire-don {
+    display: none;
+  }
+
+  .nous-soutenir {
+    width: 90%;
+    height: auto;
+    margin: auto auto;
+  }
+
+  .engager .block {
+    flex: 0 0 calc((100% - 120px) / 2);
+  }
+
+  .patrimoine {
+    max-width: 1000px;
+  }
+
+  .transmettre {
+    display: flex;
+  }
+  
+  .transmettre .contenu {
+    order: 2;
+  }
+
+  .philanthrope .bloc-philanthrope {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .philanthrope .contenu {
+    order: 2;
+  }
+
+  .philanthrope .philanthrope-image {
+    max-width: 700px;
+    order: 1;
+  }
+
+  .philanthrope {
+    padding: 20px 20px;
+  }
+  .transmettre .bloc-transmettre {
+    gap: 20px;
+  }
+  .question-frequente {
+    margin: 0 auto;
+  }
+  
+}
+
+/*Téléphone*/
+@media (max-width: 500px) {
+  .engager .block {
+    flex: 0 0 100%;
+  }
+
+  .patrimoine {
+    width: 350px;
+  }
+
+  .titre .sous-titre {
+    width: 95%;
+  }
+
+  .deduction-fiscale p {
+    max-width: 300px;
+  }
+  .donner .titre {
+    width: 80%;
+  }
+  .transmettre .bloc-transmettre {
+    gap: 20px;
+  }
+
+  
+  .philanthrope .philanthrope-image {
+    flex: 1 1 0px;
+  }
+
+}
+
+/*Mini téléphone*/
+@media (max-width: 350px) {
+  .patrimoine {
+    width: 80%;
+  }
+  .philanthrope .bloc-philanthrope {
+    gap: 20px;
+  }
 }
