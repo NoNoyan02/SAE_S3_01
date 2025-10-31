@@ -1,10 +1,29 @@
+import React from "react";
+import {Helmet} from "react-helmet";
 
-function Jedonne() {
+export default function Jedonne() {
     return (
         <>
+            <Helmet>
+                {/* Titre */}
+                <title>Je fais un don | Croix-Rouge française</title>
 
+                {/* Description */}
+                <meta
+                    name="description"
+                    content="Donner c'est s'engager, faire un don à la Croix-Rouge française c'est financer des actions solidaires et venir en aide aux personnes démunies, isolées, vulnérables"
+                />
+
+                {/* Open Graph */}
+                <meta
+                    property="og:title"
+                    content="Je fais un don | Croix-Rouge française"
+                />
+                <meta
+                    property="og:description"
+                    content="Donner c'est s'engager, faire un don à la Croix-Rouge française c'est financer des actions solidaires et venir en aide aux personnes démunies, isolées, vulnérables"
+                />
+            </Helmet>
         </>
     );
 }
-
-export default Jedonne;
