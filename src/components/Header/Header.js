@@ -10,7 +10,7 @@ const Header = () => {
     const [isLoginMode, setIsLoginMode] = useState(true);
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userName, setUserName] = useState(null);
+    const [userName, setUserName] = useState('null');
     setUserName('Jean Dupont');
 
     const menuItems = [
