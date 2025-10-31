@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import "./DonationForm.css";
 
 const DonationForm = () => {
@@ -9,10 +9,10 @@ const DonationForm = () => {
     ];
 
     const [frequency, setFrequency] = useState("monthly");
-    const [selectedButton, setSelectedButton] = useState(15); // bouton pré-sélectionné
-    const [customAmount, setCustomAmount] = useState(""); // champ libre vide
+    const [selectedButton, setSelectedButton] = useState(15);
+    const [customAmount, setCustomAmount] = useState("");
 
-    // Calcul déduction fiscale
+
     const amountForTax =
         customAmount !== "" ? Number(customAmount) : selectedButton;
     const matchedAmount = amounts.find(a => a.value === amountForTax);
@@ -26,13 +26,13 @@ const DonationForm = () => {
         const val = e.target.value;
         if (val === "") {
             setCustomAmount("");
-            setSelectedButton(null); // désélectionne les boutons si on tape un montant libre
+            setSelectedButton(null); 
             return;
         }
         const numericVal = Number(val);
         if (numericVal > 0) {
             setCustomAmount(numericVal);
-            setSelectedButton(null); // désélectionne les boutons
+            setSelectedButton(null); 
         }
     };
 
@@ -75,7 +75,7 @@ const DonationForm = () => {
                         className={`amount-btn ${selectedButton === item.value ? "selected" : ""}`}
                         onClick={() => {
                             setSelectedButton(item.value);
-                            setCustomAmount(""); // efface le montant libre
+                            setCustomAmount(""); 
                         }}
                         type="button"
                     >
@@ -102,6 +102,8 @@ const DonationForm = () => {
             </div>
 
             <button className="donate-btn">Je donne</button>
+            <p>Je deviens bénévole</p>
+            
         </div>
     );
 };
