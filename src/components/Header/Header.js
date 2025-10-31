@@ -10,8 +10,7 @@ const Header = () => {
     const [isLoginMode, setIsLoginMode] = useState(true);
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userName, setUserName] = useState('null');
-    setUserName('Jean Dupont');
+    const [userName, setUserName] = useState('Invité');
 
     const menuItems = [
         {
@@ -53,6 +52,7 @@ const Header = () => {
     const handleLogin = (e) => {
         e.preventDefault();
         setIsLoggedIn(true);
+        setUserName('Invité');
         setLoginOverlayOpen(false);
     };
 
