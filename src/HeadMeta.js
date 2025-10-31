@@ -23,16 +23,6 @@ const HeadMeta = () => (
             property="og:description"
             content="La Croix-Rouge française agit pour protéger et relever sans condition, les personnes en situation de vulnérabilité et construire avec elles leur résilience."
         />
-
-        {/* Icon et lien*/}
-        <link rel="icon" href="/favicon.ico"/>
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
-        <link rel="icon" sizes="32x32" href="/favicon-32x32.png"/>
-        <link rel="icon" sizes="16x16" href="/favicon-16x16.png"/>
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
-        <link rel="manifest" href="/manifest.json" crossOrigin="use-credentials"/>
-        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"/>
-        <link rel="canonical" href="https://www.croix-rouge.fr"/>
     </Helmet>
 );
 
