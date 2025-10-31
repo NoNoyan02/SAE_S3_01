@@ -6,6 +6,12 @@ const Header = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [activeSubMenu, setActiveSubMenu] = useState(null);
     const [submenuPosition, setSubmenuPosition] = useState({left: 0});
+    const [loginOverlayOpen, setLoginOverlayOpen] = useState(false);
+    const [isLoginMode, setIsLoginMode] = useState(true);
+
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userName, setUserName] = useState(null);
+    setUserName('Jean Dupont');
 
     const menuItems = [
         {
@@ -42,6 +48,16 @@ const Header = () => {
 
     const toggleSubMenu = (index) => {
         setActiveSubMenu(activeSubMenu === index ? null : index);
+    };
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        setIsLoggedIn(true);
+        setLoginOverlayOpen(false);
+    };
+
+    const handleLogout = () => {
+        setIsLoggedIn(false);
     };
 
     return (
@@ -101,6 +117,7 @@ const Header = () => {
 
                         {/* RIGHT SECTION */}
                         <div className="right-section">
+                            {/* Search Bar - Tablette & Desktop */}
                             <div className="search-wrapper">
                                 <input type="search" placeholder="Recherche ..." className="search-input" aria-label="Rechercher sur le site" />
                                 <button className="search-button" aria-label="Lancer la recherche">
@@ -108,7 +125,24 @@ const Header = () => {
                                 </button>
                             </div>
 
-                            <a href="#" className="donor-space-button">
+                            {/* Donor Space - Desktop avec overlay */}
+                            {!isLoggedIn ? (
+                                <button
+                                    onClick={() => setLoginOverlayOpen(true)}
+                                    className="donor-space-button donor-space-desktop"
+                                >
+                                    <User className="donor-icon"/> <span>Espace donateur</span>
+                                </button>
+                            ) : (
+                                <div className="user-profile-desktop">
+                                    <User className="donor-icon"/>
+                                    <span className="user-name">{userName}</span>
+                                    <button onClick={handleLogout} className="logout-btn">Déconnexion</button>
+                                </div>
+                            )}
+
+                            {/* Donor Space - Tablette/Mobile (redirection) */}
+                            <a href="/espace-donateur" className="donor-space-button donor-space-mobile-tablet">
                                 <User className="donor-icon" /> <span>Espace donateur</span>
                             </a>
 
@@ -129,6 +163,70 @@ const Header = () => {
                         </button>
                     </div>
                 </div>
+
+                {/* LOGIN/SIGNUP OVERLAY - Desktop uniquement */}
+                {loginOverlayOpen && (
+                    <div className="login-overlay" onClick={() => setLoginOverlayOpen(false)}>
+                        <div className="login-modal" onClick={(e) => e.stopPropagation()}>
+                            <button
+                                className="close-modal"
+                                onClick={() => setLoginOverlayOpen(false)}
+                            >
+                                <X size={24}/>
+                            </button>
+
+                            <div className="login-header">
+                                <h2>{isLoginMode ? 'Connexion' : 'Inscription'}</h2>
+                                <p>Accédez à votre espace donateur</p>
+                            </div>
+
+                            <form onSubmit={handleLogin}>
+                                {!isLoginMode && (
+                                    <>
+                                        <div className="form-group">
+                                            <label htmlFor="nom">Nom complet</label>
+                                            <input type="text" id="nom" placeholder="Jean Dupont" required/>
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="tel">Téléphone</label>
+                                            <input type="tel" id="tel" placeholder="06 12 34 56 78"/>
+                                        </div>
+                                    </>
+                                )}
+
+                                <div className="form-group">
+                                    <label htmlFor="email">Email</label>
+                                    <input type="email" id="email" placeholder="exemple@email.com" required/>
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="password">Mot de passe</label>
+                                    <input type="password" id="password" placeholder="••••••••" required/>
+                                </div>
+
+                                {isLoginMode && (
+                                    <a href="#" className="forgot-password">Mot de passe oublié ?</a>
+                                )}
+
+                                <button type="submit" className="submit-btn">
+                                    {isLoginMode ? 'Se connecter' : "S'inscrire"}
+                                </button>
+
+                                <div className="toggle-mode">
+                                    {isLoginMode ? (
+                                        <p>Pas encore de compte ? <button type="button"
+                                                                          onClick={() => setIsLoginMode(false)}>S'inscrire</button>
+                                        </p>
+                                    ) : (
+                                        <p>Déjà un compte ? <button type="button"
+                                                                    onClick={() => setIsLoginMode(true)}>Se
+                                            connecter</button></p>
+                                    )}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                )}
 
                 {/* MOBILE MENU OVERLAY */}
                 <div
@@ -189,7 +287,7 @@ const Header = () => {
                             </nav>
 
                             {/* Mobile Donor & Donation */}
-                            <a href="#" className="donor-space-button-mobile">
+                            <a href="/espace-donateur" className="donor-space-button-mobile">
                                 <User className="donor-icon-mobile" /> <span>Espace donateur</span>
                             </a>
 

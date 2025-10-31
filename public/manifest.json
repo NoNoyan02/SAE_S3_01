@@ -6,7 +6,7 @@
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#d71a28",
-  "orientation": "portrait",
+  "orientation": "landscape",
   "icons": [
     {
       "src": "assets/icon/favicon-16x16.png",
@@ -21,11 +21,6 @@
     {
       "src": "assets/icon/apple-touch-icon.png",
       "sizes": "180x180",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/icon/crf_logo.png",
-      "sizes": "1006x300",
       "type": "image/png"
     },
     {
