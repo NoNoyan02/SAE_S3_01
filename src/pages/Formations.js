@@ -1,6 +1,10 @@
 import React from "react";
 import {Helmet} from "react-helmet";
 
+// Composants
+import Header from "../components/Header/Header";
+
+
 export default function Formations() {
     return (
         <>
@@ -24,6 +28,7 @@ export default function Formations() {
                     content="Formez-vous aux premiers secours. N'hésitez plus, trouvez une session de formation près de chez vous et inscrivez-vous !"
                 />
             </Helmet>
+            <Header/>
         </>
     );
 }

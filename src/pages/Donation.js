@@ -1,6 +1,8 @@
 import React from "react";
 import {Helmet} from "react-helmet";
 
+// Composants
+
 export default function Donation() {
     return (
         <>

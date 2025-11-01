@@ -1,6 +1,9 @@
 import React from "react";
 import {Helmet} from "react-helmet";
 
+// Composants
+import Header from "../components/Header/Header";
+
 export default function Jedonne() {
     return (
         <>
@@ -24,6 +27,7 @@ export default function Jedonne() {
                     content="Donner c'est s'engager, faire un don à la Croix-Rouge française c'est financer des actions solidaires et venir en aide aux personnes démunies, isolées, vulnérables"
                 />
             </Helmet>
+            <Header/>
         </>
     );
 }

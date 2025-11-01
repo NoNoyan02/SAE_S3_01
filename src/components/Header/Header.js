@@ -146,7 +146,7 @@ const Header = () => {
                                 <User className="donor-icon" /> <span>Espace donateur</span>
                             </a>
 
-                            <a href="/donation" className="donation-button">
+                            <a href="faire-un-don/~mon-don" className="donation-button">
                                 <span className="donation-text-small">Pour soutenir la Croix-Rouge</span>
                                 <span className="donation-text-large">Je fais un don</span>
                             </a>
@@ -291,7 +291,7 @@ const Header = () => {
                                 <User className="donor-icon-mobile" /> <span>Espace donateur</span>
                             </a>
 
-                            <a href="/donation" className="donation-button-mobile">
+                            <a href="faire-un-don/~mon-don" className="donation-button-mobile">
                                 <span className="donation-text-small-mobile">Pour soutenir la Croix-Rouge</span>
                                 <span className="donation-text-large-mobile">Je fais un don</span>
                             </a>
