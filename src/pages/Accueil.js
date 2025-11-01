@@ -3,6 +3,8 @@ import {Helmet} from "react-helmet";
 
 // Composants
 import Header from "../components/Header/Header";
+import Main from "../components/Main/Main";
+import Footer from "../components/Footer/Footer";
 
 export default function Accueil() {
     return (
@@ -27,7 +29,9 @@ export default function Accueil() {
                 content="La Croix-Rouge française agit pour protéger et relever sans condition, les personnes en situation de vulnérabilité et construire avec elles leur résilience."
             />
         </Helmet>
-            <Header /> {}
+            <Header/>
+            <Main/>
+            <Footer/>
         </>
     );
 }

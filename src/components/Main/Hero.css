@@ -6,7 +6,13 @@
     overflow: hidden;
 }
 
-/* Slides */
+@media (min-width: 1100px) {
+    .carousel {
+        padding: 24px 64px 0;
+        margin-bottom: 88px;
+    }
+}
+
 .slides {
     display: flex;
     transition: transform 0.8s ease-in-out;
@@ -30,7 +36,6 @@
     padding: 0 10px;
 }
 
-/* Flèches (aplaties / ovales) */
 .arrow {
     position: absolute;
     top: 50%;
@@ -59,7 +64,6 @@
     right: 20px;
 }
 
-/* Indicateurs (boules + rectangle arrondi actif) */
 .indicators {
     position: absolute;
     bottom: 20px;
@@ -74,7 +78,7 @@
     height: 15px;
     background: white;
     opacity: 0.5;
-    border-radius: 50%; /* boule inactive */
+    border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s;
 }
@@ -82,11 +86,10 @@
 .indicator.active {
     width: 30px;
     height: 15px;
-    border-radius: 12px; /* rectangle arrondi */
+    border-radius: 12px;
     opacity: 1;
 }
 
-/* Responsivité */
 @media (max-width: 768px) {
     .slide-title {
         font-size: 2rem;
