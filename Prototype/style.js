@@ -1,7 +1,7 @@
 /******************************* Bloc Don *******************************/
 // Sélectionne les éléments des DEUX blocs
-const choixDivs = document.querySelectorAll('.formulaire-don .choix div, .bloc-don2 .choix div');
-const montantBtns = document.querySelectorAll('.formulaire-don .montant button, .bloc-don2 .montant button');
+const choixDivs = document.querySelectorAll('.formulaire-don-vertical .selecteur-choix div, .bloc-don2 .selecteur-choix div');
+const montantBtns = document.querySelectorAll('.formulaire-don-vertical .selecteur-montant button, .bloc-don2 .selecteur-montant button');
 const montantLibres = document.querySelectorAll('.montant-libre');
 const fiscals = document.querySelectorAll('.fiscal');
 
@@ -11,18 +11,18 @@ let modePaiement = "unefois";
 // Initialisation des deux blocs
 function initialiserBlocs() {
   // Active "Je donne une fois" dans les deux blocs
-  document.querySelectorAll('.choix .choix1').forEach(div => {
+  document.querySelectorAll('.selecteur-choix .choix1').forEach(div => {
     div.classList.add('active');
   });
-  document.querySelectorAll('.choix .choix2').forEach(div => {
+  document.querySelectorAll('.selecteur-choix .choix2').forEach(div => {
     div.classList.remove('active');
   });
   
   // Active 130€ dans les deux blocs
-  document.querySelectorAll('.montant button:nth-child(2)').forEach(btn => {
+  document.querySelectorAll('.selecteur-montant button:nth-child(2)').forEach(btn => {
     btn.classList.add('active');
   });
-  document.querySelectorAll('.montant button:not(:nth-child(2))').forEach(btn => {
+  document.querySelectorAll('.selecteur-montant button:not(:nth-child(2))').forEach(btn => {
     btn.classList.remove('active');
   });
   
@@ -36,13 +36,13 @@ function initialiserBlocs() {
 
 // Synchronise les boutons de montant entre les blocs
 function synchroniserMontants(montantValue, modePaiementActuel) {
-  const tousLesBoutonsMontant = document.querySelectorAll('.montant button');
+  const tousLesBoutonsMontant = document.querySelectorAll('.selecteur-montant button');
   
   tousLesBoutonsMontant.forEach(btn => {
     // Trouve le bouton dans chaque bloc qui correspond au montant sélectionné
     if (parseInt(btn.textContent) === montantValue) {
-      const bloc = btn.closest('.formulaire-don, .bloc-don2');
-      const montantBtnsBloc = bloc.querySelectorAll('.montant button');
+      const bloc = btn.closest('.formulaire-don-vertical, .bloc-don2');
+      const montantBtnsBloc = bloc.querySelectorAll('.selecteur-montant button');
       
       // Active seulement le bon bouton dans ce bloc
       montantBtnsBloc.forEach(b => b.classList.remove('active'));
@@ -57,14 +57,14 @@ function synchroniserMontants(montantValue, modePaiementActuel) {
   });
 }
 
-// Gestion des choix (une fois / tous les mois)
+// Gestion des selecteur-choix (une fois / tous les mois)
 choixDivs.forEach(div => {
   div.addEventListener('click', () => {
     // Trouve le bloc parent
-    const bloc = div.closest('.formulaire-don, .bloc-don2');
+    const bloc = div.closest('.formulaire-don-vertical, .bloc-don2');
     
     // Met à jour seulement dans le bloc cliqué
-    const choixDansBloc = bloc.querySelectorAll('.choix div');
+    const choixDansBloc = bloc.querySelectorAll('.selecteur-choix div');
     choixDansBloc.forEach(d => d.classList.remove('active'));
     div.classList.add('active');
 
@@ -72,7 +72,7 @@ choixDivs.forEach(div => {
   modePaiement = input ? input.value : modePaiement;
 
     // Met à jour les boutons de montant selon le mode de paiement (dans TOUS les blocs)
-    const tousLesBoutonsMontant = document.querySelectorAll('.montant button');
+    const tousLesBoutonsMontant = document.querySelectorAll('.selecteur-montant button');
     if (modePaiement === "unefois") {
       // Réorganise tous les boutons pour "une fois"
       const montantsUneFois = [90, 130, 150, 200];
@@ -172,8 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 /******************************* Bloc engager *******************************/
-const track = document.querySelector('.mouvement-carousel');
-const blocks = document.querySelectorAll('.engager .block');
+const track = document.querySelector('.mouvement-carrousel');
+const blocs = document.querySelectorAll('.engager .sections-bloc');
 const prevBtn = document.querySelector('.prevBtn');
 const nextBtn = document.querySelector('.nextBtn');
 
@@ -189,17 +189,17 @@ function getVisibleCount() {
 function updateCarousel() {
   const visibleCount = getVisibleCount();
   const gap = 60;
-  const blockWidth = blocks[0].offsetWidth;
+  const blockWidth = blocs[0].offsetWidth;
   const moveX = (blockWidth + gap) * index;
   track.style.transform = `translateX(-${moveX}px)`;
 
   prevBtn.classList.toggle('hidden', index === 0);
-  nextBtn.classList.toggle('hidden', index >= blocks.length - visibleCount);
+  nextBtn.classList.toggle('hidden', index >= blocs.length - visibleCount);
 }
 
 nextBtn.addEventListener('click', () => {
   const visibleCount = getVisibleCount();
-  if (index < blocks.length - visibleCount) {
+  if (index < blocs.length - visibleCount) {
     index++;
     updateCarousel();
   }
@@ -221,7 +221,7 @@ updateCarousel();
 /******************************* Bloc Question-frequente *******************************/
 
 document.addEventListener("DOMContentLoaded", () => {
-  const questions = document.querySelectorAll(".question-bloc");
+  const questions = document.querySelectorAll(".section-question");
 
   questions.forEach((bloc) => {
     const question = bloc.querySelector(".question");

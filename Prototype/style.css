@@ -188,7 +188,7 @@ body {
   overflow: hidden;
 }
 
-.bloc-don .bloc-inter {
+.bloc-don .section-hero {
   position: relative;
   z-index: 2;
   padding: 20px 40px;
@@ -212,7 +212,7 @@ body {
 
 /****** Bloc Formulaire de don *******/
 
-.bloc-don .formulaire-don {
+.bloc-don .formulaire-don-vertical {
   background-color: white;
   border-radius: 8px;
   border: 1px solid #e0e0e0;
@@ -222,45 +222,45 @@ body {
   font-family: sans-serif;
   box-shadow: 0 2px 6px #0000001a;
 }
-.bloc-don .formulaire-don .texte1 {
+.bloc-don .formulaire-don-vertical .texte1 {
   margin: 0 0 20px;
   font-size: 1.48rem;
   font-weight: 600;
   text-align: center;
 }
-.bloc-don .formulaire-don .choix {
+.bloc-don .formulaire-don-vertical .selecteur-choix {
   display: flex;
   justify-content: center;
   gap: 10px;
   margin-bottom: 25px;
 }
-.bloc-don .formulaire-don .choix div {
+.bloc-don .formulaire-don-vertical .selecteur-choix div {
   flex: 1;
   border: 1px solid #a8a8a8;
   border-radius: 8px;
   padding: 10px 4px;
   text-align: center;
 }
-.bloc-don .formulaire-don .choix div label {
+.bloc-don .formulaire-don-vertical .selecteur-choix div label {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
 }
-.bloc-don .formulaire-don .choix div input {
+.bloc-don .formulaire-don-vertical .selecteur-choix div input {
   display: none;
 }
-.bloc-don .formulaire-don .choix div.active {
+.bloc-don .formulaire-don-vertical .selecteur-choix div.active {
   background-color: #e60000;
   color: white;
   border-color: #e60000;
 }
-.bloc-don .formulaire-don .montant {
+.bloc-don .formulaire-don-vertical .selecteur-montant {
   display: flex;
   justify-content: center;
   margin-bottom: 25px;
   gap: 8px;
 }
-.bloc-don .formulaire-don .montant button {
+.bloc-don .formulaire-don-vertical .selecteur-montant button {
   background-color: #ffffff;
   border: 1px solid #a8a8a8;
   padding: 2px 12px;
@@ -272,16 +272,16 @@ body {
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.bloc-don .formulaire-don .montant button:hover {
+.bloc-don .formulaire-don-vertical .selecteur-montant button:hover {
   border-color: #e60000;
   color: #e60000;
 }
-.bloc-don .formulaire-don .montant button.active {
+.bloc-don .formulaire-don-vertical .selecteur-montant button.active {
   background-color: #e60000;
   color: white;
   border-color: #e60000;
 }
-.bloc-don .formulaire-don .montant-libre-container {
+.bloc-don .formulaire-don-vertical .montant-libre-container {
   display: flex;
   align-items: center;
   border: 1px solid #ccc;
@@ -289,7 +289,7 @@ body {
   padding: 8px 12px;
   margin-bottom: 20px;
 }
-.bloc-don .formulaire-don .montant-libre {
+.bloc-don .formulaire-don-vertical .montant-libre {
   border: none;
   outline: none;
   flex: 1;
@@ -297,7 +297,7 @@ body {
   color: #555;
   text-align: center;
 }
-.bloc-don .formulaire-don .texte2 {
+.bloc-don .formulaire-don-vertical .texte2 {
   margin: 0 0 20px;
   font-size: 1rem;
   font-weight: normal;
@@ -305,7 +305,7 @@ body {
   font-weight: bold;
   color: #333;
 }
-.bloc-don .formulaire-don .fiscal {
+.bloc-don .formulaire-don-vertical .fiscal {
   background-color: #e60000;
   color: white;
   font-weight: bold;
@@ -314,7 +314,7 @@ body {
   font-size: 1.2rem;
   vertical-align: middle;
 }
-.bloc-don .formulaire-don .bouton-donation {
+.bloc-don .formulaire-don-vertical .bouton-donation {
   background-color: #e60000;
   color: white;
   border: none;
@@ -324,7 +324,7 @@ body {
   font-size: 18px;
   cursor: pointer;
 }
-.bloc-don .formulaire-don .bouton-donnation:hover {
+.bloc-don .formulaire-don-vertical .bouton-donnation:hover {
   background-color: #cc0000;
 }
 
@@ -463,7 +463,7 @@ body {
   font-size: 1.4em;
 }
 
-.agir .blocks {
+.agir .blocs {
   display: flex;
   gap: 60px;
   justify-content: center;
@@ -471,7 +471,7 @@ body {
   padding-bottom: 60px;
 }
 
-.agir .block {
+.agir .sections-bloc {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -479,7 +479,7 @@ body {
   position: relative;
 }
 
-.agir .block img {
+.agir .sections-bloc img {
   width: 100%;
   height: auto;
   border-radius: 4px;
@@ -584,7 +584,7 @@ body {
   font-size: 1.6em;
 }
 
-.engager .carousel {
+.engager .carrousel {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -611,19 +611,19 @@ body {
   pointer-events: none;
 }
 
-.engager .affichage-carousel {
+.engager .affichage-carrousel {
   overflow: hidden;
   width: 80%; /* ajustable */
   max-width: 1500px;
 }
 
-.engager .mouvement-carousel {
+.engager .mouvement-carrousel {
   display: flex;
   gap: 60px;
   transition: transform 0.5s ease;
 }
 
-.engager .block {
+.engager .sections-bloc {
   flex: 0 0 calc((100% - 120px) / 3);
   display: flex;
   flex-direction: column;
@@ -631,7 +631,7 @@ body {
   position: relative;
 }
 
-.engager .block img {
+.engager .sections-bloc img {
   width: 100%;
   border-radius: 4px;
   display: block;
@@ -692,7 +692,7 @@ body {
   border-radius: 3px;
 }
 
-.donner .blocks {
+.donner .blocs {
   display: flex;
   gap: 60px;
   justify-content: center;
@@ -700,7 +700,7 @@ body {
   padding-bottom: 60px;
 }
 
-.donner .block {
+.donner .sections-bloc {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -708,7 +708,7 @@ body {
   position: relative;
 }
 
-.donner .block img {
+.donner .sections-bloc img {
   width: 100%;
   height: auto;
   border-radius: 4px;
@@ -798,7 +798,7 @@ body {
   margin-top: 80px;
 }
 
-.transmettre .bloc-transmettre {
+.transmettre .section-transmettre {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -863,7 +863,7 @@ body {
   font-family: "Inter", sans-serif;
 }
 
-.philanthrope .bloc-philanthrope {
+.philanthrope .section-philanthrope {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -1059,7 +1059,7 @@ body {
   margin-bottom: 25px;
 }
 
-.bloc-don2 .formulaire-don2 {
+.bloc-don2 .formulaire-don-vertical {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1067,12 +1067,12 @@ body {
   justify-content: center;
 }
 
-.bloc-don2 .choix {
+.bloc-don2 .selecteur-choix {
   display: flex;
   gap: 15px;
 }
 
-.bloc-don2 .choix div {
+.bloc-don2 .selecteur-choix div {
   padding: 8px 16px;
   border: 2px solid #ccc;
   border-radius: 8px;
@@ -1082,22 +1082,22 @@ body {
   font-weight: 500;
 }
 
-.bloc-don2 .choix div.active {
+.bloc-don2 .selecteur-choix div.active {
   background-color: #e60000;
   color: white;
   border-color: #e60000;
 }
 
-.bloc-don2 .choix input {
+.bloc-don2 .selecteur-choix input {
   display: none;
 }
 
-.bloc-don2 .montant {
+.bloc-don2 .selecteur-montant {
   display: flex;
   gap: 8px;
 }
 
-.bloc-don2 .montant button {
+.bloc-don2 .selecteur-montant button {
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -1108,12 +1108,12 @@ body {
   transition: 0.2s;
 }
 
-.bloc-don2 .montant button:hover {
+.bloc-don2 .selecteur-montant button:hover {
   border-color: #e60000;
   color: #e60000;
 }
 
-.bloc-don2 .montant button.active {
+.bloc-don2 .selecteur-montant button.active {
   background-color: #e60000;
   color: white;
   border-color: #e60000;
@@ -1172,7 +1172,7 @@ body {
 /******************************* Responsive STYLES *******************************/
 /*Tablette*/
 @media (max-width: 1080px) {
-  .bloc-don .formulaire-don {
+  .bloc-don .formulaire-don-vertical {
     display: none;
   }
 
@@ -1182,7 +1182,7 @@ body {
     margin: auto auto;
   }
 
-  .engager .block {
+  .engager .sections-bloc {
     flex: 0 0 calc((100% - 120px) / 2);
   }
 
@@ -1198,7 +1198,7 @@ body {
     order: 2;
   }
 
-  .philanthrope .bloc-philanthrope {
+  .philanthrope .section-philanthrope {
     flex-direction: column;
     gap: 10px;
   }
@@ -1215,7 +1215,7 @@ body {
   .philanthrope {
     padding: 20px 20px;
   }
-  .transmettre .bloc-transmettre {
+  .transmettre .section-transmettre {
     gap: 20px;
   }
   .question-frequente {
@@ -1226,7 +1226,7 @@ body {
 
 /*Téléphone*/
 @media (max-width: 500px) {
-  .engager .block {
+  .engager .sections-bloc {
     flex: 0 0 100%;
   }
 
@@ -1244,7 +1244,7 @@ body {
   .donner .titre {
     width: 80%;
   }
-  .transmettre .bloc-transmettre {
+  .transmettre .section-transmettre {
     gap: 20px;
   }
 
@@ -1260,7 +1260,7 @@ body {
   .patrimoine {
     width: 80%;
   }
-  .philanthrope .bloc-philanthrope {
+  .philanthrope .section-philanthrope {
     gap: 20px;
   }
 }
