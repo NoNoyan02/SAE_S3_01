@@ -51,10 +51,10 @@ Notre choix se porte sur la **Croix‑Rouge française** pour moderniser l’int
 
 ## 👥 Équipe du projet
 
-TAYLAN Noyan
-SE Donald 
-SERIEYS Dorian
-SIVASEKARAN Aswin
+- TAYLAN Noyan
+- SE Donald 
+- SERIEYS Dorian
+- SIVASEKARAN Aswin
 
 ## 🔗 Liens utiles
 
