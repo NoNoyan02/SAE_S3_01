@@ -1,5 +1,5 @@
 /******************************* Bloc Don *******************************/
-// Sélectionne les éléments des DEUX blocs
+
 const choixDivs = document.querySelectorAll('.formulaire-don-vertical .selecteur-choix div, .bloc-don2 .selecteur-choix div');
 const montantBtns = document.querySelectorAll('.formulaire-don-vertical .selecteur-montant button, .bloc-don2 .selecteur-montant button');
 const montantLibres = document.querySelectorAll('.montant-libre');
@@ -8,9 +8,8 @@ const fiscals = document.querySelectorAll('.fiscal');
 let montantSelectionne = 130;
 let modePaiement = "unefois";
 
-// Initialisation des deux blocs
 function initialiserBlocs() {
-  // Active "Je donne une fois" dans les deux blocs
+  
   document.querySelectorAll('.selecteur-choix .choix1').forEach(div => {
     div.classList.add('active');
   });
@@ -18,7 +17,7 @@ function initialiserBlocs() {
     div.classList.remove('active');
   });
   
-  // Active 130€ dans les deux blocs
+  
   document.querySelectorAll('.selecteur-montant button:nth-child(2)').forEach(btn => {
     btn.classList.add('active');
   });
@@ -26,7 +25,7 @@ function initialiserBlocs() {
     btn.classList.remove('active');
   });
   
-  // Vide les champs montant libre
+  
   montantLibres.forEach(input => {
     input.value = "";
   });
@@ -34,21 +33,20 @@ function initialiserBlocs() {
   updateFiscal();
 }
 
-// Synchronise les boutons de montant entre les blocs
 function synchroniserMontants(montantValue, modePaiementActuel) {
   const tousLesBoutonsMontant = document.querySelectorAll('.selecteur-montant button');
   
   tousLesBoutonsMontant.forEach(btn => {
-    // Trouve le bouton dans chaque bloc qui correspond au montant sélectionné
+    
     if (parseInt(btn.textContent) === montantValue) {
       const bloc = btn.closest('.formulaire-don-vertical, .bloc-don2');
       const montantBtnsBloc = bloc.querySelectorAll('.selecteur-montant button');
       
-      // Active seulement le bon bouton dans ce bloc
+      
       montantBtnsBloc.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       
-      // Vide le montant libre dans ce bloc
+      
       const montantLibreBloc = bloc.querySelector('.montant-libre');
       if (montantLibreBloc) {
         montantLibreBloc.value = "";
@@ -57,13 +55,12 @@ function synchroniserMontants(montantValue, modePaiementActuel) {
   });
 }
 
-// Gestion des selecteur-choix (une fois / tous les mois)
 choixDivs.forEach(div => {
   div.addEventListener('click', () => {
-    // Trouve le bloc parent
+    
     const bloc = div.closest('.formulaire-don-vertical, .bloc-don2');
     
-    // Met à jour seulement dans le bloc cliqué
+    
     const choixDansBloc = bloc.querySelectorAll('.selecteur-choix div');
     choixDansBloc.forEach(d => d.classList.remove('active'));
     div.classList.add('active');
@@ -71,29 +68,29 @@ choixDivs.forEach(div => {
   const input = div.querySelector('input');
   modePaiement = input ? input.value : modePaiement;
 
-    // Met à jour les boutons de montant selon le mode de paiement (dans TOUS les blocs)
+    
     const tousLesBoutonsMontant = document.querySelectorAll('.selecteur-montant button');
     if (modePaiement === "unefois") {
-      // Réorganise tous les boutons pour "une fois"
+      
       const montantsUneFois = [90, 130, 150, 200];
       tousLesBoutonsMontant.forEach((btn, index) => {
-        const groupeIndex = index % 4; // 4 boutons par bloc
+        const groupeIndex = index % 4; 
         btn.textContent = `${montantsUneFois[groupeIndex]} €`;
       });
       
-      // Active 130€ partout
+      
       synchroniserMontants(130, modePaiement);
       montantSelectionne = 130;
       
     } else {
-      // Réorganise tous les boutons pour "tous les mois"
+      
       const montantsMensuels = [10, 20, 30, 50];
       tousLesBoutonsMontant.forEach((btn, index) => {
-        const groupeIndex = index % 4; // 4 boutons par bloc
+        const groupeIndex = index % 4; 
         btn.textContent = `${montantsMensuels[groupeIndex]} €`;
       });
       
-      // Active 10€ partout
+      
       synchroniserMontants(10, modePaiement);
       montantSelectionne = 10;
     }
@@ -102,16 +99,15 @@ choixDivs.forEach(div => {
   });
 });
 
-// Gestion des boutons de montant
 montantBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     const montantValue = parseInt(btn.textContent);
     montantSelectionne = montantValue;
     
-    // Synchronise ce montant dans les DEUX blocs
+    
     synchroniserMontants(montantValue, modePaiement);
     
-    // Vide tous les champs montant libre
+    
     montantLibres.forEach(input => {
       input.value = "";
     });
@@ -120,16 +116,15 @@ montantBtns.forEach(btn => {
   });
 });
 
-// Gestion des montants libres - SYNCHRONISATION COMPLÈTE
 montantLibres.forEach(input => {
   input.addEventListener('input', () => {
     const val = parseFloat(input.value);
     montantSelectionne = isNaN(val) ? 0 : val;
     
-    // Désactive tous les boutons de montant dans les deux blocs
+    
     montantBtns.forEach(b => b.classList.remove('active'));
     
-    // Synchronise le montant libre dans TOUS les autres blocs
+    
     montantLibres.forEach(otherInput => {
       if (otherInput !== input) {
         otherInput.value = input.value;
@@ -139,14 +134,14 @@ montantLibres.forEach(input => {
     updateFiscal();
   });
 
-  // Ajoute aussi l'événement 'change' pour plus de fiabilité
+  
   input.addEventListener('change', () => {
     const val = parseFloat(input.value);
     montantSelectionne = isNaN(val) ? 0 : val;
     
     montantBtns.forEach(b => b.classList.remove('active'));
     
-    // Synchronisation
+    
     montantLibres.forEach(otherInput => {
       if (otherInput !== input) {
         otherInput.value = input.value;
@@ -157,7 +152,7 @@ montantLibres.forEach(input => {
   });
 });
 
-// Met à jour l'affichage fiscal dans TOUS les blocs
+
 function updateFiscal() {
   const deduction = Math.floor(montantSelectionne * 0.25); 
   fiscals.forEach(fiscal => {
@@ -165,13 +160,95 @@ function updateFiscal() {
   });
 }
 
-// Initialisation au chargement
+
 document.addEventListener('DOMContentLoaded', () => {
   initialiserBlocs();
 });
 
+/******************************* Bloc stats *******************************/
+
+class AnimateNumbers {
+    constructor() {
+        this.chiffresSections = document.querySelectorAll('.chiffres section');
+        this.animated = false;
+        this.init();
+    }
+
+    init() {
+        
+        this.chiffresSections.forEach(section => {
+            const numberElement = section.querySelector('h3');
+            const finalValue = numberElement.textContent;
+            numberElement.setAttribute('data-final', finalValue);
+            numberElement.textContent = '0';
+        });
+
+        
+        this.observeSection();
+    }
+
+    observeSection() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !this.animated) {
+                    this.animated = true;
+                    this.animateAllNumbers();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsSection = document.querySelector('.stats');
+        if (statsSection) {
+            observer.observe(statsSection);
+        }
+    }
+
+    animateAllNumbers() {
+        this.chiffresSections.forEach((section) => {
+            const numberElement = section.querySelector('h3');
+            const finalValue = parseInt(numberElement.getAttribute('data-final').replace(/\s/g, ''));
+            const duration = 2000; 
+
+            this.animateNumber(numberElement, finalValue, duration);
+        });
+    }
+
+    animateNumber(element, finalValue, duration) {
+        const startTime = performance.now();
+        const startValue = 0;
+
+        const formatNumber = (num) => {
+            return num.toLocaleString('fr-FR');
+        };
+
+        const updateNumber = (currentTime) => {
+            const elapsedTime = currentTime - startTime;
+            const progress = Math.min(elapsedTime / duration, 1);
+
+            
+            const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+            const currentValue = Math.floor(easeOutQuart * finalValue);
+
+            element.textContent = formatNumber(currentValue);
+
+            if (progress < 1) {
+                requestAnimationFrame(updateNumber);
+            } else {
+                element.textContent = formatNumber(finalValue);
+            }
+        };
+
+        requestAnimationFrame(updateNumber);
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    new AnimateNumbers();
+});
 
 /******************************* Bloc engager *******************************/
+
 const track = document.querySelector('.mouvement-carrousel');
 const blocs = document.querySelectorAll('.engager .sections-bloc');
 const prevBtn = document.querySelector('.prevBtn');
@@ -214,9 +291,6 @@ prevBtn.addEventListener('click', () => {
 
 window.addEventListener('resize', updateCarousel);
 updateCarousel();
-
-
-
 
 /******************************* Bloc Question-frequente *******************************/
 

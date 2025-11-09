@@ -181,7 +181,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url("https://images.ctfassets.net/ksb78y40v1oe/3sP6Y85LgDc0UrwUSdKqrf/3f339ca8e13e96b4b90cb91b3e0a20be/Page_Carrefour_Je_donne.png?fm=webp&q=85&w=1440&h=601");
+  background-image: url("images/Page_Carrefour_Je_donne.webp");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -252,7 +252,6 @@ body {
 .bloc-don .formulaire-don-vertical .selecteur-choix div.active {
   background-color: #e60000;
   color: white;
-  border-color: #e60000;
 }
 .bloc-don .formulaire-don-vertical .selecteur-montant {
   display: flex;
@@ -279,7 +278,6 @@ body {
 .bloc-don .formulaire-don-vertical .selecteur-montant button.active {
   background-color: #e60000;
   color: white;
-  border-color: #e60000;
 }
 .bloc-don .formulaire-don-vertical .montant-libre-container {
   display: flex;
@@ -385,7 +383,6 @@ body {
 }
 
 .stats .chiffres p {
-  font-size: 1.2 em;
   margin: 0;
   color: #333;
 }
@@ -1041,7 +1038,7 @@ body {
 }
 
 /******************************* Bloc don2 STYLES *******************************/
-.bloc-don2 {
+.formulaire-don-horizontal {
   font-family: "Arial", sans-serif;
   padding: 20px 30px;
   margin: 0 auto;
@@ -1053,13 +1050,13 @@ body {
   width: fit-content;
 }
 
-.bloc-don2 .texte1 {
+.formulaire-don-horizontal .texte1 {
   font-size: 1.3rem;
   font-weight: bold;
   margin-bottom: 25px;
 }
 
-.bloc-don2 .formulaire-don-vertical {
+.formulaire-don-horizontal .formulaire-don-section {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1067,12 +1064,12 @@ body {
   justify-content: center;
 }
 
-.bloc-don2 .selecteur-choix {
+.formulaire-don-horizontal .selecteur-choix {
   display: flex;
   gap: 15px;
 }
 
-.bloc-don2 .selecteur-choix div {
+.formulaire-don-horizontal .selecteur-choix div {
   padding: 8px 16px;
   border: 2px solid #ccc;
   border-radius: 8px;
@@ -1082,22 +1079,21 @@ body {
   font-weight: 500;
 }
 
-.bloc-don2 .selecteur-choix div.active {
+.formulaire-don-horizontal .selecteur-choix div.active {
   background-color: #e60000;
   color: white;
-  border-color: #e60000;
 }
 
-.bloc-don2 .selecteur-choix input {
+.formulaire-don-horizontal .selecteur-choix input {
   display: none;
 }
 
-.bloc-don2 .selecteur-montant {
+.formulaire-don-horizontal .selecteur-montant {
   display: flex;
   gap: 8px;
 }
 
-.bloc-don2 .selecteur-montant button {
+.formulaire-don-horizontal .selecteur-montant button {
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -1108,25 +1104,24 @@ body {
   transition: 0.2s;
 }
 
-.bloc-don2 .selecteur-montant button:hover {
+.formulaire-don-horizontal .selecteur-montant button:hover {
   border-color: #e60000;
   color: #e60000;
 }
 
-.bloc-don2 .selecteur-montant button.active {
+.formulaire-don-horizontal .selecteur-montant button.active {
   background-color: #e60000;
   color: white;
-  border-color: #e60000;
 }
 
-.bloc-don2 .montant-libre-container {
+.formulaire-don-horizontal .montant-libre-container {
   display: flex;
   align-items: center;
   border: 1px solid #ccc;
   border-radius: 5px;
   padding: 8px 12px;
 }
-.bloc-don2 .montant-libre {
+.formulaire-don-horizontal .montant-libre {
   border: none;
   outline: none;
   flex: 1;
@@ -1135,7 +1130,7 @@ body {
   text-align: center;
 }
 
-.bloc-don2 .bouton-donation {
+.formulaire-don-horizontal .bouton-donation {
   background: #e60000;
   color: #fff;
   border: none;
@@ -1144,24 +1139,23 @@ body {
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  }
+}
 
-.bloc-don2 .bouton-donation:hover {
+.formulaire-don-horizontal .bouton-donation:hover {
   background-color: #cc0000;
 }
 
 body {
   background-image: url("");
-
 }
 
-.bloc-don2 .texte2 {
+.formulaire-don-horizontal .texte2 {
   margin-top: 15px;
   font-size: 1rem;
   font-weight: bold;
 }
 
-.bloc-don2 .fiscal {
+.formulaire-don-horizontal .fiscal {
   background-color: #e60000;
   color: white;
   padding: 2px 6px;
@@ -1193,7 +1187,7 @@ body {
   .transmettre {
     display: flex;
   }
-  
+
   .transmettre .contenu {
     order: 2;
   }
@@ -1221,7 +1215,6 @@ body {
   .question-frequente {
     margin: 0 auto;
   }
-  
 }
 
 /*Téléphone*/
@@ -1248,11 +1241,9 @@ body {
     gap: 20px;
   }
 
-  
   .philanthrope .philanthrope-image {
     flex: 1 1 0px;
   }
-
 }
 
 /*Mini téléphone*/
