@@ -135,6 +135,7 @@
 }
 
 /* Carousel Container */
+
 .carousel-container {
     position: relative;
     display: flex;
@@ -143,8 +144,23 @@
 }
 
 .carousel-wrapper {
-    overflow: hidden;
-    flex: 1;
+    overflow: visible;
+    position: relative;
+}
+
+.carousel-nav {
+    opacity: 0;
+    pointer-events: auto;
+}
+
+.carousel-nav-left {
+    left: -80px;
+    z-index: 20;
+}
+
+.carousel-nav-right {
+    right: -80px;
+    z-index: 20;
 }
 
 /* Carousel Track */
