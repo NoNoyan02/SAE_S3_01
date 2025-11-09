@@ -144,7 +144,7 @@
 }
 
 .carousel-wrapper {
-    overflow: visible;
+    overflow: hidden;
     position: relative;
 }
 
@@ -250,10 +250,11 @@
 /* Block CTA List */
 .block-cta-list {
     gap: 30px;
+
 }
 
 .block-cta-list__item {
-    flex: 0 0 100%;
+    flex: 0 0 auto;
     max-width: 100%;
     min-width: 100%;
 }

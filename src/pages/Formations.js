@@ -4,7 +4,7 @@ import {Helmet} from "react-helmet";
 // Composants
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
-import '../components/Formations/formations.css';
+import '../components/Formations/Formations.css';
 
 
 export default function Formations() {
@@ -40,9 +40,9 @@ export default function Formations() {
             </nav>
 
             <main>
-                <section className="hero">
-                    <div className="hero-image">
-                        <div className="hero-content">
+                <section className="hero-formation">
+                    <div className="hero-formation-image">
+                        <div className="hero-formation-content">
                             <h1>Formations aux premiers secours</h1>
                         </div>
 

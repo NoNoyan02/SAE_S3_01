@@ -54,6 +54,12 @@ export default function JeDeviens() {
                 />
             </Helmet>
             <Header/>
+            <nav className="sousnavbar" aria-label="Fil d'Ariane">
+                <ol>
+                    <li><a href="/">Accueil</a></li>
+                    <li>Je deviens bénévole</li>
+                </ol>
+            </nav>
             <Hero/>
             <SearchBar/>
 
