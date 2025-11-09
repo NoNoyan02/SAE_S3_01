@@ -1,26 +1,3 @@
-
-*, :after, :before {
-    box-sizing: inherit;
-}
-
-ol {
-    margin: 0;
-}
-
-ol {
-    list-style: none;
-    padding-left: 0;
-}
-
-a {
-    color: #e3001b;
-    transition: all .2s linear;
-}
-
-a:focus, a:hover {
-    text-decoration: none;
-}
-
 .bread-crumb {
     margin-left: 25px;
     margin-top: 13px;

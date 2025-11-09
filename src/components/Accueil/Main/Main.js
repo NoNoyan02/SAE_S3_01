@@ -1,4 +1,8 @@
 import React, {useEffect, useState} from 'react';
+import CroixRougeHomepage from "./CroixRougeHomepage";
+import DonationFormVertical from "../../Form/DonationFormVertical";
+import DonationFormHorizontal from '../../Form/DonationFormHorizontal';
+import NewsletterSection from "../Section/NewsletterSection";
 import "./Hero.css"
 import "./Wrapper.css"
 
@@ -81,14 +85,15 @@ export default function Main() {
             </div>
             <div className="wrapper">
                 <section>
-                    <div className="container container-large">
+                    <div className="container">
+                        {/* Hero avec article + formulaire */}
                         <div className="header-news__container">
                             {/* Article principal - grande image */}
                             <div className="news-top__container">
                                 <a href="/israel-gaza-alerte-sur-la-situation-humanitaire/appel-a-dons-pour-gaza-votre-soutien-est-vital"
                                    className="news-top__link">
                                     <img
-                                        src="https://images.ctfassets.net/ksb78y40v1oe/4XN8RZLwNYQEGeuBtQqUGQ/9f7583d1c8b1087b9e9a1d38dabe9bbf/enfant_qui_mange_Ã__table.jpg?fm=webp&q=85&w=800&h=500&fit=thumb"
+                                        src="/assets/images/enfant_qui_mange_a_table.jpg"
                                         alt=""
                                         loading="lazy"
                                         className="news-top__img"
@@ -107,7 +112,7 @@ export default function Main() {
 
                             {/* Placeholder pour le formulaire de don */}
                             <div className="donation-form-placeholder">
-                                {/* Votre composant de formulaire de don ira ici */}
+                                <DonationFormVertical/>
                             </div>
                         </div>
 
@@ -166,14 +171,14 @@ export default function Main() {
                                     <div className="news-card__content">
                                         <p className="news-card__date">10/09/25</p>
                                         <h3 className="news-card__title">
-                                            La Journée Mondiale des Premiers Secours revient le 13... septembre 2025
+                                            La Journée Mondiale des Premiers Secours revient le 13 septembre...
                                         </h3>
                                     </div>
                                 </a>
                             </div>
                         </div>
 
-                        {/* Bouton "Voir plus" */}
+                        {/* Bouton voir plus */}
                         <div className="header-news__extra-news">
                             <div className="header-news__line"></div>
                             <a href="/actualite" className="btn btn--border btn--color-secondary btn--medium">
@@ -184,6 +189,9 @@ export default function Main() {
                     </div>
                 </section>
             </div>
+            <CroixRougeHomepage/>
+            <NewsletterSection/>
+            <DonationFormHorizontal/>
         </div>
     );
 };

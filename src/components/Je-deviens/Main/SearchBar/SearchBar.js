@@ -16,20 +16,20 @@ export default function SearchBar() {
     };
 
     return (
-        <div className="search-wrapper">
-            <div className="search-container">
-                <form className="search-form" onSubmit={(e) => e.preventDefault()}>
-                    <div className="search-form__input-wrapper">
+        <div className="searchbar-wrapper">
+            <div className="searchbar-container">
+                <form className="searchbar-form" onSubmit={(e) => e.preventDefault()}>
+                    <div className="searchbar-form__input-wrapper">
                         <input
                             type="text"
-                            className="search-form__input-field"
+                            className="searchbar-form__input-field"
                             placeholder="Code postale ou ville"
                             value={query}
                             onChange={handleChange}
                         />
                         {query && (
                             <span
-                                className="search-form__icon-clear"
+                                className="searchbar-form__icon-clear"
                                 onClick={clearInput}
                             >
                 ✕
@@ -38,7 +38,7 @@ export default function SearchBar() {
                     </div>
 
                     {showDropdown && (
-                        <ul className="search-form__dropdown">
+                        <ul className="searchbar-form__dropdown">
                             <li>Paris</li>
                             <li>Lyon</li>
                             <li>Marseille</li>

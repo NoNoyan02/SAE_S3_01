@@ -1,50 +1,247 @@
+/* ========================================
+   WRAPPER & CONTAINER
+======================================== */
+
+.donation-wrapper {
+    margin-bottom: 64px;
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+@media (min-width: 1100px) {
+    .donation-wrapper {
+        margin-bottom: 88px;
+        padding-left: 64px;
+        padding-right: 64px;
+    }
+}
+
 .donation-container {
-    max-width: 360px;
-    margin: auto;
+    width: 100%;
+    max-width: 1170px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+}
+
+.donation-container--large {
+    max-width: 1310px;
+}
+
+/* ========================================
+   CARD
+======================================== */
+
+.donation-card {
     padding: 24px;
-    background: #fff;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    text-align: center;
     color: #000;
-    font-family: Inter, sans-serif;
-    border-radius: 6px;
-    user-select: none;
+    background-color: #fff;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
 }
 
 @media (min-width: 700px) {
-    .donation-container {
+    .donation-card {
         padding: 32px;
     }
 }
 
+/* Version verticale - gaps automatiques équitables */
+.donation-card--vertical {
+    max-width: 400px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+}
+
+.donation-card--vertical .donation-form {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.donation-card--vertical .donation-choice label {
+    height: 50px;
+    min-height: 50px;
+}
+
+.donation-card--vertical .donation-input {
+    min-height: 50px;
+}
+
+.donation-card--vertical .donation-btn {
+    min-height: 50px;
+}
+
+/* ========================================
+   HEADER
+======================================== */
+
 .donation-header {
-    font-weight: 700;
-    font-size: 18px;
-    margin-bottom: 16px;
+    margin-bottom: 3rem;
     text-align: center;
 }
 
-.highlight {
-    background-color: #d8000c;
-    color: #fff;
-    padding: 4px 8px;
-    border-radius: 3px;
-    margin-right: 6px;
-    font-size: 18px;
+.donation-header--small {
+    margin-bottom: 24px;
+}
+
+.donation-title {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    font-weight: 700;
     line-height: 1.2;
 }
 
-.frequency-options {
+@media (min-width: 700px) {
+    .donation-title {
+        font-size: 2.4rem;
+    }
+}
+
+.donation-title--small {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+@media (min-width: 700px) {
+    .donation-title--small {
+        font-size: 2rem;
+    }
+}
+
+/* ========================================
+   FORM
+======================================== */
+
+.donation-form {
     display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-bottom: 16px;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 1170px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.radio-label {
-    all: unset;
-    line-height: 1.2;
-    cursor: pointer;
-    user-select: none;
+@media (min-width: 1100px) {
+    .donation-card--row .donation-form {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 24px;
+    }
+}
+
+/* ========================================
+   TABS (Fréquence)
+======================================== */
+
+.donation-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+@media (min-width: 700px) {
+    .donation-tabs {
+        flex-direction: row;
+        gap: 12px;
+    }
+}
+
+.donation-tabs > * {
+    flex: 1;
+}
+
+/* ========================================
+   AMOUNT SECTION
+======================================== */
+
+.donation-amount-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+@media (min-width: 1100px) {
+    .donation-card--row .donation-amount-section {
+        flex-direction: row;
+        flex: 1;
+    }
+}
+
+/* ========================================
+   OPTIONS (Montants prédéfinis)
+======================================== */
+
+.donation-options {
+    flex: 2;
+    display: flex;
+    gap: 8px;
+}
+
+@media (max-width: 699px) {
+    .donation-options {
+        flex-wrap: wrap;
+    }
+}
+
+.donation-options > * {
+    flex: 1;
+}
+
+/* ========================================
+   BUTTON WRAPPER
+======================================== */
+
+@media (min-width: 1100px) {
+    .donation-card--row .donation-button-wrapper {
+        flex: 2;
+        max-width: 200px;
+    }
+}
+
+/* ========================================
+   TAX INFO
+======================================== */
+
+.donation-tax-info {
+    font-weight: 600;
+}
+
+@media (min-width: 1100px) {
+    .donation-card--row .donation-tax-info {
+        order: 2;
+        width: 100%;
+    }
+}
+
+.donation-tax-info mark {
+    padding: 4px 8px;
+    font-weight: 900;
+    color: #fff;
+    background-color: #075c68;
+}
+
+/* ========================================
+   CHOICE (Radio & Buttons)
+======================================== */
+
+.donation-choice {
+    position: relative;
+    display: block;
+}
+
+.donation-choice input {
+    position: absolute;
+    opacity: 0;
+}
+
+.donation-choice label {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -54,112 +251,187 @@
     border-radius: 4px;
     font-size: 1.4rem;
     font-weight: 600;
-    /*border-color: #000;*/
+    line-height: 1.2;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.donation-choice label:hover {
+    border-color: #767676;
+}
+
+.donation-choice input:checked + label {
+    border-color: #000;
     color: #075c68;
     background-color: #e6eff0;
 }
 
-.radio-label input[type="radio"] {
-    cursor: pointer;
-    accent-color: #075c68;
-    width: 18px;
-    height: 18px;
-    margin-right: 12px;
-}
-
-.radio-label:hover {
-    border-color: #075c68;
-}
-
-.radio-label.selected {
-    background-color: #d6e6e6;
-    border-color: #075c68;
-    color: #075c68;
-    font-weight: 700;
-}
-
-.amount-options {
-    display: flex;
-    justify-content: center;
-    gap: 4px;
-    margin-bottom: 16px;
-}
-
-.amount-btn {
-    flex: 1;
-    padding: 14px 0;
-    font-size: 16px;
-    font-weight: 400;
-    border: 1.5px solid #ccc;
-    border-radius: 4px;
-    background-color: white;
-    cursor: pointer;
-    transition: background-color 0.25s, border-color 0.25s, color 0.25s;
-    user-select: none;
-    color: #000;
-}
-
-.amount-btn.selected,
-.amount-btn:hover {
-    border-color: #075c68;
-    background-color: #d6e6e6;
-    color: #075c68;
-    font-weight: 700;
-}
-
-.custom-amount {
-    width: 100%;
-    padding: 12px 10px;
-    font-size: 16px;
-    font-weight: 400;
-    border-radius: 4px;
-    border: 1.5px solid #ccc;
-    box-sizing: border-box;
-    outline-color: #075c68;
-    margin-bottom: 16px;
-    color: #000;
-}
-
-.custom-amount::placeholder {
-    color: #999;
-    font-weight: 400;
-}
-
-.tax-info {
-    font-weight: 700;
-    font-size: 14px;
-    margin-bottom: 16px;
-    text-align: center;
-}
-
-.tax-amount {
-    padding: 4px 8px;
-    font-weight: 900;
-    color: #fff;
-    background-color: #075c68;
-    border-radius: 3px;
-    margin-left: 6px;
-    margin-right: 6px;
-    font-size: 14px;
+/* Radio button style */
+.donation-choice--radio label::before {
+    content: "";
+    position: relative;
     display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 12px;
+    border: 1px solid #000;
+    border-radius: 50%;
+    background-color: #fff;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, .2);
 }
 
-.donate-btn {
+.donation-choice--radio input:hover + label::before,
+.donation-choice--radio input:focus + label::before {
+    background-color: #f6f7fa;
+}
+
+.donation-choice--radio input:checked + label::before {
+    border-color: #000;
+    box-shadow: inset 0 0 0 3px #075c68;
+    background-color: #fff;
+}
+
+.donation-choice--hidden-input label::before {
+    display: none;
+}
+
+/* ========================================
+   INPUT FIELDS
+======================================== */
+
+.donation-input-group {
+    display: block;
+    margin-bottom: 0;
+}
+
+.donation-input-label {
+    display: block;
+    margin-bottom: 8px;
+    padding: 0;
+    font-weight: 600;
+}
+
+.donation-input-field {
+    display: block;
+    position: relative;
+}
+
+.donation-input-unit {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    font-weight: 600;
+    color: #000;
+}
+
+.donation-input {
+    display: block;
     width: 100%;
-    background-color: #d8000c;
-    color: white;
-    font-weight: 700;
-    font-size: 18px;
-    padding: 14px 0;
+    max-width: 100%;
+    min-height: 50px;
+    padding: 12px 14px;
+    padding-right: 40px;
+    border: 1px solid #cdcdcd;
+    border-radius: 4px;
+    outline: 0;
+    font-size: 1.4rem;
+    font-weight: 500;
+    font-family: inherit;
+    color: #000;
+    background-color: #fff;
+    transition: border-color 0.2s ease;
+}
+
+@media (max-width: 699px) {
+    .donation-input {
+        font-size: 1.6rem;
+    }
+}
+
+.donation-input:not([disabled]):focus,
+.donation-input:not([disabled]):hover {
+    border-color: #767676;
+}
+
+.donation-input::placeholder {
+    font-weight: 400;
+    opacity: 1;
+    color: #767676;
+}
+
+/* ========================================
+   BUTTON
+======================================== */
+
+.donation-btn {
+    overflow: hidden;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    max-width: 100%;
+    min-height: 50px;
+    padding: 2px 12px;
     border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.3s;
+    border-radius: 4px;
+    font-size: 2.2rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
     text-align: center;
+    color: #fff;
+    background-color: #e3001b;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
 }
 
-.donate-btn:hover {
-    background-color: #b0000a;
+@media (min-width: 1100px) {
+    .donation-btn {
+        padding-right: 24px;
+        padding-left: 24px;
+    }
 }
 
+.donation-btn:not([disabled]):focus,
+.donation-btn:not([disabled]):hover {
+    background-color: #970b13;
+}
+
+.donation-btn--full {
+    width: 100%;
+}
+
+/* ========================================
+   UTILITIES
+======================================== */
+
+.donation-visually-hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+/* ========================================
+   RESET
+======================================== */
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+fieldset {
+    margin: 0;
+    border: 0;
+    padding: 0;
+}

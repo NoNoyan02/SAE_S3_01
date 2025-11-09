@@ -1,8 +1,11 @@
 import React from "react";
 import {Helmet} from "react-helmet";
 
+
 // Composants
 import Header from "../components/Header/Header";
+import MainJedonne from "../components/Je-donne/MainJedonne";
+import Footer from "../components/Footer/Footer";
 
 export default function Jedonne() {
     return (
@@ -28,6 +31,8 @@ export default function Jedonne() {
                 />
             </Helmet>
             <Header/>
+            <MainJedonne/>
+            <Footer/>
         </>
     );
 }
