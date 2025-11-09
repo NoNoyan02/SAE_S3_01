@@ -48,7 +48,10 @@ export default function CroixRougeHomepage() {
 
     const handleScroll = (ref, direction) => {
         if (ref.current) {
-            const scrollAmount = 320;
+            const cardWidth = window.innerWidth <= 480 ? 280 : 
+                             window.innerWidth <= 768 ? 320 : 370;
+            const scrollAmount = cardWidth + 20; 
+            
             ref.current.scrollBy({
                 left: direction === 'right' ? scrollAmount : -scrollAmount,
                 behavior: 'smooth'
