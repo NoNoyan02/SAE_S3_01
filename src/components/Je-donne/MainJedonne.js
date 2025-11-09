@@ -1,12 +1,13 @@
 import React, {useEffect, useRef, useState} from "react";
 import "./Je-donne.css"
+import DonationFormHorizontal from "../Form/DonationFormHorizontal";
 
 export default function MainJedonne() {
     // États pour le formulaire de don
     const [montantSelectionne, setMontantSelectionne] = useState(130);
     const [modePaiement, setModePaiement] = useState("unefois");
     const [montantLibre, setMontantLibre] = useState("");
-    const [animated, setAnimated] = useState(false);
+
 
     // États pour le carrousel
     const [carouselIndex, setCarouselIndex] = useState(0);
@@ -48,55 +49,7 @@ export default function MainJedonne() {
         setMontantSelectionne(isNaN(val) ? 0 : val);
     };
 
-    // Animation des chiffres clés
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && !animated) {
-                        setAnimated(true);
-                    }
-                });
-            },
-            {threshold: 0.5}
-        );
 
-        const statsSection = document.querySelector(".stats");
-        if (statsSection) {
-            observer.observe(statsSection);
-        }
-
-        return () => observer.disconnect();
-    }, [animated]);
-
-    // Animation d'un nombre
-    const AnimatedNumber = ({value, duration = 2000}) => {
-        const [displayValue, setDisplayValue] = useState(0);
-
-        useEffect(() => {
-            if (!animated) return;
-
-            const startTime = performance.now();
-            const targetValue = parseInt(value.replace(/\s/g, ""));
-
-            const updateNumber = (currentTime) => {
-                const elapsedTime = currentTime - startTime;
-                const progress = Math.min(elapsedTime / duration, 1);
-                const easeOutQuart = 1 - Math.pow(1 - progress, 4);
-                const currentValue = Math.floor(easeOutQuart * targetValue);
-
-                setDisplayValue(currentValue);
-
-                if (progress < 1) {
-                    requestAnimationFrame(updateNumber);
-                }
-            };
-
-            requestAnimationFrame(updateNumber);
-        }, [animated, value, duration]);
-
-        return <>{displayValue.toLocaleString("fr-FR")}</>;
-    };
 
     // Gestion du carrousel
     const getVisibleCount = () => {
@@ -253,19 +206,19 @@ export default function MainJedonne() {
                 <div className="chiffres">
                     <section className="chiffre1">
                         <h3>
-                            <AnimatedNumber value="70 521"/>
+                            70 521
                         </h3>
                         <p>bénévoles</p>
                     </section>
                     <section className="chiffre2">
                         <h3>
-                            <AnimatedNumber value="1 056"/>
+                            1 056
                         </h3>
                         <p>implantations locales</p>
                     </section>
                     <section className="chiffre3">
                         <h3>
-                            <AnimatedNumber value="434 855"/>
+                            434 855
                         </h3>
                         <p>associations</p>
                     </section>
@@ -633,17 +586,8 @@ export default function MainJedonne() {
                 </div>
             </section>
 
-            <div className="formulaire-don-horizontal">
-                <h2 className="texte1">Mobilisons-nous ensemble !</h2>
-                <div className="formulaire-don-section">
-                    <FormulaireDon className="bloc-don2"/>
-                    <button className="bouton-donation">Je donne</button>
-                </div>
-                <h2 className="texte2">
-                    Soit <span className="fiscal">{deductionFiscale} €</span> après
-                    déduction fiscale
-                </h2>
-            </div>
+
+            <DonationFormHorizontal/>
         </>
     );
 }

@@ -114,7 +114,7 @@ body {
     font-size: 12px;
     font-weight: 600;
     text-align: center;
-    line-height: 1.3;
+    line-height: 2;
     transition: background-color 0.2s;
 }
 
@@ -233,7 +233,7 @@ body {
 
 .bloc-don .formulaire-don-vertical .texte1 {
     margin: 0 0 20px;
-    font-size: 1.48rem;
+    font-size: 2.48rem;
     font-weight: 600;
     text-align: center;
 }
@@ -371,12 +371,12 @@ body {
     color: #ffffff;
     padding: 6px 8px;
     display: inline-block;
-    font-size: 1.4em;
+    font-size: 2.4em;
     font-weight: bold;
 }
 
 .stats .texte p {
-    font-size: 1.3em;
+    font-size: 2em;
     font-weight: normal;
     font-family: "Georgia", "Times New Roman", serif;
     color: #222;
@@ -418,7 +418,7 @@ body {
 
 .nous-soutenir .titre {
     text-align: center;
-    font-size: 1.8rem;
+    font-size: 3rem;
     margin-bottom: 20px;
     font-weight: 700;
 }
@@ -433,7 +433,7 @@ body {
 .nous-soutenir .texte1 {
     margin: 10px auto;
     text-align: center;
-    font-size: 1.3rem;
+    font-size: 2rem;
 }
 
 .nous-soutenir ul {
@@ -449,7 +449,7 @@ body {
     padding-left: 20px;
     padding-bottom: 15px;
     position: relative;
-    font-size: 1.3rem;
+    font-size: 2rem;
 }
 
 .nous-soutenir ul li::before {
@@ -467,7 +467,7 @@ body {
 
 .agir .titre {
     text-align: center;
-    font-size: 1.8rem;
+    font-size: 3rem;
     margin-bottom: 20px;
     font-weight: 700;
     font-family: Inter, sans-serif;
@@ -482,7 +482,7 @@ body {
 
 .agir .sous-titre {
     text-align: center;
-    font-size: 1.4em;
+    font-size: 2.4em;
 }
 
 .agir .blocs {
@@ -556,7 +556,7 @@ body {
 }
 
 .deduction-fiscale h2 {
-    font-size: 1.8rem;
+    font-size: 3rem;
     font-weight: 700;
     margin-bottom: 16px;
     text-align: center;
@@ -570,14 +570,14 @@ body {
 }
 
 .deduction-fiscale p {
-    font-size: 1.4rem;
+    font-size: 2.4rem;
     margin: 30px 0;
 }
 
 .deduction-fiscale .important {
     color: #e60000;
     font-weight: 700;
-    font-size: 1.4rem;
+    font-size: 2.4rem;
 }
 
 /******************************* Bloc Engager STYLES *******************************/
@@ -588,7 +588,7 @@ body {
 
 .engager .titre {
     text-align: center;
-    font-size: 1.8rem;
+    font-size: 3rem;
     margin-bottom: 20px;
     font-weight: 700;
     font-family: Inter, sans-serif;
@@ -667,13 +667,13 @@ body {
     padding: 20px 10px 25px;
     border-radius: 6px;
     text-align: center;
-    font-size: 1.25rem;
+    font-size: 2.25rem;
     font-weight: 700;
     position: relative;
 }
 
 .engager .texte h3 {
-    font-size: 1.3em;
+    font-size: 2em;
     font-weight: 700;
     margin-bottom: 20px;
     color: black;
@@ -701,7 +701,7 @@ body {
 .donner .titre {
     text-align: center;
     margin: auto;
-    font-size: 1.8rem;
+    font-size: 3rem;
     margin-bottom: 20px;
     font-weight: 700;
     font-family: Inter, sans-serif;
@@ -746,13 +746,13 @@ body {
     padding: 20px 10px 25px;
     border-radius: 6px;
     text-align: center;
-    font-size: 1.3em;
+    font-size: 2em;
     font-weight: 700;
     position: relative;
 }
 
 .donner .texte h3 {
-    font-size: 1.3rem;
+    font-size: 2rem;
     font-weight: 700;
     margin-bottom: 20px;
     color: black;
@@ -782,7 +782,7 @@ body {
 
 .patrimoine h2 {
     text-align: center;
-    font-size: 1.8rem;
+    font-size: 3rem;
     font-weight: 700;
     margin-bottom: 10px;
 }
@@ -797,11 +797,11 @@ body {
 
 .patrimoine h3 {
     text-align: center;
-    font-size: 1.3em;
+    font-size: 2em;
 }
 
 .patrimoine p {
-    font-size: 1.3rem;
+    font-size: 2rem;
     color: #333;
     text-align: center;
 }
@@ -842,20 +842,20 @@ body {
 }
 
 .transmettre .contenu {
-    flex: 1 1 450px;
+    flex: 1 2.450px;
     position: relative;
 }
 
 .transmettre .contenu h2 {
-    font-size: 1.8rem;
+    font-size: 3rem;
     font-weight: 700;
     color: #000;
     margin-bottom: 15px;
-    line-height: 1.3;
+    line-height: 2;
 }
 
 .transmettre .contenu p {
-    font-size: 1.25rem;
+    font-size: 2.25rem;
     line-height: 1.6;
     color: #333;
     margin-bottom: 25px;
@@ -896,7 +896,7 @@ body {
 }
 
 .philanthrope .philanthrope-image {
-    flex: 1 1 450px;
+    flex: 1 2.450px;
 }
 
 .philanthrope .philanthrope-image img {
@@ -907,20 +907,20 @@ body {
 }
 
 .philanthrope .contenu {
-    flex: 1 1 450px;
+    flex: 1 2.450px;
     position: relative;
 }
 
 .philanthrope .contenu h2 {
-    font-size: 1.8rem;
+    font-size: 3rem;
     font-weight: 700;
     color: #000;
     margin-bottom: 15px;
-    line-height: 1.3;
+    line-height: 2;
 }
 
 .philanthrope .contenu p {
-    font-size: 1.25rem;
+    font-size: 2.25rem;
     line-height: 1.6;
     color: #333;
     margin-bottom: 25px;
@@ -954,7 +954,7 @@ body {
 
 .question-frequente .titre {
     text-align: center;
-    font-size: 1.8rem;
+    font-size: 3rem;
     margin-bottom: 10px;
     font-weight: 700;
 }
@@ -970,7 +970,7 @@ body {
     text-align: center;
     color: #666;
     margin-bottom: 35px;
-    font-size: 1.25rem;
+    font-size: 2.25rem;
 }
 
 .question-frequente .questions {
@@ -1000,7 +1000,7 @@ body {
     justify-content: space-between;
     align-items: center;
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 2.1rem;
     transition: background-color 0.3s ease;
 }
 
@@ -1035,7 +1035,7 @@ body {
 
 .question-frequente .reponse p {
     margin-bottom: 12px;
-    font-size: 1.1rem;
+    font-size: 2.1rem;
     color: #333;
 }
 
@@ -1052,7 +1052,7 @@ body {
     padding-left: 20px;
     padding-bottom: 15px;
     position: relative;
-    font-size: 1.1rem;
+    font-size: 2.1rem;
 }
 
 .question-frequente ul li::before {
@@ -1076,7 +1076,7 @@ body {
 }
 
 .formulaire-don-horizontal .texte1 {
-    font-size: 1.3rem;
+    font-size: 2rem;
     font-weight: bold;
     margin-bottom: 25px;
 }
@@ -1173,7 +1173,7 @@ body {
 
 .formulaire-don-horizontal .texte2 {
     margin-top: 15px;
-    font-size: 1rem;
+    font-size: 2rem;
     font-weight: bold;
 }
 
@@ -1190,6 +1190,7 @@ body {
 @media (max-width: 1080px) {
     .bloc-don .formulaire-don-vertical {
         display: none;
+        padding: 20px;
     }
 
     .nous-soutenir {

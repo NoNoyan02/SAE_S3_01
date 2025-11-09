@@ -479,7 +479,6 @@
     width: 80px;
     height: 80px;
     overflow: hidden;
-    background-color: #ffb3b3;
     border-radius: 4px;
 }
 
@@ -510,6 +509,7 @@
     height: 100%;
     object-fit: cover;
 }
+
 
 .news-card__content {
     flex: 1;

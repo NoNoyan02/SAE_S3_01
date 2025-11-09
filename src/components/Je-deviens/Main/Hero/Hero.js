@@ -6,7 +6,7 @@ export default function Hero() {
             <header className="hero with-cover overlay-small large">
                 <div className="hero-cover">
                     <img
-                        src=""
+                        src="https://images.ctfassets.net/ksb78y40v1oe/7M6jXwOfIZTATTav5S7fqc/9e944f29fb492368150e8997e2dd7373/Page_carrefour_Je_deviens_b__n__vole_Hero_2.jpg"
                         alt="Envie de vous engager bénévolement près de chez vous ?"/>
                 </div>
 

@@ -17,13 +17,14 @@ const MissionCard = ({href, imageSrc, imageAlt, title}) => (
     </li>
 );
 
-
 export default function MissionsSection() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
     const [startPos, setStartPos] = useState(0);
     const [currentTranslate, setCurrentTranslate] = useState(0);
     const [prevTranslate, setPrevTranslate] = useState(0);
+    const [itemsPerSlide, setItemsPerSlide] = useState(1);
+
     const carouselRef = useRef(null);
 
     const missions = [
@@ -50,23 +51,38 @@ export default function MissionsSection() {
             imageSrc: 'https://images.ctfassets.net/ksb78y40v1oe/5NagIe7loPe0vPw6BO3vI7/a6cd7badba969b27e04b3395ccd83bd4/b__nvole_chez_henry.jpg?fm=webp&q=85&w=404&h=350&fit=thumb',
             imageAlt: 'Vos achats permettent de financer nos actions sociales',
             title: "Parcourez tous nos domaines d'activité"
-        }
+        },
     ];
+
+    const updateItemsPerSlide = () => {
+        const width = window.innerWidth;
+        if (width >= 1100) setItemsPerSlide(3);
+        else if (width >= 700) setItemsPerSlide(2);
+        else setItemsPerSlide(1);
+    };
+
+    useEffect(() => {
+        updateItemsPerSlide();
+        window.addEventListener('resize', updateItemsPerSlide);
+        return () => window.removeEventListener('resize', updateItemsPerSlide);
+    }, []);
+
+    const totalSlides = Math.ceil(missions.length / itemsPerSlide);
 
     const goToSlide = (index) => {
         setCurrentIndex(index);
-        const translateValue = -index * 100;
+        const translateValue = -(index * (100 / itemsPerSlide));
         setPrevTranslate(translateValue);
         setCurrentTranslate(translateValue);
     };
 
     const goToPrevious = () => {
-        const newIndex = currentIndex === 0 ? missions.length - 1 : currentIndex - 1;
+        const newIndex = currentIndex === 0 ? totalSlides - 1 : currentIndex - 1;
         goToSlide(newIndex);
     };
 
     const goToNext = () => {
-        const newIndex = currentIndex === missions.length - 1 ? 0 : currentIndex + 1;
+        const newIndex = currentIndex === totalSlides - 1 ? 0 : currentIndex + 1;
         goToSlide(newIndex);
     };
 
@@ -77,24 +93,19 @@ export default function MissionsSection() {
     };
 
     const touchMove = (e) => {
-        if (isDragging) {
-            const currentPosition = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
-            const diff = currentPosition - startPos;
-            setCurrentTranslate(prevTranslate + (diff / carouselRef.current.offsetWidth) * 100);
-        }
+        if (!isDragging) return;
+        const currentPosition = e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+        const diff = currentPosition - startPos;
+        setCurrentTranslate(prevTranslate + (diff / carouselRef.current.offsetWidth) * 100);
     };
 
     const touchEnd = () => {
         setIsDragging(false);
         const movedBy = currentTranslate - prevTranslate;
 
-        if (movedBy < -10 && currentIndex < missions.length - 1) {
-            goToNext();
-        } else if (movedBy > 10 && currentIndex > 0) {
-            goToPrevious();
-        } else {
-            setCurrentTranslate(prevTranslate);
-        }
+        if (movedBy < -10 && currentIndex < totalSlides - 1) goToNext();
+        else if (movedBy > 10 && currentIndex > 0) goToPrevious();
+        else setCurrentTranslate(prevTranslate);
     };
 
     useEffect(() => {
@@ -150,7 +161,7 @@ export default function MissionsSection() {
                 </div>
 
                 <div className="carousel-dots">
-                    {missions.map((_, index) => (
+                    {Array.from({length: totalSlides}).map((_, index) => (
                         <button
                             key={index}
                             className={`carousel-dot ${index === currentIndex ? 'carousel-dot--active' : ''}`}

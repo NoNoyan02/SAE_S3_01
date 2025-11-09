@@ -47,7 +47,7 @@
     display: flex;
     flex-direction: column;
     background-color: #fff;
-    padding: 16px;
+    padding: 16px 20px;
     border-radius: 4px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     position: relative;
@@ -57,11 +57,9 @@
 
 .searchbar-form__input-field {
     width: 100%;
-    min-height: 50px;
-    padding: 12px 16px;
     font-size: 1.6rem;
     border-radius: 4px;
-    outline: none;
+    border: 0;
     color: #000;
     background-color: #fff;
 }

@@ -7,9 +7,18 @@ import "./Hero.css"
 import "./Wrapper.css"
 
 const slides = [
-    {title: "Slide 1", color: "#FF6B6B"},
-    {title: "Slide 2", color: "#4ECDC4"},
-    {title: "Slide 3", color: "#556270"},
+    {
+        title: "Ensemble, redonnons le goût de vivre à ceux qui en ont besoin",
+        image: "https://moselle.croix-rouge.fr/wp-content/uploads/sites/36/2019/05/aide-alimentaire-croixrouge.jpg"
+    },
+    {
+        title: "Des équipes mobilisées chaque jour pour sauver des vies",
+        image: "https://cdn-s-www.dna.fr/images/1D20E08A-8ADF-43D9-82DE-FCB9FD5C3427/NW_raw/des-benevoles-de-la-croix-rouge-recoivent-une-formation-a-la-clinique-sainte-anne-pour-ameliorer-leurs-interventions-de-secourisme-en-echangeant-avec-des-professionnels-de-sante-photo-dna-laurent-rea-1457546557.jpg"
+    },
+    {
+        title: "Agir chaque jour pour sauver des vies",
+        image: "https://images.lanouvellerepublique.fr/image/upload/t_1020w/f_auto/63bdaf0868b680007e8b4583.jpg"
+    },
 ];
 
 export default function Main() {
@@ -57,7 +66,11 @@ export default function Main() {
                         <div
                             className="slide"
                             key={index}
-                            style={{backgroundColor: slide.color}}
+                            style={{
+                                backgroundImage: `url(${slide.image})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center'
+                            }}
                         >
                             <h1 className="slide-title">{slide.title}</h1>
                         </div>
@@ -122,7 +135,7 @@ export default function Main() {
                                 <a href="#" className="news-card__link">
                                     <div className="news-card__image-wrapper">
                                         <img
-                                            src="https://via.placeholder.com/400x250/ffb3b3/ffb3b3"
+                                            src="https://images.ctfassets.net/ksb78y40v1oe/2IQ7uDilkzVZ282qCMbrWx/6ba0f0ac4f92f9a584c3a37d244b4dba/2022_liens-familiaux_Calais__L_Witter-RLF-700-450.jpg?fm=webp&q=85&w=570&h=400&fit=thumb"
                                             alt=""
                                             loading="lazy"
                                             className="news-card__img"
@@ -142,7 +155,7 @@ export default function Main() {
                                 <a href="#" className="news-card__link">
                                     <div className="news-card__image-wrapper">
                                         <img
-                                            src="https://via.placeholder.com/400x250/ffb3b3/ffb3b3"
+                                            src="https://www.encyclopedie-environnement.org/app/uploads/2016/06/cyclones2_couverture.png"
                                             alt=""
                                             loading="lazy"
                                             className="news-card__img"
@@ -162,7 +175,7 @@ export default function Main() {
                                 <a href="#" className="news-card__link">
                                     <div className="news-card__image-wrapper">
                                         <img
-                                            src="https://via.placeholder.com/400x250/ffb3b3/ffb3b3"
+                                            src="https://i.la-croix.com/836x/smart/2023/09/09/1201281997/Organisee-samedi-9-septembre-Journee-mondiale-premiers-secours-loccasionla-Croix-Rouge-sensibiliser-Francais-limportance-formation-gestes-sauvent_0.jpg"
                                             alt=""
                                             loading="lazy"
                                             className="news-card__img"

@@ -14,7 +14,7 @@ export default function CroixRougeHomepage() {
     }, {
         title: "Initiation aux premiers secours enfant et nourrisson",
         duration: "4h30",
-        image: "https://images.unsplash.com/photo-1632053002928-9e68e34f858e?w=400&h=200&fit=crop"
+        image: "https://images.ctfassets.net/ksb78y40v1oe/2lvnw64LL6fbdU60Vsv4cD/bfefe9b8a447adf75b8f5ee4da450412/Les_Espaces_b_b__parents___accompagner_et_soutenir_les_familles?fm=webp&q=85&w=1170&h=450&fit=thumb"
     }, {
         title: "La formation aux gestes qui sauvent (GQS)",
         duration: "2h",
@@ -30,14 +30,14 @@ export default function CroixRougeHomepage() {
     }];
 
     const dossiers = [{
+        title: "Les attentats du 13 novembre",
+        image: "https://images.ctfassets.net/ksb78y40v1oe/2nQwpHbaGULM03cMvn8rZU/8dd2358cc4f7b1c7f2d12ddac4fdf90b/Les_attentats_du_13_novembre__un_an_apr_s?fm=webp&q=85&w=388&h=200&fit=thumb"
+    }, {
+        title: "Guerre au Soudan : agir aux côtés des réfugiés au Tchad",
+        image: "https://images.ctfassets.net/ksb78y40v1oe/5Jevj04wdiVzn0mm5KNefG/fce9b15a2e9366d153953f14afcf4ecb/10-L1010465_Guerre_au_Soudan_r%C3%83_fugi%C3%83_s_soudanais_au_tchad.webp?fm=webp&q=85&w=388&h=200&fit=thumb"
+    }, {
         title: "Urgence Proche-Orient",
-        image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=200&fit=crop"
-    }, {
-        title: "Santé mentale",
-        image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&h=200&fit=crop"
-    }, {
-        title: "Projet 3 Océans : Réduire l'impact des catastrophes",
-        image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=200&fit=crop"
+        image: "https://images.ctfassets.net/ksb78y40v1oe/2JHRAnlfXWmylFCRu7iAqH/4447ec624e9f97ee606bf54932389f6e/p-PSI0379_Palestine_Red_Crescent_Society_copie.jpg?fm=webp&q=85&w=388&h=200&fit=thumb"
     }, {
         title: "Urgence Ukraine",
         image: "https://images.unsplash.com/photo-1661956602116-aa6865609028?w=400&h=200&fit=crop"
@@ -46,9 +46,26 @@ export default function CroixRougeHomepage() {
         image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=200&fit=crop"
     }];
 
+    const actualites = [{
+        date: "04/09/25",
+        title: "Rétablissement des liens familiaux : clarifier le sort des personnes disparues et apporter",
+        image: "https://images.ctfassets.net/ksb78y40v1oe/2IQ7uDilkzVZ282qCMbrWx/6ba0f0ac4f92f9a584c3a37d244b4dba/2022_liens-familiaux_Calais__L_Witter-RLF-700-450.jpg?fm=webp&q=85&w=570&h=400&fit=thumb"
+    }, {
+        date: "09/09/25",
+        title: "Cyclones, Tsunamis, montée des eaux : comment mieux préparer... les communautés des trois",
+        image: "https://www.encyclopedie-environnement.org/app/uploads/2016/06/cyclones2_couverture.png"
+    }, {
+        date: "10/09/25",
+        title: "La Journée Mondiale des Premiers Secours revient le 13 septembre...",
+        image: "https://i.la-croix.com/836x/smart/2023/09/09/1201281997/Organisee-samedi-9-septembre-Journee-mondiale-premiers-secours-loccasionla-Croix-Rouge-sensibiliser-Francais-limportance-formation-gestes-sauvent_0.jpg"
+    }];
+
     const handleScroll = (ref, direction) => {
         if (ref.current) {
-            const scrollAmount = 320;
+            const cardWidth = window.innerWidth <= 480 ? 280 :
+                window.innerWidth <= 768 ? 320 : 370;
+            const scrollAmount = cardWidth + 20;
+
             ref.current.scrollBy({
                 left: direction === 'right' ? scrollAmount : -scrollAmount,
                 behavior: 'smooth'
