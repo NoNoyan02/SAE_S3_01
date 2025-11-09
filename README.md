@@ -51,12 +51,10 @@ Notre choix se porte sur la **Croix‑Rouge française** pour moderniser l’int
 
 ## 👥 Équipe du projet
 
-| Nom       | Rôle                                       | Contact     |
-|-----------|--------------------------------------------|------------|
-| [Nom 1]  | Chef de projet / Maquettage & coordination | [email1]  |
-| [Nom 2]  | Développeur Front-End (HTML/CSS)           | [email2]  |
-| [Nom 3]  | X                                          | [email3]  |
-| [Nom 4]  | X                                          | [email4]  |
+TAYLAN Noyan
+SE Donald 
+SERIEYS Dorian
+SIVASEKARAN Aswin
 
 ## 🔗 Liens utiles
 
