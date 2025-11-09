@@ -14,7 +14,7 @@ export default function CroixRougeHomepage() {
     }, {
         title: "Initiation aux premiers secours enfant et nourrisson",
         duration: "4h30",
-        image: "https://images.unsplash.com/photo-1632053002928-9e68e34f858e?w=400&h=200&fit=crop"
+        image: "https://images.ctfassets.net/ksb78y40v1oe/2lvnw64LL6fbdU60Vsv4cD/bfefe9b8a447adf75b8f5ee4da450412/Les_Espaces_b_b__parents___accompagner_et_soutenir_les_familles?fm=webp&q=85&w=1170&h=450&fit=thumb"
     }, {
         title: "La formation aux gestes qui sauvent (GQS)",
         duration: "2h",
@@ -45,6 +45,21 @@ export default function CroixRougeHomepage() {
         title: "Rapport Résilience de la Croix-Rouge française",
         image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=200&fit=crop"
     }];
+
+     const actualites = [{
+        date: "04/09/25",
+        title: "Rétablissement des liens familiaux : clarifier le sort des personnes disparues et apporter",
+        image: "https://images.ctfassets.net/ksb78y40v1oe/2IQ7uDilkzVZ282qCMbrWx/6ba0f0ac4f92f9a584c3a37d244b4dba/2022_liens-familiaux_Calais__L_Witter-RLF-700-450.jpg?fm=webp&q=85&w=570&h=400&fit=thumb"
+    }, {
+        date: "09/09/25",
+        title: "Cyclones, Tsunamis, montée des eaux : comment mieux préparer... les communautés des trois",
+        image: "https://www.encyclopedie-environnement.org/app/uploads/2016/06/cyclones2_couverture.png"
+    }, {
+        date: "10/09/25",
+        title: "La Journée Mondiale des Premiers Secours revient le 13 septembre...",
+        image: "https://i.la-croix.com/836x/smart/2023/09/09/1201281997/Organisee-samedi-9-septembre-Journee-mondiale-premiers-secours-loccasionla-Croix-Rouge-sensibiliser-Francais-limportance-formation-gestes-sauvent_0.jpg"
+    }];
+
 
     const handleScroll = (ref, direction) => {
         if (ref.current) {
