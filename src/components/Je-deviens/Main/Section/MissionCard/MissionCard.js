@@ -17,6 +17,7 @@ const MissionCard = ({href, imageSrc, imageAlt, title}) => (
     </li>
 );
 
+
 export default function MissionsSection() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isDragging, setIsDragging] = useState(false);

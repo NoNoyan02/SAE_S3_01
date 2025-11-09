@@ -1,4 +1,5 @@
 import {useRef, useState} from 'react';
+import "./CroixRougeHomepage.css"
 
 export default function CroixRougeHomepage() {
     const [searchType, setSearchType] = useState('Toutes');
