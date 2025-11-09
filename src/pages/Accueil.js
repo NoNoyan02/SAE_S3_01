@@ -3,7 +3,7 @@ import {Helmet} from "react-helmet";
 
 // Composants
 import Header from "../components/Header/Header";
-import Main from "../components/Main/Main";
+import Main from "../components/Accueil/Main/Main";
 import Footer from "../components/Footer/Footer";
 
 export default function Accueil() {

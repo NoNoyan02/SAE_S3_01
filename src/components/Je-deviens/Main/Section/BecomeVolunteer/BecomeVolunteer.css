@@ -1,63 +1,5 @@
-*, ::before, ::after {
-    --tw-border-spacing-x: 0;
-    --tw-border-spacing-y: 0;
-    --tw-translate-x: 0;
-    --tw-translate-y: 0;
-    --tw-rotate: 0;
-    --tw-skew-x: 0;
-    --tw-skew-y: 0;
-    --tw-scale-x: 1;
-    --tw-scale-y: 1;
-    --tw-scroll-snap-strictness: proximity;
-    --tw-ring-offset-width: 0px;
-    --tw-ring-offset-color: #fff;
-    --tw-ring-color: rgb(59 130 246 / 0.5);
-    --tw-ring-offset-shadow: 0 0 #0000;
-    --tw-ring-shadow: 0 0 #0000;
-    --tw-shadow: 0 0 #0000;
-    --tw-shadow-colored: 0 0 #0000;
-}
-
-*, ::before, ::after {
-    box-sizing: border-box;
-    border-width: 0;
-    border-style: solid;
-    border-color: #e5e7eb;
-}
-
-::before, ::after {
-    --tw-content: '';
-}
-
-h2 {
-    font-size: inherit;
-    font-weight: inherit;
-}
-
-strong {
-    font-weight: bolder;
-}
-
-h2, p {
-    margin: 0;
-}
-
-:disabled {
-    cursor: default;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-*, *:after, *:before {
-    box-sizing: border-box;
+.block-content-richtext__wrapper {
+    margin-bottom: 88px;
 }
 
 .full-rich-text {
@@ -82,19 +24,6 @@ h2, p {
 
 .full-rich-text > p {
     width: 100%;
-}
-
-*, :after, :before {
-    box-sizing: inherit;
-}
-
-h2 {
-    margin: 0;
-    font-weight: inherit;
-}
-
-p {
-    margin: 0;
 }
 
 .container--shrink {
