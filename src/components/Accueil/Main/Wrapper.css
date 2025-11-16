@@ -94,6 +94,9 @@
     border-color: #075c68;
     color: #075c68;
     background-color: transparent;
+    padding: 15px;
+    border-width: 1px;
+    border-style: solid;
 }
 
 .btn--color-secondary.btn--border:not([disabled]):focus,

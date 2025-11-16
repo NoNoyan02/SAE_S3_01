@@ -72,7 +72,8 @@ export default function Main() {
                                 backgroundPosition: 'center'
                             }}
                         >
-                            <h1 className="slide-title">{slide.title}</h1>
+                            <h1 className="slide-title-accueil">{slide.title}</h1>
+                            <button type="button" className="donation-btn">En savoir+</button>
                         </div>
                     ))}
                 </div>

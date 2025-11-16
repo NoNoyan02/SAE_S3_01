@@ -2,7 +2,7 @@
 .carousel {
     position: relative;
     width: 100vw;
-    height: 60vh;
+    height: 30vh;
     overflow: hidden;
 }
 
@@ -25,6 +25,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 16px;
+    flex-direction: column;
 }
 
 .slide-title {

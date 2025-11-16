@@ -5,6 +5,7 @@ import {Helmet} from "react-helmet";
 // Composants
 import Header from "../components/Header/Header";
 import Footer from "../components/Footer/Footer";
+import MainJedonne from "../components/Je-donne/MainJedonne";
 
 export default function Jedonne() {
     return (
@@ -36,12 +37,12 @@ export default function Jedonne() {
                     <li>Grâce à vos dons nous pouvons agir</li>
                 </ol>
             </nav>
-            {/*<MainJedonne/>*/}
-            <iframe
-                src="file:///C:/Users/Donald%20Se/Documents/Projects/SAE_S3_01/src/pages/SAE_S3_01-feature-Aswin/je-donne.html" // ou une URL externe
-                style={{width: "100%", height: "500px", border: "none"}}
-                title="Vue HTML"
-            ></iframe>
+            <MainJedonne/>
+            {/*<iframe*/}
+            {/*    src="file:///C:/Users/Donald%20Se/Documents/Projects/SAE_S3_01/src/pages/SAE_S3_01-feature-Aswin/je-donne.html" // ou une URL externe*/}
+            {/*    style={{width: "100%", height: "500px", border: "none"}}*/}
+            {/*    title="Vue HTML"*/}
+            {/*></iframe>*/}
             <Footer/>
         </>
     );
