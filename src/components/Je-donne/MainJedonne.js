@@ -383,7 +383,7 @@ export default function MainJedonne() {
                             src="assets/images/Je-donne/Page_carrefour_Don_v__tements.webp"
                         />
                         <div className="texte">
-                            <p>Offrez une seconde vie à vos vêtements</p>
+                            <h3>Offrez une seconde vie à vos vêtements</h3>
                             <a href="#" className="bouton">
                                 Je donne mes vêtements
                             </a>
@@ -395,7 +395,7 @@ export default function MainJedonne() {
                             src="assets/images/Je-donne/Page_Carrefour_Don_financement_participatif.webp"
                         />
                         <div className="texte">
-                            <p>Contribuez à des pages locaux</p>
+                            <h3>Contribuez à des pages locaux</h3>
                             <a href="#" className="bouton">
                                 Je me mobilise
                             </a>

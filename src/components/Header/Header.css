@@ -20,6 +20,37 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+.slide-title-accueil{
+    color: white;
+    font-size: 5rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+    text-align: center;
+    padding: 0 10px;
+}
+
+/* Tablettes */
+@media (max-width: 1024px) {
+    .slide-title-accueil {
+        font-size: 4rem;
+    }
+}
+
+/* Petits écrans / mobiles */
+@media (max-width: 768px) {
+    .slide-title-accueil {
+        font-size: 3rem;
+    }
+}
+
+/* Très petits écrans */
+@media (max-width: 480px) {
+    .slide-title-accueil {
+        font-size: 2rem;
+        padding: 0 5px;
+    }
+}
+
 .navigation-desktop {
     width: 100%;
 }

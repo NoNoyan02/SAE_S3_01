@@ -179,7 +179,7 @@ body {
 .bloc-don {
     position: relative;
     width: 100%;
-    height: 450px;
+    height: 40vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -378,7 +378,6 @@ body {
 .stats .texte p {
     font-size: 2em;
     font-weight: normal;
-    font-family: "Georgia", "Times New Roman", serif;
     color: #222;
 }
 
@@ -673,7 +672,6 @@ body {
 }
 
 .engager .texte h3 {
-    font-size: 2em;
     font-weight: 700;
     margin-bottom: 20px;
     color: black;
@@ -746,7 +744,7 @@ body {
     padding: 20px 10px 25px;
     border-radius: 6px;
     text-align: center;
-    font-size: 2em;
+    font-size: 2.25rem;;
     font-weight: 700;
     position: relative;
 }
@@ -828,10 +826,6 @@ body {
     margin: 0 auto;
     gap: 100px;
     flex-wrap: wrap;
-}
-
-.transmettre .donation-image {
-    flex: 1 1 500px;
 }
 
 .transmettre .donation-image img {
