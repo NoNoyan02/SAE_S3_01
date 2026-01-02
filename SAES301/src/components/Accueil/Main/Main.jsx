@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import CroixRougeHomepage from "./CroixRougeHomepage.js";
-import DonationFormVertical from "../../Form/DonationFormVertical.js";
-import DonationFormHorizontal from '../../Form/DonationFormHorizontal.js';
-import NewsletterSection from "../Section/NewsletterSection.js";
+import CroixRougeHomepage from "./CroixRougeHomepage.jsx";
+import DonationFormVertical from "../../Form/DonationFormVertical.jsx";
+import DonationFormHorizontal from '../../Form/DonationFormHorizontal.jsx';
+import NewsletterSection from "../Section/NewsletterSection.jsx";
 import "./Hero.css"
 import "./Wrapper.css"
 
@@ -107,7 +107,7 @@ export default function Main() {
                                 <a href="/israel-gaza-alerte-sur-la-situation-humanitaire/appel-a-dons-pour-gaza-votre-soutien-est-vital"
                                    className="news-top__link">
                                     <img
-                                        src="/SAES301/src/assets/images/enfant_qui_mange_a_table.jpg"
+                                        src="../../../assets/images/Je-donne/enfant_qui_mange_a_table.jpg"
                                         alt=""
                                         loading="lazy"
                                         className="news-top__img"

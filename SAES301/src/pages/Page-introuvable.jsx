@@ -41,7 +41,7 @@ export default function PageIntrouvable() {
 
                         <ul className="error-cards">
                             <li className="error-card">
-                                <a href="/je-donne" className="error-card__link">
+                                <a href="/SAES301/src/pages/Je-donne" className="error-card__link">
                                     <div className="error-card__image">
                                         <img
                                             src="https://images.ctfassets.net/ksb78y40v1oe/3sP6Y85LgDc0UrwUSdKqrf/3f339ca8e13e96b4b90cb91b3e0a20be/Page_Carrefour_Je_donne.png?fm=webp&q=85&w=404&h=350&fit=thumb"
@@ -70,7 +70,7 @@ export default function PageIntrouvable() {
                             </li>
 
                             <li className="error-card">
-                                <a href="/formations" className="error-card__link">
+                                <a href="/SAES301/src/pages/Formations" className="error-card__link">
                                     <div className="error-card__image">
                                         <img
                                             src="https://images.ctfassets.net/ksb78y40v1oe/32PfeiYxRr97nIDRQYQBXV/09360475a35ff1d3c34491ea473ac9f5/formation_psc1.webp?fm=webp&q=85&w=404&h=350&fit=thumb"

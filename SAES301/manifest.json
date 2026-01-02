@@ -17,31 +17,6 @@
       "src": "assets/icon/favicon-32x32.png",
       "sizes": "32x32",
       "type": "image/png"
-    },
-    {
-      "src": "assets/icon/apple-touch-icon.png",
-      "sizes": "180x180",
-      "type": "image/png"
-    },
-    {
-      "src": "assets/icon/favicon.ico",
-      "sizes": "any",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "assets/icon/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
-    },
-    {
-      "src": "assets/icon/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
-    },
-    {
-      "src": "assets/icon/safari-pinned-tab.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
     }
   ]
 }

@@ -2,9 +2,9 @@ import React from "react";
 import {Helmet} from "react-helmet";
 
 // Composants
-import Header from "../components/Header/Header.js";
-import Main from "../components/Accueil/Main/Main.js";
-import Footer from "../components/Footer/Footer.js";
+import Header from "../components/Header/Header.jsx";
+import Main from "../components/Accueil/Main/Main.jsx";
+import Footer from "../components/Footer/Footer.jsx";
 
 export default function Accueil() {
     return (
