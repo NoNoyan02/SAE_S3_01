@@ -1,5 +1,4 @@
 import {useState} from 'react';
-import "./DonationForm.css"
 
 export default function DonationFormHorizontal() {
     const [frequency, setFrequency] = useState('once');

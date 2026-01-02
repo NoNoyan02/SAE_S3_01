@@ -112,15 +112,30 @@ export default function Donation() {
                 <meta property="og:description" content="Soutenez notre association en effectuant un don"/>
             </Helmet>
 
+            {/* DÉBUT DU CSS INTÉGRÉ */}
             <style>{`
-            body{
-            
-    background: #2d8f91;
-    }
+                /* Donation Bar */
+                :root {
+                    --bar-bg-1: #e30219;
+                    --bar-bg-2: #e30219;
+                    --text-color: #ffffff;
+                }
+
+                * {
+                    box-sizing: border-box;
+                }
+
+                body {
+                    margin: 0;
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                    background: #2d8f91; /* Couleur de fond globale pour correspondre au footer */
+                }
+
+                /* video background */
                 .video-container {
                     position: relative;
                     width: 100%;
-                    height: 100%;
+                    height: 100vh;
                     overflow: hidden;
                 }
 
@@ -140,27 +155,27 @@ export default function Donation() {
                     top: 0;
                     left: 0;
                     right: 0;
-                    background: linear-gradient(#e30219, #e30219);
-                    border-bottom: 1px solid rgba(0,0,0,0.06);
+                    background: linear-gradient(var(--bar-bg-1), var(--bar-bg-2));
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
                     padding: 8px 12px;
                     display: flex;
                     align-items: center;
                     justify-content: center;
                     gap: 16px;
                     z-index: 1000;
-                    box-shadow: 0 1px 6px rgba(0,0,0,0.03);
+                    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
                     height: 48px;
                 }
 
-                .donation-text { 
-                    font-size: 14px; 
-                    color: #ffffff; 
-                    white-space: nowrap; 
+                .donation-text {
+                    font-size: 14px;
+                    color: var(--text-color);
+                    white-space: nowrap;
                 }
 
-                .amount { 
-                    font-weight: 700; 
-                    margin-left: 0px; 
+                .amount {
+                    font-weight: 700;
+                    margin-left: 0px;
                 }
 
                 .ticker {
@@ -173,6 +188,14 @@ export default function Donation() {
                     height: 20px;
                 }
 
+                .item {
+                    display: inline-block;
+                    transform: translateY(0);
+                    transition: transform .4s ease, opacity .4s ease;
+                }
+
+                /*---- H1 ----*/
+
                 .header-donation {
                     position: relative;
                     display: flex;
@@ -181,15 +204,23 @@ export default function Donation() {
                     padding: 20px 0;
                 }
 
+                /* Le Logo */
+
+                .logo-link {
+                    display: inline-block;
+                    text-decoration: none;
+                }
+
                 .logo {
                     position: absolute;
+                    margin-top: -30px;
                     left: 40px;
                     width: 100px;
                     height: auto;
                 }
 
                 .header-donation h1 {
-                    font-size: 2rem;
+                    font-size: 2.3rem;
                     font-weight: 800;
                     text-align: center;
                     color: #111;
@@ -201,6 +232,7 @@ export default function Donation() {
                     white-space: nowrap;
                 }
 
+                /* === Bloc rouge === */
                 .header-donation h1 .highlight {
                     background: linear-gradient(180deg, #d53c3c 0%, #b52c2c 100%);
                     color: #fff;
@@ -208,10 +240,12 @@ export default function Donation() {
                     border-radius: 6px 0 0 6px;
                     display: inline-block;
                     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+                    transition: transform 0.25s ease, box-shadow 0.25s ease;
                     margin: 0;
                     vertical-align: middle;
                 }
 
+                /* === Bloc blanc === */
                 .header-donation h1 .whitebox {
                     background: rgba(255, 255, 255, 0.95);
                     color: #000;
@@ -221,70 +255,86 @@ export default function Donation() {
                     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
                     margin: 0;
                     vertical-align: middle;
+                    transition: transform 0.25s ease, box-shadow 0.25s ease;
                 }
+
+                /* === Effet hover commun (optionnel) === */
+                .header-donation h1 span:hover {
+                    transform: scale(1.04);
+                    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+                }
+
+                /*---- Mon soutien ----*/
 
                 .don-section {
                     display: flex;
-                    justify-content: center;
+                    margin-left: 90px;
                     align-items: flex-start;
                     gap: 40px;
+                    margin-top: 100px;
                     background: transparent;
                     position: relative;
                     z-index: 2;
-                    max-width: 1400px;
-                    margin-left: auto;
-                    margin-right: auto;
-                    padding: 0 20px;
-                    margin-bottom: 100px;
                 }
 
                 .don-module {
                     background: #fff;
+                    margin-top: -140px;
                     border-radius: 10px;
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                    width: 380px;
+                    transform: scale(0.8);
+                    overflow: hidden;
+                }
+
+                .don-container {
+                    background: #fff;
+                    border-radius: 10px;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
                     width: 380px;
                     overflow: hidden;
                 }
 
+                /* Bande rouge */
                 .don-header {
                     background: #d40000;
                     color: #fff;
                     text-align: center;
-                    padding: 8px 12px;
+                    padding: 12px 0;
                 }
 
                 .don-header h2 {
                     margin: 0;
-                    font-size: 2rem;
+                    font-size: 1rem;
                     font-weight: 700;
                 }
 
+                /* Onglets */
                 .don-tabs {
                     display: flex;
                     justify-content: space-between;
                     border-bottom: 1px solid #eee;
                 }
 
-                .tab-donation {
+                .tab {
                     flex: 1;
+                    padding: 12px 0;
                     border: none;
                     background: #fff;
                     font-weight: 600;
-                    font-size: 1.2rem;
                     cursor: pointer;
                     border-bottom: 3px solid transparent;
                     transition: all 0.2s ease;
-                    padding: 10px;
                 }
 
-                .tab-donation.active {
+                .tab.active {
                     background: #d40000;
                     color: #fff;
                     border-bottom: 3px solid #d40000;
                     position: relative;
                 }
 
-                .tab-donation.active::after {
+                .tab.active::after {
                     content: "";
                     position: absolute;
                     bottom: -6px;
@@ -302,6 +352,7 @@ export default function Donation() {
                     margin-right: 6px;
                 }
 
+                /* Montants */
                 .don-amounts {
                     display: grid;
                     grid-template-columns: 1fr 1fr;
@@ -317,7 +368,7 @@ export default function Donation() {
                     font-weight: 500;
                     cursor: pointer;
                     transition: all 0.2s ease;
-                    font-size: 1rem;
+                    font-size: 0.85rem;
                 }
 
                 .amount-don:hover {
@@ -329,8 +380,10 @@ export default function Donation() {
                     color: #fff;
                     border-color: #d40000;
                     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+                    transform: translateY(-1px);
                 }
 
+                /* --- Montant libre --- */
                 .custom-amount-box {
                     display: flex;
                     align-items: center;
@@ -351,22 +404,27 @@ export default function Donation() {
                 .euro-symbol {
                     color: #555;
                     font-weight: 600;
-                    font-size: 1rem;
+                    font-size: 0.85rem;
                 }
 
                 .custom-amount-input {
                     border: none;
                     outline: none;
-                    font-size: 1rem;
+                    font-size: 0.85rem;
                     flex: 1;
                     color: #333;
                     background: transparent;
                 }
 
+                .custom-amount-input::placeholder {
+                    color: #666;
+                }
+
+                /* Texte d’infos */
                 .don-info {
                     border-top: 1px solid #eee;
                     padding: 12px;
-                    font-size: 1rem;
+                    font-size: 0.85rem;
                     color: #333;
                     line-height: 1.4;
                 }
@@ -375,22 +433,31 @@ export default function Donation() {
                     color: #d40000;
                 }
 
+                /*Mes coordonnées*/
+
+                /* --- Conteneur principal --- */
                 .don-coordonnees {
                     display: flex;
+                    margin-top: -150px;
                     justify-content: center;
                     gap: 36px;
+                    padding: 30px 0;
                     background: transparent;
                 }
 
+
+                /* --- Carte --- */
                 .coordonnees-card {
                     width: 400px;
+                    transform: scale(0.8);
                     transform-origin: top left;
                     background: #fff;
                     border-radius: 7px;
-                    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+                    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
                     overflow: hidden;
                 }
 
+                /* --- En-tête rouge --- */
                 .card-header {
                     background: #d40000;
                     color: #fff;
@@ -400,14 +467,16 @@ export default function Donation() {
 
                 .card-header h2 {
                     margin: 0;
-                    font-size: 2rem;
+                    font-size: 1rem;
                     font-weight: 700;
                 }
 
+                /* --- Corps du formulaire --- */
                 .card-body {
                     padding: 14px;
                 }
 
+                /* --- Champs du formulaire --- */
                 .form-group-donation {
                     display: flex;
                     flex-direction: column;
@@ -427,7 +496,7 @@ export default function Donation() {
                     border: 1px solid #ddd;
                     border-radius: 5px;
                     padding: 6px;
-                    font-size: 1rem;
+                    font-size: 0.85rem;
                     transition: border-color 0.2s;
                 }
 
@@ -436,6 +505,7 @@ export default function Donation() {
                     outline: none;
                 }
 
+                /* Checkbox / radio inline */
                 .form-group-donation-inline {
                     display: flex;
                     align-items: center;
@@ -444,7 +514,7 @@ export default function Donation() {
                 }
 
                 .manual-address {
-                    font-size: 1rem;
+                    font-size: 0.85rem;
                     color: #000;
                     text-decoration: underline;
                 }
@@ -474,13 +544,18 @@ export default function Donation() {
                 }
 
                 .form-note {
-                    font-size: 1rem;
+                    font-size: 0.8rem;
                     color: #333;
                     margin-top: 8px;
                 }
 
+                /* Mon Règlement */
+
                 .don-reglement {
                     display: flex;
+                    margin-left: -70px;
+                    transform: scale(0.8);
+                    margin-top: -168px;
                     margin-bottom: 0;
                     background: transparent;
                 }
@@ -489,8 +564,15 @@ export default function Donation() {
                     width: 400px;
                     background: #fff;
                     border-radius: 8px;
-                    box-shadow: 0 1px 6px rgba(0,0,0,0.15);
+                    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
                     overflow: hidden;
+                }
+
+                .reglement-card .card-header {
+                    background: #d40000;
+                    color: #fff;
+                    text-align: center;
+                    padding: 10px 0;
                 }
 
                 .payment-methods {
@@ -524,7 +606,7 @@ export default function Donation() {
                     top: 8px;
                     right: 10px;
                     color: #d40000;
-                    font-size: 1rem;
+                    font-size: 1.1rem;
                     font-weight: bold;
                 }
 
@@ -532,6 +614,7 @@ export default function Donation() {
                     border-color: #d40000;
                 }
 
+                /* === Icônes images === */
                 .icon {
                     display: block;
                     width: 40px;
@@ -545,6 +628,7 @@ export default function Donation() {
                     margin-top: 5px;
                 }
 
+                /* Bloc virement */
                 .virement-box {
                     padding: 0 20px 20px 20px;
                 }
@@ -553,12 +637,20 @@ export default function Donation() {
                     margin-bottom: 12px;
                 }
 
+                .virement-box select {
+                    width: 100%;
+                    padding: 8px;
+                    border-radius: 5px;
+                    border: 1px solid #ddd;
+                }
+
                 .virement-infos {
-                    font-size: 1rem;
+                    font-size: 0.9rem;
                     color: #333;
                     line-height: 1.4;
                 }
 
+                /* Bouton principal */
                 .validate-donation {
                     display: flex;
                     justify-content: center;
@@ -585,32 +677,39 @@ export default function Donation() {
                     font-size: 1.2rem;
                 }
 
+                /* Sécurité */
                 .secure-box {
                     display: flex;
                     align-items: flex-start;
                     gap: 10px;
                     padding: 0 20px 20px 20px;
-                    font-size: 1rem;
+                    font-size: 0.85rem;
                     color: #333;
+                }
+
+                .lock {
+                    flex-shrink: 0;
                 }
 
                 .lock-icon {
                     width: 24px;
                     height: 24px;
                     display: block;
-                    margin-top: 0;
+                    margin-top: 20px;
                 }
 
+                /* ===== Footer Accordéon ===== */
                 .don-footer {
-                    position: relative;
-                    bottom: 0;
-                    width: 100%;
                     background: #2d8f91;
                     color: #ffffff;
-                    margin-bottom: 0;
+                    margin-top: -135px;
                     padding: 50px 0;
+                    position: relative;
+                    z-index: 2;
+                    pointer-events: auto;
                 }
 
+                /* --- Conteneur principal --- */
                 .don-footer .footer-inner {
                     max-width: 1100px;
                     margin: 0 auto;
@@ -621,14 +720,16 @@ export default function Donation() {
                     align-items: start;
                 }
 
+                /* --- Bloc accordéon --- */
                 .don-footer .acc {
-                    background: rgba(255,255,255,0.04);
-                    border: 1px solid rgba(255,255,255,0.12);
+                    background: rgba(255, 255, 255, 0.04);
+                    border: 1px solid rgba(255, 255, 255, 0.12);
                     border-radius: 10px;
                     overflow: hidden;
                     transition: box-shadow 0.3s ease, border-color 0.3s ease;
                 }
 
+                /* --- En-tête cliquable --- */
                 .acc-header {
                     width: 100%;
                     text-align: left;
@@ -646,13 +747,15 @@ export default function Donation() {
                 }
 
                 .acc-header:hover {
-                    background: rgba(255,255,255,0.06);
+                    background: rgba(255, 255, 255, 0.06);
                 }
 
+                /* --- Flèche (caret) --- */
                 .acc-caret {
                     transition: transform 0.25s ease;
                 }
 
+                /* --- Corps masqué --- */
                 .acc-body {
                     padding: 0 18px 0;
                     max-height: 0;
@@ -661,12 +764,14 @@ export default function Donation() {
                     transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
                 }
 
+                /* --- Corps ouvert --- */
                 .acc.open .acc-body {
                     max-height: 500px;
                     opacity: 1;
                     padding: 0 18px 16px;
                 }
 
+                /* --- Liste interne --- */
                 .acc-list {
                     margin: 11px 0 0;
                     padding-left: 20px;
@@ -677,8 +782,23 @@ export default function Donation() {
                     line-height: 1.5;
                 }
 
+                /* --- Logos optionnels --- */
+                .acc-logos {
+                    display: flex;
+                    align-items: center;
+                    gap: 16px;
+                    margin-top: 10px;
+                }
+
+                .acc-logos img {
+                    height: 40px;
+                    width: auto;
+                    display: block;
+                }
+
+                /* --- État ouvert --- */
                 .acc.open {
-                    border-color: rgba(255,255,255,0.25);
+                    border-color: rgba(255, 255, 255, 0.25);
                     box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
                 }
 
@@ -686,7 +806,90 @@ export default function Donation() {
                     transform: rotate(180deg);
                 }
 
-                @media (max-width: 1400px) {
+                /* ===== TABLETTES (≤1024px) ===== */
+                @media (max-width: 1024px) {
+                    .header-donation h1 {
+                        font-size: 1.8rem;
+                        margin-top: 50px;
+                    }
+
+                    .logo {
+                        left: 20px;
+                        width: 80px;
+                        margin-top: 10px;
+                    }
+
+                    .don-section {
+                        margin-left: 40px;
+                        gap: 20px;
+                        margin-top: 80px;
+                    }
+
+                    .don-module,
+                    .don-container {
+                        width: 340px;
+                    }
+
+                    .don-coordonnees {
+                        margin-top: -120px;
+                        gap: 20px;
+                    }
+
+                    .coordonnees-card {
+                        width: 350px;
+                    }
+
+                    .don-reglement {
+                        margin-left: -40px;
+                        margin-top: -140px;
+                    }
+
+                    .reglement-card {
+                        width: 350px;
+                    }
+
+                    .don-footer .footer-inner {
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 20px;
+                    }
+                }
+
+                /* ===== MOBILES (≤768px) ===== */
+                @media (max-width: 768px) {
+                    .donation-bar {
+                        padding: 6px 8px;
+                        height: 40px;
+                        gap: 8px;
+                    }
+
+                    .ticker {
+                        min-width: 280px;
+                    }
+
+                    .donation-text {
+                        font-size: 12px;
+                    }
+
+                    .header-donation {
+                        flex-direction: column;
+                        padding: 15px 0;
+                    }
+
+                    .header-donation h1 {
+                        font-size: 1.4rem;
+                        margin-top: 60px;
+                        white-space: normal;
+                        text-align: center;
+                        padding: 0 15px;
+                    }
+
+                    .logo {
+                        position: relative;
+                        left: auto;
+                        margin-top: 25px;
+                        margin-bottom: 10px;
+                    }
+
                     .don-section {
                         flex-direction: column;
                         margin-left: 0;
@@ -695,12 +898,23 @@ export default function Donation() {
                         margin-top: 40px;
                         width: 100%;
                         padding: 0 15px;
+                        box-sizing: border-box;
                     }
 
                     .don-module {
                         margin-top: 0;
+                        transform: scale(1);
                         width: 100%;
                         max-width: 100%;
+                        margin-right: 0;
+                        box-sizing: border-box;
+                    }
+
+                    .don-container {
+                        width: 100%;
+                        max-width: 100%;
+                        margin-right: 0;
+                        box-sizing: border-box;
                     }
 
                     .don-coordonnees {
@@ -710,43 +924,142 @@ export default function Donation() {
                         gap: 20px;
                         width: 100%;
                         padding: 0 15px;
+                        box-sizing: border-box;
                     }
 
                     .coordonnees-card {
+                        transform: scale(1);
                         width: 100%;
                         max-width: 100%;
+                        margin-right: 0;
+                        box-sizing: border-box;
                     }
 
                     .don-reglement {
                         margin-left: 0;
                         margin-top: 20px;
+                        margin-bottom: 20px;
+                        transform: scale(1);
+                        justify-content: center;
                         width: 100%;
                         padding: 0 15px;
+                        box-sizing: border-box;
                     }
 
                     .reglement-card {
                         width: 100%;
                         max-width: 100%;
+                        margin-right: 0;
+                        box-sizing: border-box;
+                    }
+
+                    .payment-methods {
+                        grid-template-columns: 1fr;
+                        gap: 12px;
+                    }
+
+                    .don-footer {
+                        margin-top: 0;
+                        padding: 30px 0;
                     }
 
                     .don-footer .footer-inner {
                         grid-template-columns: 1fr;
+                        gap: 15px;
+                    }
+                }
+
+                /* ===== PETITS MOBILES (≤480px) ===== */
+                @media (max-width: 480px) {
+                    .ticker {
+                        min-width: 200px;
+                    }
+
+                    .header-donation h1 {
+                        font-size: 1.2rem;
+                        margin-top: 50px;
+                    }
+
+                    .header-donation h1 .highlight,
+                    .header-donation h1 .whitebox {
+                        padding: 8px 16px;
+                        display: block;
+                        border-radius: 6px;
+                        margin-bottom: 5px;
+                    }
+
+                    .logo {
+                        margin-top: 30px;
+                    }
+
+                    .don-section,
+                    .don-coordonnees,
+                    .don-reglement {
+                        width: 100%;
+                        padding: 0 10px;
+                        box-sizing: border-box;
+                    }
+
+                    .don-module,
+                    .don-container,
+                    .coordonnees-card,
+                    .reglement-card {
+                        width: 100%;
+                        max-width: 100%;
+                        margin-left: 0;
+                        margin-right: 0;
+                        box-sizing: border-box;
+                    }
+
+                    .don-tabs {
+                        flex-direction: column;
+                    }
+
+                    .tab {
+                        padding: 10px;
+                    }
+
+                    .don-amounts {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .form-row {
+                        flex-direction: column;
+                        gap: 10px;
+                    }
+
+                    .payment-option {
+                        padding: 12px;
                     }
 
                     .icon {
-                        display: block;
-                        width: 40px;
-                        height: 40px;
-                        margin: 0 auto 6px;
-                        object-fit: contain;
+                        width: 30px;
+                        height: 30px;
                     }
 
                     [data-method="google-pay-apple-pay"] .icon {
-                        width: 150px;
-                        margin-top: 5px;
+                        width: 120px;
+                    }
+
+                    .don-reglement {
+                        margin-top: 30px;
+                        margin-bottom: 30px;
+                    }
+
+                    .don-footer {
+                        padding: 25px 0;
+                    }
+
+                    .don-footer .footer-inner {
+                        padding: 0 15px;
+                    }
+
+                    .acc-header {
+                        padding: 12px 15px;
                     }
                 }
             `}</style>
+            {/* FIN DU CSS INTÉGRÉ */}
 
             <div className="video-container">
                 <video autoPlay muted loop playsInline id="background-video">
@@ -765,7 +1078,7 @@ export default function Donation() {
 
                 {/* Header */}
                 <div className="header-donation">
-                    <a href="/protect/public">
+                    <a href="/">
                         <img src="/SAES301/src/assets/images/Donation/Logo_Croix-Rouge_Française.svg"
                              alt="Logo Croix-Rouge Française" className="logo"/>
                     </a>
@@ -785,13 +1098,13 @@ export default function Donation() {
 
                         <div className="don-tabs">
                             <button
-                                className={`tab-donation ${activeTab === "once" ? "active" : ""}`}
+                                className={`tab ${activeTab === "once" ? "active" : ""}`}
                                 onClick={() => handleTabChange("once")}
                             >
                                 Je donne une fois
                             </button>
                             <button
-                                className={`tab-donation ${activeTab === "monthly" ? "active" : ""}`}
+                                className={`tab ${activeTab === "monthly" ? "active" : ""}`}
                                 onClick={() => handleTabChange("monthly")}
                             >
                                 <span className="heart">❤</span> Je donne tous les mois
@@ -955,18 +1268,18 @@ export default function Donation() {
                                     {
                                         method: "card",
                                         label: "Carte bancaire",
-                                        img: "/assets/images/Donation/carte-de-credit.svg"
+                                        img: "/SAES301/src/assets/images/Donation/carte-de-credit.svg"
                                     },
                                     {
                                         method: "google-pay-apple-pay",
                                         label: "Google Pay / Apple Pay",
-                                        img: "/assets/images/Donation/gg-pay-app-pay.svg"
+                                        img: "/SAES301/src/assets/images/Donation/gg-pay-app-pay.svg"
                                     },
-                                    {method: "paypal", label: "PayPal", img: "/assets/images/Donation/paypal.svg"},
+                                    {method: "paypal", label: "PayPal", img: "/SAES301/src/assets/images/Donation/paypal.svg"},
                                     {
                                         method: "virement",
                                         label: "Virement instantané",
-                                        img: "/assets/images/Donation/virement.svg"
+                                        img: "/SAES301/src/assets/images/Donation/virement.svg"
                                     }
                                 ].map(({method, label, img}) => (
                                     <button

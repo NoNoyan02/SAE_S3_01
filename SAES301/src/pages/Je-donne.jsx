@@ -33,7 +33,7 @@ export default function JeDonne() {
             <Header/>
             <nav className="sousnavbar" aria-label="Fil d'Ariane">
                 <ol>
-                    <li><a href="/protect/public">Accueil</a></li>
+                    <li><a href="/">Accueil</a></li>
                     <li>Grâce à vos dons nous pouvons agir</li>
                 </ol>
             </nav>
