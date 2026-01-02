@@ -2,9 +2,9 @@ import React from "react";
 import {Helmet} from "react-helmet";
 
 // Composants
-import Header from "../components/Header/Header.js";
+import Header from "../components/Header/Header.jsx";
 import "../components/Page-Introuvable/Page-Introuvable.css"
-import Footer from "../components/Footer/Footer.js";
+import Footer from "../components/Footer/Footer.jsx";
 
 export default function PageIntrouvable() {
     return (

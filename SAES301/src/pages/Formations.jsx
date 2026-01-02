@@ -2,8 +2,8 @@ import React from "react";
 import {Helmet} from "react-helmet";
 
 // Composants
-import Header from "../components/Header/Header.js";
-import Footer from "../components/Footer/Footer.js";
+import Header from "../components/Header/Header.jsx";
+import Footer from "../components/Footer/Footer.jsx";
 import '../components/Formations/Formations.css';
 
 
