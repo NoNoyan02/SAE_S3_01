@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
 import "./Je-donne.css"
-import DonationFormHorizontal from "../Form/DonationFormHorizontal.js";
+import DonationFormHorizontal from "../Form/DonationFormHorizontal.jsx";
 
 export default function MainJedonne() {
     // États pour le formulaire de don

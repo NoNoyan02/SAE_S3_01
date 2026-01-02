@@ -7,7 +7,7 @@ import Header from "../components/Header/Header.jsx";
 import Footer from "../components/Footer/Footer.jsx";
 import MainJedonne from "../components/Je-donne/MainJedonne.jsx";
 
-export default function Jedonne() {
+export default function JeDonne() {
     return (
         <>
             <Helmet>
