@@ -3,9 +3,9 @@ import {Helmet} from "react-helmet";
 
 
 // Composants
-import Header from "../components/Header/Header.js";
-import Footer from "../components/Footer/Footer.js";
-import MainJedonne from "../components/Je-donne/MainJedonne.js";
+import Header from "../components/Header/Header.jsx";
+import Footer from "../components/Footer/Footer.jsx";
+import MainJedonne from "../components/Je-donne/MainJedonne.jsx";
 
 export default function Jedonne() {
     return (
