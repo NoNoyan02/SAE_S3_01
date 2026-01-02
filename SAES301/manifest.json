@@ -1,0 +1,47 @@
+{
+  "name": "Croix-Rouge française",
+  "short_name": "Croix-Rouge",
+  "description": "La Croix-Rouge française agit pour protéger et relever sans condition les personnes en situation de vulnérabilité et construire avec elles leur résilience.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#d71a28",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "assets/icon/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "assets/icon/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "assets/icon/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "assets/icon/safari-pinned-tab.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
