@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {Menu, Search, User, X} from 'lucide-react';
+// Ajout de ShieldCheck dans les imports pour l'icône Administrateur
+import {Menu, Search, User, X, ShieldCheck} from 'lucide-react';
 
 const Header = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -85,37 +86,6 @@ const Header = () => {
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
                 }
 
-                .slide-title-accueil{
-                    color: white;
-                    font-size: 5rem;
-                    font-weight: bold;
-                    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-                    text-align: center;
-                    padding: 0 10px;
-                }
-
-                /* Tablettes */
-                @media (max-width: 1024px) {
-                    .slide-title-accueil {
-                        font-size: 4rem;
-                    }
-                }
-
-                /* Petits écrans / mobiles */
-                @media (max-width: 768px) {
-                    .slide-title-accueil {
-                        font-size: 3rem;
-                    }
-                }
-
-                /* Très petits écrans */
-                @media (max-width: 480px) {
-                    .slide-title-accueil {
-                        font-size: 2rem;
-                        padding: 0 5px;
-                    }
-                }
-
                 .navigation-desktop {
                     width: 100%;
                 }
@@ -163,6 +133,8 @@ const Header = () => {
                     align-items: center;
                     gap: 0;
                     flex-wrap: nowrap;
+                    /* MODIFICATION ICI : Pousse le menu vers la droite */
+                    margin-left: auto;
                 }
 
                 .nav-item-wrapper {
@@ -877,22 +849,6 @@ const Header = () => {
                     background: var(--color-red-dark);
                 }
 
-                .donation-text-small-mobile {
-                    font-family: inherit;
-                    font-size: 10px;
-                    font-weight: 600;
-                    line-height: 10px;
-                    color: var(--color-white);
-                }
-
-                .donation-text-large-mobile {
-                    font-family: inherit;
-                    font-size: 18px;
-                    font-weight: 600;
-                    line-height: 18px;
-                    color: var(--color-white);
-                }
-
                 /* ==========================================
                    RESPONSIVE BREAKPOINTS
                    ========================================== */
@@ -1012,6 +968,12 @@ const Header = () => {
 
                         {/* RIGHT SECTION */}
                         <div className="right-section">
+
+                            {/* Bouton ADMINISTRATEUR (Nouveau) */}
+                            <a href="/admin" className="donor-space-button donor-space-desktop">
+                                <ShieldCheck className="donor-icon"/> <span>Administrateur</span>
+                            </a>
+
                             {/* Search Bar - Tablette & Desktop */}
                             <div className="search-wrapper">
                                 <input type="search" placeholder="Recherche ..." className="search-input" aria-label="Rechercher sur le site" />
@@ -1078,6 +1040,12 @@ const Header = () => {
                             <form onSubmit={handleLogin}>
                                 {!isLoginMode && (
                                     <>
+                                        {/* NOUVEAU CHAMP : Numéro donateur au-dessus de Nom complet */}
+                                        <div className="form-group">
+                                            <label htmlFor="donorNumber">Numéro donateur</label>
+                                            <input type="text" id="donorNumber" placeholder="Ex: 12345678" />
+                                        </div>
+
                                         <div className="form-group">
                                             <label htmlFor="nom">Nom complet</label>
                                             <input type="text" id="nom" placeholder="Jean Dupont" required/>
