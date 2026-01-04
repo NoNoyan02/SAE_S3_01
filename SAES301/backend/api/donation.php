@@ -37,7 +37,7 @@ try {
     exit;
   }
 
-  // ✅ BONNE CLÉ
+  // les clés
   $donateur = $input["donateur"];
   $don = $input["don"];
 

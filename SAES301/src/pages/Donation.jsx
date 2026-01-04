@@ -1448,4 +1448,88 @@ export default function Donation() {
                                             <option value="socgen">Société Générale</option>
                                             <option value="credit-agricole">Crédit Agricole</option>
                                             <option value="banque-populaire">Banque Populaire</option>
-                     
+                                        </select>
+                                    </div>
+
+                                    <div className="virement-infos">
+                                        <p><strong>Simple et rapide (sans IBAN ni carte bancaire) :</strong></p>
+                                        <ol>
+                                            <li>Sélectionnez votre banque</li>
+                                            <li>Entrez vos identifiants bancaires</li>
+                                            <li>Validez la notification dans votre application</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            )}
+
+                            <button className="validate-donation" onClick={handleValidate}>
+                                JE VALIDE MON DON DE&nbsp;<span>{displayAmount} €</span>
+                            </button>
+
+                            <div className="secure-box">
+                                <img src="/SAES301/src/assets/images/Donation/bouclier.svg" alt="Lock" className="lock-icon"/>
+                                <p>
+                                    Paiements sécurisés avec les derniers protocoles de chiffrement, conçus pour
+                                    respecter
+                                    les normes les plus élevées de l'industrie.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+            </div>
+
+
+            {/* Footer Accordéon */}
+            <footer className="don-footer">
+                <div className="footer-inner">
+                    {[
+                        {
+                            title: "Pourquoi donner ?",
+                            items: [
+                                "La Croix-Rouge française, c'est 160 ans d'histoire aux côtés des plus vulnérables.",
+                                "Vos dons financent les missions prioritaires : urgences, santé, actions sociales.",
+                                "Association reconnue d'intérêt général : 75 % déductibles de l'IR (dans la limite légale)."
+                            ]
+                        },
+                        {
+                            title: "Traitement de vos données personnelles",
+                            items: [
+                                "Données utilisées pour la gestion du don (reçu fiscal, relation donateur, enquêtes).",
+                                "Conformément à la réglementation, vous disposez de droits d'accès, de rectification et d'opposition.",
+                                "Pour en savoir plus, consultez notre politique de protection des données."
+                            ]
+                        },
+                        {
+                            title: "Nous soutenir en toute confiance",
+                            items: [
+                                "Site 100 % sécurisé (chiffrement SSL/TLS, normes de l'industrie).",
+                                "Une équipe donateurs est à votre écoute pour répondre à vos questions.",
+                                "Vos informations de paiement ne sont pas conservées sur nos serveurs."
+                            ]
+                        }
+                    ].map((section, index) => (
+                        <section key={index} className={`acc ${openAccordion === index ? "open" : ""}`}>
+                            <button
+                                className="acc-header"
+                                onClick={() => toggleAccordion(index)}
+                                aria-expanded={openAccordion === index}
+                            >
+                                <span>{section.title}</span>
+                                <span className="acc-caret">▾</span>
+                            </button>
+                            <div className="acc-body">
+                                <ul className="acc-list">
+                                    {section.items.map((item, i) => (
+                                        <li key={i}
+                                            dangerouslySetInnerHTML={{__html: item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}}/>
+                                    ))}
+                                </ul>
+                            </div>
+                        </section>
+                    ))}
+                </div>
+            </footer>
+        </>
+    );
+}

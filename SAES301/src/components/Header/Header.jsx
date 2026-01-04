@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
-import {Menu, Search, User, X} from 'lucide-react';
+import {Menu, Search, User, X, ShieldCheck} from 'lucide-react';
+
 const API_URL = "http://localhost:8000/api";
 
 const Header = () => {
@@ -11,6 +12,16 @@ const Header = () => {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userName, setUserName] = useState('Invité');
+
+    const [formData, setFormData] = useState({
+        donorNumber: "",
+        nom: "",
+        tel: "",
+        email: "",
+        password: ""
+    });
+
+    const [errorMessage, setErrorMessage] = useState("");
 
     const menuItems = [
         {
@@ -49,67 +60,65 @@ const Header = () => {
         setActiveSubMenu(activeSubMenu === index ? null : index);
     };
 
-    const handleLogin = async (e) => {
-    e.preventDefault();
-    setErrorMessage("");
-
-    const endpoint = isLoginMode ? "login.php" : "register.php";
-
-    try {
-        const response = await fetch(`${API_URL}/${endpoint}`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formData)
+    const handleInputChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.id]: e.target.value
         });
+    };
 
-        const data = await response.json();
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setErrorMessage("");
 
-        if (!response.ok) {
-            setErrorMessage(data.error || "Erreur serveur");
+          // ✅ Check front uniquement en mode inscription
+        if (!isLoginMode) {
+            const dn = (formData.donorNumber || "").trim();
+            if (!dn) {
+            setErrorMessage("Veuillez saisir votre numéro donateur.");
             return;
+            }
         }
 
-        setIsLoggedIn(true);
-        setUserName(data.user?.full_name || data.user?.email || formData.email);
-        setLoginOverlayOpen(false);
+        const endpoint = isLoginMode ? "login.php" : "register.php";
 
-        setFormData({
-            nom: "",
-            tel: "",
-            email: "",
-            password: ""
-        });
-    } catch (err) {
-        setErrorMessage("Impossible de contacter le serveur");
-    }
-    };
+        try {
+            const response = await fetch(`${API_URL}/${endpoint}`, {
+method: "POST",
+    headers: { "Content-Type": "application/json" },
+body: JSON.stringify(formData)
+});
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
-    };
+const data = await response.json();
 
-    const [formData, setFormData] = useState({
+if (!response.ok) {
+    setErrorMessage(data.error || "Erreur serveur");
+    return;
+}
+
+setIsLoggedIn(true);
+setUserName(data.user?.full_name || data.user?.email || formData.email);
+setLoginOverlayOpen(false);
+
+setFormData({
+    donorNumber: "",
     nom: "",
     tel: "",
     email: "",
     password: ""
-    });
+});
+} catch (err) {
+    setErrorMessage("Impossible de contacter le serveur");
+}
+};
 
-    const [errorMessage, setErrorMessage] = useState("");
+const handleLogout = () => {
+    setIsLoggedIn(false);
+};
 
-    const handleInputChange = (e) => {
-    setFormData({
-        ...formData,
-        [e.target.id]: e.target.value
-    });
-    };
-
-
-
-    return (
-        <header className="header" role="banner">
-            {/* DÉBUT DU CSS INTÉGRÉ */}
-            <style>{`
+return (
+    <header className="header" role="banner">
+        <style>{`
                 :root {
                     --color-red: #E30613;
                     --color-red-dark: #C5050F;
@@ -130,37 +139,6 @@ const Header = () => {
                     z-index: 1000;
                     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-                }
-
-                .slide-title-accueil{
-                    color: white;
-                    font-size: 5rem;
-                    font-weight: bold;
-                    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-                    text-align: center;
-                    padding: 0 10px;
-                }
-
-                /* Tablettes */
-                @media (max-width: 1024px) {
-                    .slide-title-accueil {
-                        font-size: 4rem;
-                    }
-                }
-
-                /* Petits écrans / mobiles */
-                @media (max-width: 768px) {
-                    .slide-title-accueil {
-                        font-size: 3rem;
-                    }
-                }
-
-                /* Très petits écrans */
-                @media (max-width: 480px) {
-                    .slide-title-accueil {
-                        font-size: 2rem;
-                        padding: 0 5px;
-                    }
                 }
 
                 .navigation-desktop {
@@ -309,7 +287,7 @@ const Header = () => {
                 .right-section {
                     display: none;
                     align-items: center;
-                    gap: 16px;
+                    gap: 8px;
                     flex-shrink: 0;
                 }
 
@@ -923,8 +901,9 @@ const Header = () => {
                 .donation-button-mobile:hover {
                     background: var(--color-red-dark);
                 }
-
+                
                 .donation-text-small-mobile {
+                
                     font-family: inherit;
                     font-size: 10px;
                     font-weight: 600;
@@ -939,10 +918,6 @@ const Header = () => {
                     line-height: 18px;
                     color: var(--color-white);
                 }
-
-                /* ==========================================
-                   RESPONSIVE BREAKPOINTS
-                   ========================================== */
 
                 @media (min-width: 768px) {
                     .right-section {
@@ -1002,254 +977,254 @@ const Header = () => {
                     }
                 }
             `}</style>
-            {/* FIN DU CSS INTÉGRÉ */}
 
-            <nav aria-label="Navigation principale" role="navigation" className="navigation-desktop">
-                <div className="header-container">
-                    <div className="header-content">
-                        {/* LEFT SECTION */}
-                        <div className="left-section">
-                            <a href="/" className="logo-link" aria-label="Retour à l'accueil">
-                                <img src="/crf_logo.svg" alt="Logo de la croix rouge"
-                                     className="logo-icon"/>
-                            </a>
+        <nav aria-label="Navigation principale" role="navigation" className="navigation-desktop">
+            <div className="header-container">
+                <div className="header-content">
+                    <div className="left-section">
+                        <a href="/" className="logo-link" aria-label="Retour à l'accueil">
+                            <img src="/crf_logo.svg" alt="Logo de la croix rouge"
+                                 className="logo-icon"/>
+                        </a>
 
-                            {/* Desktop Nav */}
-                            <nav className="nav-desktop" aria-label="Menu principal">
-                                {menuItems.map((item, index) => (
-                                    <div
-                                        key={index}
-                                        className={`nav-item-wrapper ${activeSubMenu === index ? 'active' : ''}`}
-                                        onMouseEnter={(e) => handleMouseEnter(index, e)}
-                                        onMouseLeave={() => item.subItems && setActiveSubMenu(null)}
-                                    >
-                                        {item.subItems ? (
-                                            <>
-                                                <a
-                                                    href="#"
-                                                    className="nav-item"
-                                                    onClick={(e) => e.preventDefault()}
-                                                >
-                                                    {item.title}
-                                                </a>
-                                                {activeSubMenu === index && (
-                                                    <div
-                                                        className="submenu-desktop"
-                                                        style={{left: `${submenuPosition.left}px`}}
-                                                        onMouseEnter={() => setActiveSubMenu(index)}
-                                                        onMouseLeave={() => setActiveSubMenu(null)}
-                                                    >
-                                                        {item.subItems.map((sub, subIndex) => (
-                                                            <a key={subIndex} href={sub.path} className="nav-item-sub">
-                                                                {sub.title}
-                                                            </a>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </>
-                                        ) : (
-                                            <a href={item.path} className="nav-item">
-                                                {item.title}
-                                            </a>
-                                        )}
-                                    </div>
-                                ))}
-                            </nav>
-                        </div>
-
-                        {/* RIGHT SECTION */}
-                        <div className="right-section">
-                            {/* Search Bar - Tablette & Desktop */}
-                            <div className="search-wrapper">
-                                <input type="search" placeholder="Recherche ..." className="search-input" aria-label="Rechercher sur le site" />
-                                <button className="search-button" aria-label="Lancer la recherche">
-                                    <Search className="search-icon" />
-                                </button>
-                            </div>
-
-                            {/* Donor Space - Desktop avec overlay */}
-                            {!isLoggedIn ? (
-                                <button
-                                    onClick={() => setLoginOverlayOpen(true)}
-                                    className="donor-space-button donor-space-desktop"
+                        <nav className="nav-desktop" aria-label="Menu principal">
+                            {menuItems.map((item, index) => (
+                                <div
+                                    key={index}
+                                    className={`nav-item-wrapper ${activeSubMenu === index ? 'active' : ''}`}
+                                    onMouseEnter={(e) => handleMouseEnter(index, e)}
+                                    onMouseLeave={() => item.subItems && setActiveSubMenu(null)}
                                 >
-                                    <User className="donor-icon"/> <span>Espace donateur</span>
-                                </button>
-                            ) : (
-                                <div className="user-profile-desktop">
-                                    <User className="donor-icon"/>
-                                    <span className="user-name">{userName}</span>
-                                    <button onClick={handleLogout} className="logout-btn">Déconnexion</button>
-                                </div>
-                            )}
-
-                            {/* Donor Space - Tablette/Mobile (redirection) */}
-                            <a href="/espace-donateur" className="donor-space-button donor-space-mobile-tablet">
-                                <User className="donor-icon" /> <span>Espace donateur</span>
-                            </a>
-
-                            <a href="faire-un-don/~mon-don" className="donation-button">
-                                <span className="donation-text-small">Pour soutenir la Croix-Rouge</span>
-                                <span className="donation-text-large">Je fais un don</span>
-                            </a>
-                        </div>
-
-                        {/* MOBILE MENU BUTTON */}
-                        <button
-                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                            className="mobile-menu-button"
-                            aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-                            aria-expanded={mobileMenuOpen}
-                        >
-                            {mobileMenuOpen ? <X className="menu-icon" /> : <Menu className="menu-icon" />}
-                        </button>
-                    </div>
-                </div>
-
-                {/* LOGIN/SIGNUP OVERLAY - Desktop uniquement */}
-                {loginOverlayOpen && (
-                    <div className="login-overlay" onClick={() => setLoginOverlayOpen(false)}>
-                        <div className="login-modal" onClick={(e) => e.stopPropagation()}>
-                            <button
-                                className="close-modal"
-                                onClick={() => setLoginOverlayOpen(false)}
-                            >
-                                <X size={24}/>
-                            </button>
-
-                            <div className="login-header">
-                                <h2>{isLoginMode ? 'Connexion' : 'Inscription'}</h2>
-                                <p>Accédez à votre espace donateur</p>
-                            </div>
-
-                            <form onSubmit={handleLogin}>
-                                {!isLoginMode && (
-                                    <>
-                                        <div className="form-group">
-                                            <label htmlFor="nom">Nom complet</label>
-                                            <input type="text" id="nom" value={formData.nom} placeholder="Jean Dupont" required onChange={handleInputChange}/>
-                                        </div>
-                                        <div className="form-group">
-                                            <label htmlFor="tel">Téléphone</label>
-                                            <input type="tel" id="tel" value={formData.tel} placeholder="06 12 34 56 78" onChange={handleInputChange}/>
-                                        </div>
-                                    </>
-                                )}
-
-                                <div className="form-group">
-                                    <label htmlFor="email">Email</label>
-                                    <input type="email" id="email" value={formData.email} placeholder="exemple@email.com" required onChange={handleInputChange}/>
-                                </div>
-
-                                <div className="form-group">
-                                    <label htmlFor="password">Mot de passe</label>
-                                    <input type="password" id="password" value={formData.password}placeholder="••••••••" required onChange={handleInputChange}/>
-                                </div>
-
-                                {isLoginMode && (
-                                    <a href="#" className="forgot-password">Mot de passe oublié ?</a>
-                                )}
-
-                                {errorMessage && (
-                                <p style={{ color: "red", fontSize: "14px", textAlign: "center" }}>
-                                    {errorMessage}
-                                  </p>
-                                 )}
-
-
-                                <button type="submit" className="submit-btn">
-                                    {isLoginMode ? 'Se connecter' : "S'inscrire"}
-                                </button>
-
-                                <div className="toggle-mode">
-                                    {isLoginMode ? (
-                                        <p>Pas encore de compte ? <button type="button"
-                                                                          onClick={() => setIsLoginMode(false)}>S'inscrire</button>
-                                        </p>
-                                    ) : (
-                                        <p>Déjà un compte ? <button type="button"
-                                                                    onClick={() => setIsLoginMode(true)}>Se
-                                            connecter</button></p>
-                                    )}
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                )}
-
-                {/* MOBILE MENU OVERLAY */}
-                <div
-                    className={`mobile-menu-overlay ${mobileMenuOpen ? 'active' : ''}`}
-                    onClick={() => setMobileMenuOpen(false)}
-                >
-                    <div
-                        className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`}
-                        onClick={(e) => e.stopPropagation()}
-                    >
-                        <div className="mobile-menu-content">
-                            {/* Mobile Search */}
-                            <div className="search-wrapper-mobile">
-                                <input type="search" placeholder="Recherche ..." className="search-input-mobile" />
-                                <button className="search-button-mobile">
-                                    <Search className="search-icon-mobile" />
-                                </button>
-                            </div>
-
-                            {/* Mobile Nav Items */}
-                            <nav className="mobile-nav">
-                                {menuItems.map((item, index) => (
-                                    <div key={index}>
-                                        {item.subItems ? (
-                                            <>
-                                                <div
-                                                    className="nav-item-mobile"
-                                                    onClick={() => toggleSubMenu(index)}
-                                                >
-                                                    {item.title}
-                                                </div>
-                                                {activeSubMenu === index && (
-                                                    <div className="submenu-mobile">
-                                                        {item.subItems.map((sub, subIndex) => (
-                                                            <a
-                                                                key={subIndex}
-                                                                href={sub.path}
-                                                                className="nav-item-mobile-sub"
-                                                                onClick={() => setMobileMenuOpen(false)}
-                                                            >
-                                                                {sub.title}
-                                                            </a>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </>
-                                        ) : (
+                                    {item.subItems ? (
+                                        <>
                                             <a
-                                                href={item.path}
-                                                className="nav-item-mobile"
-                                                onClick={() => setMobileMenuOpen(false)}
+                                                href="#"
+                                                className="nav-item"
+                                                onClick={(e) => e.preventDefault()}
                                             >
                                                 {item.title}
                                             </a>
-                                        )}
-                                    </div>
-                                ))}
-                            </nav>
+                                            {activeSubMenu === index && (
+                                                <div
+                                                    className="submenu-desktop"
+                                                    style={{left: `${submenuPosition.left}px`}}
+                                                    onMouseEnter={() => setActiveSubMenu(index)}
+                                                    onMouseLeave={() => setActiveSubMenu(null)}
+                                                >
+                                                    {item.subItems.map((sub, subIndex) => (
+                                                        <a key={subIndex} href={sub.path} className="nav-item-sub">
+                                                            {sub.title}
+                                                        </a>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <a href={item.path} className="nav-item">
+                                            {item.title}
+                                        </a>
+                                    )}
+                                </div>
+                            ))}
+                        </nav>
+                    </div>
 
-                            {/* Mobile Donor & Donation */}
-                            <a href="/espace-donateur" className="donor-space-button-mobile">
-                                <User className="donor-icon-mobile" /> <span>Espace donateur</span>
-                            </a>
+                    <div className="right-section">
 
-                            <a href="faire-un-don/~mon-don" className="donation-button-mobile">
-                                <span className="donation-text-small-mobile">Pour soutenir la Croix-Rouge</span>
-                                <span className="donation-text-large-mobile">Je fais un don</span>
-                            </a>
+                        <div className="search-wrapper">
+                            <input type="search" placeholder="Recherche ..." className="search-input" aria-label="Rechercher sur le site" />
+                            <button className="search-button" aria-label="Lancer la recherche">
+                                <Search className="search-icon" />
+                            </button>
                         </div>
+
+                        {!isLoggedIn ? (
+                            <button
+                                onClick={() => setLoginOverlayOpen(true)}
+                                className="donor-space-button donor-space-desktop"
+                            >
+                                <User className="donor-icon"/> <span>Espace donateur</span>
+                            </button>
+                        ) : (
+                            <div className="user-profile-desktop">
+                                <User className="donor-icon"/>
+                                <span className="user-name">{userName}</span>
+                                <button onClick={handleLogout} className="logout-btn">Déconnexion</button>
+                            </div>
+                        )}
+
+                        <a href="/admin" className="donor-space-button donor-space-desktop">
+                            <ShieldCheck className="donor-icon"/> <span>Administrateur</span>
+                        </a>
+
+                        <a href="/espace-donateur" className="donor-space-button donor-space-mobile-tablet">
+                            <User className="donor-icon" /> <span>Espace donateur</span>
+                        </a>
+
+                        <a href="faire-un-don/~mon-don" className="donation-button">
+                            <span className="donation-text-small">Pour soutenir la Croix-Rouge</span>
+                            <span className="donation-text-large">Je fais un don</span>
+                        </a>
+                    </div>
+
+                    <button
+                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                        className="mobile-menu-button"
+                        aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                        aria-expanded={mobileMenuOpen}
+                    >
+                        {mobileMenuOpen ? <X className="menu-icon" /> : <Menu className="menu-icon" />}
+                    </button>
+                </div>
+            </div>
+
+            {loginOverlayOpen && (
+                <div className="login-overlay" onClick={() => setLoginOverlayOpen(false)}>
+                    <div className="login-modal" onClick={(e) => e.stopPropagation()}>
+                        <button
+                            className="close-modal"
+                            onClick={() => setLoginOverlayOpen(false)}
+                        >
+                            <X size={24}/>
+                        </button>
+
+                        <div className="login-header">
+                            <h2>{isLoginMode ? 'Connexion' : 'Inscription'}</h2>
+                            <p>Accédez à votre espace donateur</p>
+                        </div>
+
+                        <form onSubmit={handleLogin}>
+                            {!isLoginMode && (
+                                <>
+                                    <div className="form-group">
+                                        <label htmlFor="donorNumber">Numéro donateur</label>
+                                        <input type="text" id="donorNumber" value={formData.donorNumber} placeholder="Ex: 12345678" onChange={handleInputChange}/>
+                                    </div>
+
+                                    <div className="form-group">
+                                        <label htmlFor="nom">Nom complet</label>
+                                        <input type="text" id="nom" value={formData.nom} placeholder="Jean Dupont" required onChange={handleInputChange}/>
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="tel">Téléphone</label>
+                                        <input type="tel" id="tel" value={formData.tel} placeholder="06 12 34 56 78" onChange={handleInputChange}/>
+                                    </div>
+                                </>
+                            )}
+
+                            <div className="form-group">
+                                <label htmlFor="email">Email</label>
+                                <input type="email" id="email" value={formData.email} placeholder="exemple@email.com" required onChange={handleInputChange}/>
+                            </div>
+
+                            <div className="form-group">
+                                <label htmlFor="password">Mot de passe</label>
+                                <input type="password" id="password" value={formData.password}placeholder="••••••••" required onChange={handleInputChange}/>
+                            </div>
+
+                            {isLoginMode && (
+                                <a href="#" className="forgot-password">Mot de passe oublié ?</a>
+                            )}
+
+                            {errorMessage && (
+                                <p style={{ color: "red", fontSize: "14px", textAlign: "center" }}>
+                                    {errorMessage}
+                                </p>
+                            )}
+
+                            <button type="submit" className="submit-btn">
+                                {isLoginMode ? 'Se connecter' : "S'inscrire"}
+                            </button>
+
+                            <div className="toggle-mode">
+                                {isLoginMode ? (
+                                    <p>Pas encore de compte ? <button type="button"
+                                                                      onClick={() => setIsLoginMode(false)}>S'inscrire</button>
+                                    </p>
+                                ) : (
+                                    <p>Déjà un compte ? <button type="button"
+                                                                onClick={() => setIsLoginMode(true)}>Se
+                                        connecter</button></p>
+                                )}
+                            </div>
+                        </form>
                     </div>
                 </div>
-            </nav>
-        </header>
-    );
+            )}
+
+            <div
+                className={`mobile-menu-overlay ${mobileMenuOpen ? 'active' : ''}`}
+                onClick={() => setMobileMenuOpen(false)}
+            >
+                <div
+                    className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="mobile-menu-content">
+                        <div className="search-wrapper-mobile">
+                            <input type="search" placeholder="Recherche ..." className="search-input-mobile" />
+                            <button className="search-button-mobile">
+                                <Search className="search-icon-mobile" />
+                            </button>
+                        </div>
+
+                        <nav className="mobile-nav">
+                            {menuItems.map((item, index) => (
+                                <div key={index}>
+                                    {item.subItems ? (
+                                        <>
+                                            <div
+                                                className="nav-item-mobile"
+                                                onClick={() => toggleSubMenu(index)}
+                                            >
+                                                {item.title}
+                                            </div>
+                                            {activeSubMenu === index && (
+                                                <div className="submenu-mobile">
+                                                    {item.subItems.map((sub, subIndex) => (
+                                                        <a
+                                                            key={subIndex}
+                                                            href={sub.path}
+                                                            className="nav-item-mobile-sub"
+                                                            onClick={() => setMobileMenuOpen(false)}
+                                                        >
+                                                            {sub.title}
+                                                        </a>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <a
+                                            href={item.path}
+                                            className="nav-item-mobile"
+                                            onClick={() => setMobileMenuOpen(false)}
+                                        >
+                                            {item.title}
+                                        </a>
+                                    )}
+                                </div>
+                            ))}
+                        </nav>
+
+                        <a href="/admin" className="donor-space-button-mobile">
+                            <ShieldCheck className="donor-icon-mobile" /> <span>Administrateur</span>
+                        </a>
+
+                        <a href="/espace-donateur" className="donor-space-button-mobile">
+                            <User className="donor-icon-mobile" /> <span>Espace donateur</span>
+                        </a>
+
+                        <a href="faire-un-don/~mon-don" className="donation-button-mobile">
+                            <span className="donation-text-small-mobile">Pour soutenir la Croix-Rouge</span>
+                            <span className="donation-text-large-mobile">Je fais un don</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+);
 };
 
 export default Header;
