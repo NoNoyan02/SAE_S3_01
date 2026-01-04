@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil Test</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header><button id="btnCompte" class="btn-primaire">Compte</button></header>
+
+    <div id="inscription" class="login-request">
+        <div class="login-bloc">
+            <span class="btn-close">&times;</span>
+            <h2>Connexion Admin</h2>
+            <form id="formAdmin">
+                <input type="email" name="email" class="form-input" placeholder="Email" required>
+                <input type="password" name="motdepasse" class="form-input" placeholder="Mot de passe" required>
+                <input type="text" name="pincode" class="form-input" placeholder="Code PIN" maxlength="4" required>
+                <button type="submit" class="btn-submit">Confirmer</button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+DROP TABLE IF EXISTS cagnotte;
+DROP TABLE IF EXISTS administrateur;
+DROP TABLE IF EXISTS utilisateur;
+
+
+CREATE TABLE administrateur (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    motdepasse VARCHAR(100) NOT NULL,
+    pincode VARCHAR(10) NOT NULL,
+    login BOOLEAN DEFAULT FALSE 
+);
+
+
+CREATE TABLE utilisateur (
+    id SERIAL PRIMARY KEY,
+    nomcomplet VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    motdepasse VARCHAR(100) NOT NULL,
+    telephone VARCHAR(20),
+    date_inscription DATE DEFAULT CURRENT_DATE
+);
+
+
+CREATE TABLE cagnotte (
+    id SERIAL PRIMARY KEY,
+    id_utilisateur INT NOT NULL,
+    montant INT NOT NULL,
+    date_don DATE DEFAULT CURRENT_DATE,
+    -- Contrainte de clé étrangère avec suppression en cascade
+    CONSTRAINT FK_id_utilisateur FOREIGN KEY (id_utilisateur) 
+        REFERENCES utilisateur(id) ON DELETE CASCADE
+);
+
+INSERT INTO administrateur (email, motdepasse, pincode) VALUES 
+('admin@gmail.com', 'admin123', '1234'),
+('modo@gmail.com', 'modo123', '0000');
+
+-- Utilisateurs de test
+INSERT INTO utilisateur (nomcomplet, email, motdepasse, telephone) VALUES 
+('Jean Dupont', 'jean@mail.com', 'pass123', '0601010101'),
+('Marie Curie', 'marie@mail.com', 'pass456', '0602020202'),
+('Thomas Edison', 'thomas@mail.com', 'pass789', '0603030303');
+
+INSERT INTO cagnotte (id_utilisateur, montant) VALUES 
+(1, 50),  -- Don de Jean
+(2, 120), -- Don de Marie
+(1, 10);  -- Deuxième don de Jean
+

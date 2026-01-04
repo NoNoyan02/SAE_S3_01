@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Admin</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="admin-bloc">
+        
+        <div class="top-bar">
+            <img src="image.webp" alt="Logo" class="logo-img">
+
+            <div class="titre-bloc">
+                <h1>Tableau de Bord</h1>
+                <span class="badge-admin">ADMIN</span>
+            </div>
+
+            <div class="btn-right">
+                <button id="btnLogout" class="btn-danger">Déconnexion</button>
+            </div>
+        </div>
+
+        <div class="grid-stats">
+            <div class="card"><h3>Admins</h3><div id="statAdmins" class="chiffre">0</div></div>
+            <div class="card"><h3>Utilisateurs créés</h3><div id="statUtilisateur" class="chiffre">0</div></div>
+            <div class="card"><h3>Donateurs</h3><div id="statDonneurs" class="chiffre">0</div></div>
+            <div class="card"><h3>Fonds Récoltés</h3><div id="statArgent" class="chiffre-vert">0 €</div></div>
+        </div>
+
+        <div class="tables-bloc">
+            <div class="table-box">
+                <h2>👮 Statut Admins</h2>
+                <table><thead><tr><th>Email</th><th>État</th></tr></thead><tbody id="bodyAdmins"></tbody></table>
+            </div>
+            <div class="table-box">
+                <h2>💰 Derniers Dons</h2>
+                <table><thead><tr><th>Donateur</th><th>Montant</th></tr></thead><tbody id="bodyDons"></tbody></table>
+            </div>
+            <div class="table-box">
+                <h2>👤 Derniers Inscrits</h2>
+                <table><thead><tr><th>Nom</th><th>Email</th></tr></thead><tbody id="bodyMembres"></tbody></table>
+            </div>
+        </div>
+
+        <h2 class="section-title">Explorateur SQL</h2>
+        <div class="sql-container">
+            <div class="sql-sidebar">
+                <h4 class="tablesSQL">TABLES</h4>
+                <div id="listeTables">Chargement...</div>
+                <div id="detailsColonnes" class="col-details"></div>
+            </div>
+            <div class="sql-main">
+                <textarea id="sqlInput" class="sql-editor" placeholder="Cliquez sur une table à gauche..."></textarea>
+                <div class="exec-bloc">
+                    <button onclick="lancerSQL()" class="btn-exec">Exécuter ▶</button>
+                </div>
+                <div id="resultatSQL" class="sql-result">Résultats ici...</div>
+            </div>
+        </div>
+
+    </div> <script src="admin.js"></script>
+</body>
+</html>
