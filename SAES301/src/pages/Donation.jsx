@@ -1,6 +1,25 @@
 import React, {useEffect, useState} from "react";
 import {Helmet} from "react-helmet";
 
+const API_URL = "http://localhost:8000/api";
+
+async function submitDonation(payload) {
+  const res = await fetch(`${API_URL}/donation.php`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(data.error || "Erreur serveur");
+  }
+
+  return data;
+}
+
+
 export default function Donation() {
     const [activeTab, setActiveTab] = useState("once");
     const [selectedAmount, setSelectedAmount] = useState(null);
@@ -11,6 +30,20 @@ export default function Donation() {
     const [showVirement, setShowVirement] = useState(false);
     const [donorText, setDonorText] = useState("");
     const [openAccordion, setOpenAccordion] = useState(null);
+
+    const [email, setEmail] = useState("");
+    const [civilite, setCivilite] = useState("");
+    const [prenom, setPrenom] = useState("");
+    const [nom, setNom] = useState("");
+    const [telephone, setTelephone] = useState("");
+    const [adresse, setAdresse] = useState("");
+    const [showManualAddress, setShowManualAddress] = useState(false);
+    const [complementAdresse, setComplementAdresse] = useState(""); // Nouveau champ
+    const [codePostal, setCodePostal] = useState("");
+    const [ville, setVille] = useState("");
+    const [pays, setPays] = useState("FRANCE");
+    const [dateNaissance, setDateNaissance] = useState("");
+    const [recuFiscal, setRecuFiscal] = useState("email");
 
     // Calcul fiscal
     const calculerDeductionUnique = (montant) => {
@@ -90,11 +123,52 @@ export default function Donation() {
         setShowVirement(method === "virement");
     };
 
-    // Validation
-    const handleValidate = () => {
-        const amount = customAmount || selectedAmount || 0;
-        alert(`Merci pour votre don de ${amount}€ via ${activePayment} ❤️`);
+    const handleValidate = async () => {
+    const amount = Number(customAmount || selectedAmount || 0);
+
+    // Mini-check front
+    if (!amount || amount <= 0) {
+        alert("Veuillez choisir un montant.");
+        return;
+    }
+
+    // Payload (aligné SQL)
+    const payload = {
+        donateur: {
+        email,
+        civilite,
+        prenom,
+        nom,
+        telephone: telephone || null,
+        adresse,
+        complement_adresse: complementAdresse || null, // optionnel
+        code_postal: codePostal,
+        ville,
+        pays,
+        date_naissance: dateNaissance || null, // optionnel
+        },
+        don: {
+        montant: amount,
+        frequence: activeTab === "monthly" ? "monthly" : "once",
+        moyen_paiement: activePayment,
+        }
     };
+
+    try {
+        const data = await submitDonation(payload);
+
+        // tu gardes ton message comme demandé
+        alert(`Merci pour votre don de ${amount}€ via ${activePayment} ❤️`);
+
+        // optionnel: si ton backend renvoie donor_number etc.
+        console.log("Donation OK:", data);
+    } catch (err) {
+        console.error(err);
+        alert(err.message || "Erreur serveur");
+    }
+    };
+
+
 
     // Accordéon
     const toggleAccordion = (index) => {
@@ -267,14 +341,14 @@ export default function Donation() {
                 /*---- Mon soutien ----*/
 
                 .don-section {
-                    display: flex;
-                    margin-left: 90px;
-                    align-items: flex-start;
-                    gap: 40px;
-                    margin-top: 100px;
-                    background: transparent;
-                    position: relative;
-                    z-index: 2;
+                display: flex;
+                flex-direction: row; /* Aligne tes 3 blocs côte à côte */
+                align-items: flex-start; /* Important pour que chaque bloc garde sa propre hauteur */
+                gap: 40px;
+                margin-top: 200px;
+                position: relative;
+                z-index: 2;
+                /* Supprime toute hauteur fixe ici */
                 }
 
                 .don-module {
@@ -438,7 +512,7 @@ export default function Donation() {
                 /* --- Conteneur principal --- */
                 .don-coordonnees {
                     display: flex;
-                    margin-top: -150px;
+                    margin-top: -200px;
                     justify-content: center;
                     gap: 36px;
                     padding: 30px 0;
@@ -448,13 +522,14 @@ export default function Donation() {
 
                 /* --- Carte --- */
                 .coordonnees-card {
-                    width: 400px;
-                    transform: scale(0.8);
-                    transform-origin: top left;
-                    background: #fff;
-                    border-radius: 7px;
-                    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
-                    overflow: hidden;
+                width: 400px;
+                height: auto; 
+                overflow: visible; /* Très important pour ne pas couper le bas */
+                transform: scale(0.8);
+                transform-origin: top left;
+                background: #fff;
+                border-radius: 7px;
+                box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
                 }
 
                 /* --- En-tête rouge --- */
@@ -474,6 +549,7 @@ export default function Donation() {
                 /* --- Corps du formulaire --- */
                 .card-body {
                     padding: 14px;
+                    height: auto;
                 }
 
                 /* --- Champs du formulaire --- */
@@ -517,6 +593,22 @@ export default function Donation() {
                     font-size: 0.85rem;
                     color: #000;
                     text-decoration: underline;
+                }
+                
+                /* Conteneur caché par défaut */
+                .address-details-accordion {
+                    max-height: 0;
+                    overflow: hidden;
+                    transition: max-height 0.4s cubic-bezier(0, 1, 0, 1); /* Transition fluide */
+                    opacity: 0;
+                }
+
+                /* Quand on ajoute la classe 'open' */
+                .address-details-accordion.open {
+                    max-height: 500px; /* Valeur arbitraire haute pour laisser passer le contenu */
+                    transition: max-height 0.4s ease-in-out;
+                    opacity: 1;
+                    margin-bottom: 10px;
                 }
 
                 .phone-input {
@@ -700,13 +792,14 @@ export default function Donation() {
 
                 /* ===== Footer Accordéon ===== */
                 .don-footer {
-                    background: #2d8f91;
-                    color: #ffffff;
-                    margin-top: -135px;
-                    padding: 50px 0;
-                    position: relative;
-                    z-index: 2;
-                    pointer-events: auto;
+                background: #2d8f91;
+                color: #ffffff;
+                /* REMPLACE margin-top: -135px PAR : */
+                margin-top: 50px; 
+                padding: 10px 0;
+                position: relative;
+                z-index: 2;
+                clear: both; /* Sécurité pour forcer le passage en dessous */
                 }
 
                 /* --- Conteneur principal --- */
@@ -1180,7 +1273,7 @@ export default function Donation() {
                             <form className="card-body">
                                 <div className="form-group-donation">
                                     <label htmlFor="email">Email *</label>
-                                    <input type="email" id="email" placeholder="Votre adresse email" required/>
+                                    <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}placeholder="Votre adresse email" required/>
                                 </div>
 
                                 <div className="form-group-donation-inline">
@@ -1190,7 +1283,7 @@ export default function Donation() {
 
                                 <div className="form-group-donation">
                                     <label htmlFor="civility">Civilité *</label>
-                                    <select id="civility" required>
+                                    <select id="civility" value={civilite} onChange={(e) => setCivilite(e.target.value)} required>
                                         <option value="">Sélectionnez</option>
                                         <option value="Mme">Madame</option>
                                         <option value="M.">Monsieur</option>
@@ -1201,17 +1294,17 @@ export default function Donation() {
                                 <div className="form-row">
                                     <div className="form-group-donation half">
                                         <label htmlFor="firstname">Prénom *</label>
-                                        <input type="text" id="firstname" required/>
+                                        <input type="text" id="firstname" value={prenom} onChange={(e) => setPrenom(e.target.value)} required/>
                                     </div>
                                     <div className="form-group-donation half">
                                         <label htmlFor="lastname">Nom *</label>
-                                        <input type="text" id="lastname" required/>
+                                        <input type="text" id="lastname" value={nom} onChange={(e) => setNom(e.target.value)} required/>
                                     </div>
                                 </div>
 
                                 <div className="form-group-donation">
                                     <label htmlFor="country">Pays *</label>
-                                    <select id="country" required>
+                                    <select id="country" value={pays} onChange={(e) => setPays(e.target.value)}required>
                                         <option value="France">FRANCE</option>
                                         <option value="Belgique">BELGIQUE</option>
                                         <option value="Suisse">SUISSE</option>
@@ -1222,23 +1315,74 @@ export default function Donation() {
 
                                 <div className="form-group-donation">
                                     <label htmlFor="address">Adresse *</label>
-                                    <input type="text" id="address" placeholder="Commencez à taper votre adresse..."
-                                           required/>
-                                    <a href="#" className="manual-address">Cliquez ici pour saisir votre adresse
-                                        manuellement</a>
+                                    <input 
+                                        type="text" 
+                                        id="address" 
+                                        value={adresse} 
+                                        onChange={(e) => setAdresse(e.target.value)} 
+                                        placeholder="Commencez à taper votre adresse..."
+                                        required
+                                    />
+                                    {/* On change le lien par un bouton/lien qui bascule l'état */}
+                                    {!showManualAddress && (
+                                        <a 
+                                            href="#!" 
+                                            className="manual-address" 
+                                            onClick={(e) => { e.preventDefault(); setShowManualAddress(true); }}
+                                        >
+                                            Cliquez ici pour saisir votre adresse manuellement
+                                        </a>
+                                    )}
                                 </div>
 
-                                <div className="form-group-donation">
-                                    <label htmlFor="phone">Téléphone</label>
-                                    <div className="phone-input">
-                                        <span className="flag">🇫🇷</span>
-                                        <input type="tel" id="phone" placeholder="06 12 34 56 78"/>
+                                {/* Bloc qui se déroule */}
+                                <div className={`address-details-accordion ${showManualAddress ? 'open' : ''}`}>
+                                    <div className="form-group-donation">
+                                        <label htmlFor="complement">Complément d'adresse</label>
+                                        <input 
+                                            type="text" 
+                                            id="complement" 
+                                            value={complementAdresse} 
+                                            onChange={(e) => setComplementAdresse(e.target.value)} 
+                                            placeholder="Appartement, étage, bâtiment..."
+                                        />
+                                    </div>
+
+                                    <div className="form-row">
+                                        <div className="form-group-donation half">
+                                            <label htmlFor="zipcode">Code Postal *</label>
+                                            <input 
+                                                type="text" 
+                                                id="zipcode" 
+                                                value={codePostal} 
+                                                onChange={(e) => setCodePostal(e.target.value)} 
+                                                required={showManualAddress}
+                                            />
+                                        </div>
+                                        <div className="form-group-donation half">
+                                            <label htmlFor="city">Ville *</label>
+                                            <input 
+                                                type="text" 
+                                                id="city" 
+                                                value={ville} 
+                                                onChange={(e) => setVille(e.target.value)} 
+                                                required={showManualAddress}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div className="form-group-donation">
-                                    <label htmlFor="birthdate">Date de naissance</label>
-                                    <input type="text" id="birthdate" placeholder="jj/mm/aaaa" maxLength="10"/>
+                                    <label htmlFor="phone">Téléphone *</label>
+                                    <div className="phone-input">
+                                        <span className="flag">🇫🇷</span>
+                                        <input type="tel" id="phone" value={telephone} onChange={(e) => setTelephone(e.target.value)} placeholder="06 12 34 56 78"/>
+                                    </div>
+                                </div>
+
+                                <div className="form-group-donation">
+                                    <label htmlFor="birthdate">Date de naissance *</label>
+                                    <input type="text" id="birthdate" value={dateNaissance} onChange={(e) => setDateNaissance(e.target.value)} placeholder="jj/mm/aaaa" maxLength="10"/>
                                 </div>
 
                                 <fieldset className="form-group-donation-donation">
@@ -1304,88 +1448,4 @@ export default function Donation() {
                                             <option value="socgen">Société Générale</option>
                                             <option value="credit-agricole">Crédit Agricole</option>
                                             <option value="banque-populaire">Banque Populaire</option>
-                                        </select>
-                                    </div>
-
-                                    <div className="virement-infos">
-                                        <p><strong>Simple et rapide (sans IBAN ni carte bancaire) :</strong></p>
-                                        <ol>
-                                            <li>Sélectionnez votre banque</li>
-                                            <li>Entrez vos identifiants bancaires</li>
-                                            <li>Validez la notification dans votre application</li>
-                                        </ol>
-                                    </div>
-                                </div>
-                            )}
-
-                            <button className="validate-donation" onClick={handleValidate}>
-                                JE VALIDE MON DON DE&nbsp;<span>{displayAmount} €</span>
-                            </button>
-
-                            <div className="secure-box">
-                                <img src="/SAES301/src/assets/images/Donation/bouclier.svg" alt="Lock" className="lock-icon"/>
-                                <p>
-                                    Paiements sécurisés avec les derniers protocoles de chiffrement, conçus pour
-                                    respecter
-                                    les normes les plus élevées de l'industrie.
-                                </p>
-                            </div>
-                        </div>
-                    </section>
-                </section>
-            </div>
-
-
-            {/* Footer Accordéon */}
-            <footer className="don-footer">
-                <div className="footer-inner">
-                    {[
-                        {
-                            title: "Pourquoi donner ?",
-                            items: [
-                                "La Croix-Rouge française, c'est 160 ans d'histoire aux côtés des plus vulnérables.",
-                                "Vos dons financent les missions prioritaires : urgences, santé, actions sociales.",
-                                "Association reconnue d'intérêt général : 75 % déductibles de l'IR (dans la limite légale)."
-                            ]
-                        },
-                        {
-                            title: "Traitement de vos données personnelles",
-                            items: [
-                                "Données utilisées pour la gestion du don (reçu fiscal, relation donateur, enquêtes).",
-                                "Conformément à la réglementation, vous disposez de droits d'accès, de rectification et d'opposition.",
-                                "Pour en savoir plus, consultez notre politique de protection des données."
-                            ]
-                        },
-                        {
-                            title: "Nous soutenir en toute confiance",
-                            items: [
-                                "Site 100 % sécurisé (chiffrement SSL/TLS, normes de l'industrie).",
-                                "Une équipe donateurs est à votre écoute pour répondre à vos questions.",
-                                "Vos informations de paiement ne sont pas conservées sur nos serveurs."
-                            ]
-                        }
-                    ].map((section, index) => (
-                        <section key={index} className={`acc ${openAccordion === index ? "open" : ""}`}>
-                            <button
-                                className="acc-header"
-                                onClick={() => toggleAccordion(index)}
-                                aria-expanded={openAccordion === index}
-                            >
-                                <span>{section.title}</span>
-                                <span className="acc-caret">▾</span>
-                            </button>
-                            <div className="acc-body">
-                                <ul className="acc-list">
-                                    {section.items.map((item, i) => (
-                                        <li key={i}
-                                            dangerouslySetInnerHTML={{__html: item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}}/>
-                                    ))}
-                                </ul>
-                            </div>
-                        </section>
-                    ))}
-                </div>
-            </footer>
-        </>
-    );
-}
+                     

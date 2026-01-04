@@ -3,6 +3,7 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Access-Control-Allow-Methods: POST, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 if ($_SERVER["REQUEST_METHOD"] === "OPTIONS") {
   http_response_code(204);
@@ -17,120 +18,148 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 require_once __DIR__ . "/../config/db.php";
 
-$input = json_decode(file_get_contents("php://input"), true) ?? [];
-
-/**
- * Champs venant du formulaire donation (adapté à ta capture)
- * - montant (obligatoire)
- * - periodicite: "once" | "monthly" (obligatoire)
- * - email (obligatoire)
- * - civilite, prenom, nom, pays, tel (obligatoires)
- * - adresse, complement_adresse (complement optionnel)
- * - code_postal, ville (obligatoires)
- * - date_naissance (optionnel selon toi)
- * - recu_fiscal: "email" | "courrier" (obligatoire)
- * - mode_paiement: "card" | "paypal" | "gpay" | "virement" (obligatoire)
- * - entreprise: 0/1 (optionnel)
- */
-
-$montant = (float)($input["montant"] ?? 0);
-$periodicite = trim($input["periodicite"] ?? ""); // once|monthly
-$email = strtolower(trim($input["email"] ?? ""));
-
-$civilite = trim($input["civilite"] ?? "");
-$prenom = trim($input["prenom"] ?? "");
-$nom = trim($input["nom"] ?? "");
-$pays = trim($input["pays"] ?? "FRANCE");
-$tel = trim($input["tel"] ?? "");
-
-$adresse = trim($input["adresse"] ?? "");
-$complement = trim($input["complement_adresse"] ?? ""); // optionnel
-$code_postal = trim($input["code_postal"] ?? "");
-$ville = trim($input["ville"] ?? "");
-
-$date_naissance = trim($input["date_naissance"] ?? "");
-$recu_fiscal = trim($input["recu_fiscal"] ?? ""); // email|courrier
-
-$mode_paiement = trim($input["mode_paiement"] ?? ""); // card|paypal|gpay|virement
-$entreprise = (int)($input["entreprise"] ?? 0);
-
-if ($montant <= 0 || $email === "" || $periodicite === "" || $mode_paiement === "") {
-  http_response_code(400);
-  echo json_encode(["error" => "Champs manquants (montant/email/périodicité/mode_paiement)"]);
-  exit;
-}
-
-if ($prenom === "" || $nom === "" || $tel === "" || $adresse === "" || $code_postal === "" || $ville === "" || $recu_fiscal === "") {
-  http_response_code(400);
-  echo json_encode(["error" => "Champs manquants (coordonnées)"]);
-  exit;
-}
-
 try {
+  $input = json_decode(file_get_contents("php://input"), true);
+
+  if (!is_array($input)) {
+    http_response_code(400);
+    echo json_encode(["error" => "JSON invalide"]);
+    exit;
+  }
+
+  if (
+    !isset($input["donateur"], $input["don"]) ||
+    !is_array($input["donateur"]) ||
+    !is_array($input["don"])
+  ) {
+    http_response_code(400);
+    echo json_encode(["error" => "Payload invalide (donateur/don manquants)"]);
+    exit;
+  }
+
+  // ✅ BONNE CLÉ
+  $donateur = $input["donateur"];
+  $don = $input["don"];
+
+  /* ====== Mapping DONATEURS (colonnes SQL) ====== */
+  $email = strtolower(trim($donateur["email"] ?? ""));
+  $civilite = trim($donateur["civilite"] ?? ""); // "Madame" | "Monsieur" | "Autre"
+  $prenom = trim($donateur["prenom"] ?? "");
+  $nom = trim($donateur["nom"] ?? "");
+  $telephone = trim($donateur["telephone"] ?? "");
+  $adresse = trim($donateur["adresse"] ?? "");
+  $code_postal = trim($donateur["code_postal"] ?? "");
+  $ville = trim($donateur["ville"] ?? "");
+  $pays = trim($donateur["pays"] ?? "");
+  $date_naissance = trim($donateur["date_naissance"] ?? "");
+
+  /* ====== Mapping DONS (colonnes SQL) ====== */
+  $montant = (float)($don["montant"] ?? 0);
+  $frequence = trim($don["frequence"] ?? "");           // "once" | "monthly"
+  $moyen_paiement = trim($don["moyen_paiement"] ?? ""); // "card" | "paypal" | ...
+
+  $frequence = trim(strtolower($frequence));
+  if (!in_array($frequence, ["once", "monthly"], true)) {
+    http_response_code(400);
+    echo json_encode(["error" => "Frequence invalide"]);
+    exit;
+  }
+
+
+  /* ====== Validations minimales ====== */
+  if ($montant <= 0) {
+    http_response_code(400);
+    echo json_encode(["error" => "Montant invalide"]);
+    exit;
+  }
+
+  if ($frequence === "" || $moyen_paiement === "") {
+    http_response_code(400);
+    echo json_encode(["error" => "Champs manquants (frequence / moyen_paiement)"]);
+    exit;
+  }
+
+  if ($email === "" || $civilite === "" || $prenom === "" || $nom === "" || $adresse === "" || $code_postal === "" || $ville === "" || $pays === "") {
+    http_response_code(400);
+    echo json_encode(["error" => "Champs manquants (coordonnées)"]);
+    exit;
+  }
+
+  $moyen_paiement = trim(strtolower($moyen_paiement));
+  $allowed = ["card", "paypal", "virement", "google-pay-apple-pay"];
+  if (!in_array($moyen_paiement, $allowed, true)) {
+    http_response_code(400);
+    echo json_encode(["error" => "moyen_paiement invalide"]);
+    exit;
+  }
+
+
+  // Conversion date_naissance JJ/MM/AAAA -> YYYY-MM-DD
+  if ($date_naissance !== "") {
+    $dt = DateTime::createFromFormat("d/m/Y", $date_naissance);
+    if ($dt === false) {
+      http_response_code(400);
+      echo json_encode(["error" => "Format de date invalide (attendu JJ/MM/AAAA)"]);
+      exit;
+    }
+    $date_naissance = $dt->format("Y-m-d");
+  } else {
+    $date_naissance = null;
+  }
+
   $pdo->beginTransaction();
 
-  // 1) Trouver donateur existant par email (simple)
-  // (Tu peux aussi décider phone/email)
+  // 1) Chercher donateur par email
   $stmt = $pdo->prepare("SELECT id, donor_number FROM donateurs WHERE email = :email LIMIT 1");
   $stmt->execute([":email" => $email]);
-  $donateur = $stmt->fetch();
+  $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
-  if (!$donateur) {
+  if (!$existing) {
     // 2) Créer donateur
-    $donor_number = strtoupper(bin2hex(random_bytes(4))); // ex: 8 hex chars
-    // si tu veux un format genre CRF-2026-XXXX, dis-moi
+    $donor_number = strtoupper(bin2hex(random_bytes(4)));
 
     $stmt = $pdo->prepare("
       INSERT INTO donateurs (
-        donor_number, civilite, prenom, nom, email, phone,
-        adresse, complement_adresse, code_postal, ville, pays,
-        date_naissance, entreprise, recu_fiscal
-      )
-      VALUES (
-        :donor_number, :civilite, :prenom, :nom, :email, :phone,
-        :adresse, :complement, :code_postal, :ville, :pays,
-        :date_naissance, :entreprise, :recu_fiscal
+        donor_number, email, civilite, prenom, nom, telephone, adresse,
+        code_postal, ville, pays, date_naissance
+      ) VALUES (
+        :donor_number, :email, :civilite, :prenom, :nom, :telephone, :adresse,
+        :code_postal, :ville, :pays, :date_naissance
       )
     ");
 
     $stmt->execute([
       ":donor_number" => $donor_number,
+      ":email" => $email,
       ":civilite" => $civilite,
       ":prenom" => $prenom,
       ":nom" => $nom,
-      ":email" => $email,
-      ":phone" => $tel,
+      ":telephone" => ($telephone !== "" ? $telephone : null),
       ":adresse" => $adresse,
-      ":complement" => ($complement !== "" ? $complement : null),
       ":code_postal" => $code_postal,
       ":ville" => $ville,
       ":pays" => $pays,
-      ":date_naissance" => ($date_naissance !== "" ? $date_naissance : null),
-      ":entreprise" => $entreprise,
-      ":recu_fiscal" => $recu_fiscal
+      ":date_naissance" => $date_naissance,
     ]);
 
     $donateur_id = (int)$pdo->lastInsertId();
-    $donor_number_created = $donor_number;
+    $donor_number_used = $donor_number;
   } else {
-    $donateur_id = (int)$donateur["id"];
-    $donor_number_created = $donateur["donor_number"];
+    $donateur_id = (int)$existing["id"];
+    $donor_number_used = $existing["donor_number"];
   }
 
   // 3) Créer don
   $stmt = $pdo->prepare("
-    INSERT INTO dons (
-      donateur_id, montant, periodicite, mode_paiement, statut
-    )
-    VALUES (:donateur_id, :montant, :periodicite, :mode_paiement, :statut)
+    INSERT INTO dons (donateur_id, montant, frequence, moyen_paiement)
+    VALUES (:donateur_id, :montant, :frequence, :moyen_paiement)
   ");
 
   $stmt->execute([
     ":donateur_id" => $donateur_id,
     ":montant" => $montant,
-    ":periodicite" => $periodicite,
-    ":mode_paiement" => $mode_paiement,
-    ":statut" => "PENDING" // vu que tu ne fais pas un vrai paiement
+    ":frequence" => $frequence,
+    ":moyen_paiement" => $moyen_paiement
   ]);
 
   $don_id = (int)$pdo->lastInsertId();
@@ -141,11 +170,17 @@ try {
     "ok" => true,
     "don_id" => $don_id,
     "donateur_id" => $donateur_id,
-    "donor_number" => $donor_number_created,
-    "statut" => "PENDING"
+    "donor_number" => $donor_number_used
   ]);
 } catch (Throwable $e) {
-  if ($pdo->inTransaction()) $pdo->rollBack();
+  if (isset($pdo) && $pdo->inTransaction()) {
+    $pdo->rollBack();
+  }
   http_response_code(500);
-  echo json_encode(["error" => "Server error"]);
+  echo json_encode([
+    "error" => $e->getMessage(),
+    "file"  => $e->getFile(),
+    "line"  => $e->getLine()
+  ]);
+  exit;
 }
