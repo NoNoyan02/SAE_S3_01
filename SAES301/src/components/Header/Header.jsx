@@ -133,8 +133,6 @@ const Header = () => {
                     align-items: center;
                     gap: 0;
                     flex-wrap: nowrap;
-                    /* MODIFICATION ICI : Pousse le menu vers la droite */
-                    margin-left: auto;
                 }
 
                 .nav-item-wrapper {
