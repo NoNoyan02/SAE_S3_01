@@ -1,5 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
 import DonationFormHorizontal from "../Form/DonationFormHorizontal.jsx";
+import Alex_Bonnemaison from "assets/images/je-donne/Alex_Bonnemaison.webp";
+import LC_20374 from "assets/images/Je-donne/LC_20374.webp";
+import Page_carrefour_Cagnotte_solidaire_Guillaume_BINET from "assets/images/je-donne/Page_carrefour_Cagnotte_solidaire_Guillaume_BINET"
 
 export default function MainJedonne() {
     // États pour le formulaire de don
@@ -1452,7 +1455,7 @@ export default function MainJedonne() {
 
             <div className="bloc-don">
                 <img
-                    src="/assets/images/Je-donne/Page_Carrefour_Je_donne.webp"
+                    src="/SAES301/src/assets/images/je-donne/Page_Carrefour_Je_donne.webp"
                     alt="Je donne"
                     className="bloc-don-image"
                 />
@@ -1541,7 +1544,7 @@ export default function MainJedonne() {
                     <div className="sections-bloc">
                         <img
                             alt="Bénévole distribuant de la nourriture"
-                            src="assets/images/Je-donne/Page_Carrefour_Je_donne(1).webp"
+                            src="assets/images/Je-donne/Page_Carrefour_Je_donne.webp"
                         />
                         <div className="texte">
                             <p>Soutenez les actions de la Croix-Rouge française</p>
@@ -1553,7 +1556,7 @@ export default function MainJedonne() {
                     <div className="sections-bloc">
                         <img
                             alt="Bénévole aidant des personnes en difficulté"
-                            src="assets/images/Je-donne/Page_carrefour_Don_r__gulier.webp"
+                            src="../../assets/images/je-donne/Page_carrefour_Don_regulier.webp"
                         />
                         <div className="texte">
                             <p>Choisissez le don par prélèvement automatique</p>
@@ -1615,7 +1618,7 @@ export default function MainJedonne() {
                             <div className="sections-bloc">
                                 <img
                                     alt="Bénévole avec un enfant"
-                                    src="assets/images/Je-donne/Cr_dits_photo_Alex_Bonnemaison_droits_c_d_s_jusqu-au_5_f_vrier_2026_EBP_Chatenay__2_.webp"
+                                    src={Alex_Bonnemaison}
                                 />
                                 <div className="texte">
                                     <h3>Soutenez nos actions durablement</h3>
@@ -1639,7 +1642,7 @@ export default function MainJedonne() {
                             <div className="sections-bloc">
                                 <img
                                     alt="Bénévole portant un enfant"
-                                    src="assets/images/Je-donne/Page_carrefour_Cagnotte_solidaire_Guillaume_BINET.webp"
+                                    src={Page_carrefour_Cagnotte_solidaire_Guillaume_BINET}
                                 />
                                 <div className="texte">
                                     <h3>Organisez une collecte de fonds</h3>
@@ -1661,7 +1664,7 @@ export default function MainJedonne() {
                     <div className="sections-bloc">
                         <img
                             alt="Bénévole tenant une boutique de vêtements"
-                            src="assets/images/Je-donne/Page_carrefour_Don_v__tements.webp"
+                            src="../../assets/images/je-donne/Page_carrefour_Don_vetements.webp"
                         />
                         <div className="texte">
                             <h3>Offrez une seconde vie à vos vêtements</h3>
@@ -1709,7 +1712,7 @@ export default function MainJedonne() {
                     <div className="donation-image">
                         <img
                             alt="Bénévoles portant un bébé"
-                            src="assets/images/Je-donne/LC_20374.webp"
+                            src={LC_20374}
                         />
                     </div>
                     <div className="contenu">
@@ -1755,7 +1758,7 @@ export default function MainJedonne() {
                     <div className="philanthrope-image">
                         <img
                             alt="Bénévole avec un enfant"
-                            src="assets/images/Je-donne/Cr_dits_photo_Alex_Bonnemaison_droits_c_d_s_jusqu-au_5_f_vrier_2026_EBP_Chatenay__2_(1).webp"
+                            src={Alex_Bonnemaison}
                         />
                     </div>
                 </div>

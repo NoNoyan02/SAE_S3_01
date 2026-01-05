@@ -1,11 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet';
 
+
 // Import des composants globaux
 import Header from "../components/Header/Header.jsx";
 import Footer from "../components/Footer/Footer.jsx";
 // Assurez-vous que le chemin est bon par rapport à votre structure
 import DonationFormHorizontal from "../components/Form/DonationFormHorizontal.jsx";
+import LC_20374 from "assets/images/je-donne/LC_20374.webp";
+import Alex_Bonnemaison from "assets/images/je-donne/Alex_Bonnemaison.webp";
+import Page_carrefour_Cagnotte_solidaire_Guillaume_BINET from "assets/images/je-donne/Page_carrefour_Cagnotte_solidaire_Guillaume_BINET"
+import Page_Carrefour_Don_financement_participatif from "assets/images/je-donne/Page_Carrefour_Don_financement_participatif"
+import Page_Carrefour_Don_IFI_Guillaume_BINET from "{assets/images/je-donne/Page_Carrefour_Don_IFI_Guillaume_BINET.webp";
+import Page_carrefour_Don_regulier from "{assets/images/je-donne/Page_carrefour_Don_regulier.webp";
+import Page_carrefour_Don_titres_restaurant from "{assets/images/je-donne/Page_carrefour_Don_titres_restaurant.webp";
+import Page_carrefour_Don_vetements from "{assets/images/je-donne/Page_carrefour_Don_vetements.webp";
+import Page_Carrefour_Je_donne from "{assets/images/je-donne/Page_Carrefour_Je_donne.webp";
+
 
 export default function JeDonne() {
     // --- ETATS (STATE) ---
@@ -466,7 +477,7 @@ export default function JeDonne() {
                 {/* 1. Hero Section */}
                 <div className="bloc-don">
                     {/* Les images dans public/ s'appellent avec /assets/... */}
-                    <img className="bloc-don-image" src="/assets/images/Je-donne/Page_Carrefour_Je_donne.webp" alt="Fond don" />
+                    <img className="bloc-don-image" src={Page_Carrefour_Je_donne} alt="Fond don" />
 
                     <div className="section-hero">
                         <h1 className="hero-title">Grâce à vos dons nous<br/>pouvons agir</h1>
@@ -543,14 +554,14 @@ export default function JeDonne() {
                     <h2 className="titre">C'est grâce à <span className="surligne">vos dons</span> que nous pouvons agir</h2>
                     <div className="blocs">
                         <div className="sections-bloc">
-                            <img src="/assets/images/Je-donne/Page_Carrefour_Je_donne(1).webp" alt="Action" />
+                            <img src={Page_Carrefour_Je_donne} alt="Action" />
                             <div className="texte">
                                 <p>Soutenez les actions de la Croix-Rouge française</p>
                                 <a href="#" className="btn-outline">Je fais un don</a>
                             </div>
                         </div>
                         <div className="sections-bloc">
-                            <img src="/assets/images/Je-donne/Page_carrefour_Don_r__gulier.webp" alt="Régulier" />
+                            <img src={Page_carrefour_Don_regulier} alt="Régulier" />
                             <div className="texte">
                                 <p>Choisissez le don par prélèvement automatique</p>
                                 <a href="#" className="btn-outline">Je fais un don régulier</a>
@@ -575,19 +586,19 @@ export default function JeDonne() {
                         <div className="affichage-carrousel">
                             <div className="mouvement-carrousel track" ref={trackRef}>
                                 <div className="sections-bloc">
-                                    <img src="/assets/images/Je-donne/Page_Carrefour_Don_IFI_Guillaume_BINET.webp" alt="IFI" />
+                                    <img src={Page_Carrefour_Don_IFI_Guillaume_BINET} alt="IFI" />
                                     <div className="texte"><h3>Don IFI</h3><a href="#" className="btn-outline">Je donne</a></div>
                                 </div>
                                 <div className="sections-bloc">
-                                    <img src="/assets/images/Je-donne/Cr_dits_photo_Alex_Bonnemaison_droits_c_d_s_jusqu-au_5_f_vrier_2026_EBP_Chatenay__2_.webp" alt="Philanthrope" />
+                                    <img src={Alex_Bonnemaison} alt="Philanthrope" />
                                     <div className="texte"><h3>Philanthropie</h3><a href="#" className="btn-outline">Je m'engage</a></div>
                                 </div>
                                 <div className="sections-bloc">
-                                    <img src="/assets/images/Je-donne/Page_carrefour_Don_titres_restaurant.webp" alt="Titres resto" />
+                                    <img src={Page_carrefour_Don_titres_restaurant} alt="Titres resto" />
                                     <div className="texte"><h3>Titres Resto</h3><a href="#" className="btn-outline">Je donne</a></div>
                                 </div>
                                 <div className="sections-bloc">
-                                    <img src="/assets/images/Je-donne/Page_carrefour_Cagnotte_solidaire_Guillaume_BINET.webp" alt="Cagnotte" />
+                                    <img src={Page_carrefour_Cagnotte_solidaire_Guillaume_BINET} alt="Cagnotte" />
                                     <div className="texte"><h3>Cagnotte</h3><a href="#" className="btn-outline">Je crée</a></div>
                                 </div>
                             </div>
@@ -601,14 +612,14 @@ export default function JeDonne() {
                     <h2 className="titre"><span className="surligne">Donner</span> près de chez vous !</h2>
                     <div className="blocs">
                         <div className="sections-bloc">
-                            <img src="/assets/images/Je-donne/Page_carrefour_Don_v__tements.webp" alt="Vêtements" />
+                            <img src={Page_carrefour_Don_vetements} alt="Vêtements" />
                             <div className="texte">
                                 <p>Offrez une seconde vie à vos vêtements</p>
                                 <a href="#" className="btn-outline">Je donne mes vêtements</a>
                             </div>
                         </div>
                         <div className="sections-bloc">
-                            <img src="/assets/images/Je-donne/Page_Carrefour_Don_financement_participatif.webp" alt="Local" />
+                            <img src={Page_Carrefour_Don_financement_participatif} alt="Local" />
                             <div className="texte">
                                 <p>Contribuez à des projets locaux</p>
                                 <a href="#" className="btn-outline">Je me mobilise</a>
@@ -626,7 +637,7 @@ export default function JeDonne() {
                 {/* 9. Transmettre & Philanthrope */}
                 <div className="section-split">
                     <div className="col-img">
-                        <img src="/assets/images/Je-donne/LC_20374.webp" alt="Legs" />
+                        <img src={LC_20374} alt="Legs" />
                     </div>
                     <div className="col-txt">
                         <h2>Legs, donation, assurance-vie</h2>
@@ -637,7 +648,7 @@ export default function JeDonne() {
 
                 <div className="section-split" style={{flexDirection: 'row-reverse'}}>
                     <div className="col-img">
-                        <img src="/assets/images/Je-donne/Cr_dits_photo_Alex_Bonnemaison_droits_c_d_s_jusqu-au_5_f_vrier_2026_EBP_Chatenay__2_(1).webp" alt="Philanthrope" />
+                        <img src={Alex_Bonnemaison} alt="Philanthrope" />
                     </div>
                     <div className="col-txt">
                         <h2>Devenir philanthrope</h2>

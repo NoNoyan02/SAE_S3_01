@@ -18,7 +18,7 @@ export default function DonationFormVertical() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const finalAmount = customAmount || amount;
-        console.log('Donation submitted:', {frequency, amount: finalAmount});
+        console.log('donation submitted:', {frequency, amount: finalAmount});
         alert(`Merci ! Donation de ${finalAmount}€ (${frequency === 'once' ? 'une fois' : 'mensuelle'})`);
     };
 

@@ -3,6 +3,7 @@ import CroixRougeHomepage from "./CroixRougeHomepage.jsx";
 import DonationFormVertical from "../../Form/DonationFormVertical.jsx";
 import DonationFormHorizontal from '../../Form/DonationFormHorizontal.jsx';
 import NewsletterSection from "../Section/NewsletterSection.jsx";
+import enfantquimangeatable from "assets/images/je-donne/enfant_qui_mange_a_table.jpg";
 
 const slides = [
     {
@@ -1170,7 +1171,7 @@ export default function Main() {
                                 <a href="/israel-gaza-alerte-sur-la-situation-humanitaire/appel-a-dons-pour-gaza-votre-soutien-est-vital"
                                    className="news-top__link">
                                     <img
-                                        src="../../../../public/assets/images/Je-donne/enfant_qui_mange_a_table.jpg"
+                                        src={enfantquimangeatable}
                                         alt=""
                                         loading="lazy"
                                         className="news-top__img"

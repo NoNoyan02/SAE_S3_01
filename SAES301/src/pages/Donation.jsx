@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {Helmet} from "react-helmet";
+import bouclier from "assets/images/donation/bouclier.svg";
+import cartedecredit from "assets/images/donation/carte-de-credit.svg";
+import ggpayapppay from "assets/images/donation/gg-pay-app-pay.svg";
+import lacroixrouge from "assets\images\donation\lacroix-rouge.webm";
+import logo from "SAES301/src/assets/images/donation/Logo_Croix-Rouge_Française.svg";
+import paypal from "SAES301/src/assets/images/donation/paypal.svg";
+import virement from "SAES301/src/assets/images/donation/paypal.svg";
+
 
 export default function Donation() {
     const [activeTab, setActiveTab] = useState("once");
@@ -1063,7 +1071,7 @@ export default function Donation() {
 
             <div className="video-container">
                 <video autoPlay muted loop playsInline id="background-video">
-                    <source src="/assets/images/Donation/lacroix-rouge.webm" type="video/webm"/>
+                    <source src={lacroixrouge} type="video/webm"/>
                 </video>
                 {/* Barre de donations */}
                 <div className="donation-bar">
@@ -1079,7 +1087,7 @@ export default function Donation() {
                 {/* Header */}
                 <div className="header-donation">
                     <a href="/">
-                        <img src="/assets/images/Donation/Logo_Croix-Rouge_Française.svg"
+                        <img src={logo}
                              alt="Logo Croix-Rouge Française" className="logo"/>
                     </a>
                     <h1>
@@ -1268,18 +1276,18 @@ export default function Donation() {
                                     {
                                         method: "card",
                                         label: "Carte bancaire",
-                                        img: "/SAES301/src/assets/images/Donation/carte-de-credit.svg"
+                                        img: {cartedecredit}
                                     },
                                     {
                                         method: "google-pay-apple-pay",
                                         label: "Google Pay / Apple Pay",
-                                        img: "/SAES301/src/assets/images/Donation/gg-pay-app-pay.svg"
+                                        img: {ggpayapppay}
                                     },
-                                    {method: "paypal", label: "PayPal", img: "/SAES301/src/assets/images/Donation/paypal.svg"},
+                                    {method: "paypal", label: "PayPal", img: {paypal}},
                                     {
-                                        method: "virement",
+                                        method: {virement},
                                         label: "Virement instantané",
-                                        img: "/SAES301/src/assets/images/Donation/virement.svg"
+                                        img: "assets/images/donation/virement.svg"
                                     }
                                 ].map(({method, label, img}) => (
                                     <button
@@ -1323,7 +1331,7 @@ export default function Donation() {
                             </button>
 
                             <div className="secure-box">
-                                <img src="/assets/images/Donation/bouclier.svg" alt="Lock" className="lock-icon"/>
+                                <img src={bouclier} alt="Lock" className="lock-icon"/>
                                 <p>
                                     Paiements sécurisés avec les derniers protocoles de chiffrement, conçus pour
                                     respecter
