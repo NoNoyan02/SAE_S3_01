@@ -1170,7 +1170,7 @@ export default function Main() {
                                 <a href="/israel-gaza-alerte-sur-la-situation-humanitaire/appel-a-dons-pour-gaza-votre-soutien-est-vital"
                                    className="news-top__link">
                                     <img
-                                        src="../../../assets/images/Je-donne/enfant_qui_mange_a_table.jpg"
+                                        src="../../../../public/assets/images/Je-donne/enfant_qui_mange_a_table.jpg"
                                         alt=""
                                         loading="lazy"
                                         className="news-top__img"

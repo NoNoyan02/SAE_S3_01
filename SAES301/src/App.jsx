@@ -6,7 +6,7 @@ import JeDonne from './pages/Je-donne.jsx';
 import JeDeviens from './pages/Je-deviens.jsx';
 import Formations from './pages/Formations.jsx';
 import Donation from './pages/Donation.jsx';
-// import PageIntrouvable from "./pages/Page-introuvable";
+import PageIntrouvable from './pages/Page-introuvable.jsx';
 
 /*Utilitaires
 import ResponsiveOverflowAnalyzer from "./utils/ResponsiveOverflowAnalyzer";*/
@@ -22,7 +22,7 @@ function App() {
               <Route path="/formations" element={<Formations/>}/>
               <Route path="/faire-un-don/~mon-don" element={<Donation/>}/>
               {/*<Route path="/responsive" element={<ResponsiveOverflowAnalyzer />} />*/}
-              {/*<Route path="*" element={<PageIntrouvable/>}/>*/}
+              <Route path="*" element={<PageIntrouvable/>}/>©
           </Routes>
       </>
   );

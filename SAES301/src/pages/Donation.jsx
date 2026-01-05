@@ -1063,7 +1063,7 @@ export default function Donation() {
 
             <div className="video-container">
                 <video autoPlay muted loop playsInline id="background-video">
-                    <source src="/SAES301/src/assets/images/Donation/lacroix-rouge.webm" type="video/webm"/>
+                    <source src="/assets/images/Donation/lacroix-rouge.webm" type="video/webm"/>
                 </video>
                 {/* Barre de donations */}
                 <div className="donation-bar">
@@ -1079,7 +1079,7 @@ export default function Donation() {
                 {/* Header */}
                 <div className="header-donation">
                     <a href="/">
-                        <img src="/SAES301/src/assets/images/Donation/Logo_Croix-Rouge_Française.svg"
+                        <img src="/assets/images/Donation/Logo_Croix-Rouge_Française.svg"
                              alt="Logo Croix-Rouge Française" className="logo"/>
                     </a>
                     <h1>
@@ -1323,7 +1323,7 @@ export default function Donation() {
                             </button>
 
                             <div className="secure-box">
-                                <img src="/SAES301/src/assets/images/Donation/bouclier.svg" alt="Lock" className="lock-icon"/>
+                                <img src="/assets/images/Donation/bouclier.svg" alt="Lock" className="lock-icon"/>
                                 <p>
                                     Paiements sécurisés avec les derniers protocoles de chiffrement, conçus pour
                                     respecter
