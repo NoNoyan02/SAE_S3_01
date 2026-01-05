@@ -9,13 +9,13 @@ import Footer from "../components/Footer/Footer.jsx";
 import DonationFormHorizontal from "../components/Form/DonationFormHorizontal.jsx";
 import LC_20374 from "assets/images/je-donne/LC_20374.webp";
 import Alex_Bonnemaison from "assets/images/je-donne/Alex_Bonnemaison.webp";
-import Page_carrefour_Cagnotte_solidaire_Guillaume_BINET from "assets/images/je-donne/Page_carrefour_Cagnotte_solidaire_Guillaume_BINET"
-import Page_Carrefour_Don_financement_participatif from "assets/images/je-donne/Page_Carrefour_Don_financement_participatif"
-import Page_Carrefour_Don_IFI_Guillaume_BINET from "{assets/images/je-donne/Page_Carrefour_Don_IFI_Guillaume_BINET.webp";
-import Page_carrefour_Don_regulier from "{assets/images/je-donne/Page_carrefour_Don_regulier.webp";
-import Page_carrefour_Don_titres_restaurant from "{assets/images/je-donne/Page_carrefour_Don_titres_restaurant.webp";
-import Page_carrefour_Don_vetements from "{assets/images/je-donne/Page_carrefour_Don_vetements.webp";
-import Page_Carrefour_Je_donne from "{assets/images/je-donne/Page_Carrefour_Je_donne.webp";
+import Page_carrefour_Cagnotte_solidaire_Guillaume_BINET from "assets/images/je-donne/Page_carrefour_Cagnotte_solidaire_Guillaume_BINET.webp"
+import Page_Carrefour_Don_financement_participatif from "assets/images/je-donne/Page_Carrefour_Don_financement_participatif.webp"
+import Page_Carrefour_Don_IFI_Guillaume_BINET from "assets/images/je-donne/Page_Carrefour_Don_IFI_Guillaume_BINET.webp";
+import Page_carrefour_Don_regulier from "assets/images/je-donne/Page_carrefour_Don_regulier.webp";
+import Page_carrefour_Don_titres_restaurant from "assets/images/je-donne/Page_carrefour_Don_titres_restaurant.webp";
+import Page_carrefour_Don_vetements from "assets/images/je-donne/Page_carrefour_Don_vetements.webp";
+import Page_Carrefour_Je_donne from "assets/images/je-donne/Page_Carrefour_Je_donne.webp";
 
 
 export default function JeDonne() {
