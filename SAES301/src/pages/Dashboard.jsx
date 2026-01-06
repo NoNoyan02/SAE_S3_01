@@ -2,96 +2,110 @@ import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, Users, Handshake, Calendar, 
   BarChart3, LogOut, Plus, Search, 
-  TrendingUp, Wallet, UserCheck, ShieldCheck, FileText, Edit, Trash2, X, Eye
+  TrendingUp, Wallet, UserCheck, ShieldCheck, FileText, Edit, Trash2, X, Eye, Package, MapPin
 } from 'lucide-react';
 
 const Dashboard = () => {
   // 1. ÉTATS (DÉCLARÉS EN PREMIER POUR ÉVITER LES ERREURS)
   const [activeTab, setActiveTab] = useState('analyse');
   const [searchQuery, setSearchQuery] = useState(""); // État pour la recherche
-  const [showModal, setShowModal] = useState(false);
+  const [showBenevoleModal, setShowBenevoleModal] = useState(false); // MODIFICATION : Modale spécifique Bénévoles
+  const [showEventModal, setShowEventModal] = useState(false); // MODIFICATION : Modale spécifique Événements
   const [showViewModal, setShowViewModal] = useState(false); 
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
   const [selectedBenevole, setSelectedBenevole] = useState(null); 
 
-  // 2. DONNÉES DES BÉNÉVOLES
-const [benevoles, setBenevoles] = useState(() => {
-    const saved = localStorage.getItem('benevoles_data');
+// 2. DONNÉES DES BÉNÉVOLES (LOCAL STORAGE)
+  const [benevoles, setBenevoles] = useState(() => {
+    const saved = localStorage.getItem('benevoles_data'); // MODIFICATION : Lecture de la mémoire bénévole
     return saved ? JSON.parse(saved) : [
-      { id: 1, nom: "Davud", prenom: "Dupont", email: "david.dupontg@gmail.com", telephone: "0102030405", ville: "Paris", dateNaissance: "1985-10-12", profession: "Ingénieur", regime: "Sans gluten", sante: "RAS", infos: "Ancien secouriste", dispo: "Semaine", cotisation: "À jour", status: "actif" },
-      { id: 2, nom: "Marie", prenom: "Leroy", email: "m.leroy@mail.com", telephone: "0600000000", ville: "Lyon", dateNaissance: "1995-05-12", profession: "Étudiante", regime: "Végétarien", sante: "Allergie pollen", infos: "", dispo: "Weekend", cotisation: "Échue", status: "retard" },
+      { id: 1, nom: "Davud", prenom: "Dupont", email: "david.dupontg@gmail.com", telephone: "0102030405", ville: "Paris", status: "actif", cotisation: "À jour", dispo: "Semaine" },
     ];
   });
 
+  // 3. DONNÉES DES ÉVÉNEMENTS (LOCAL STORAGE) - BESOIN THOMAS/NADIA
+  const [events, setEvents] = useState(() => {
+    const saved = localStorage.getItem('evenements_data'); // MODIFICATION : Lecture de la mémoire événements
+    return saved ? JSON.parse(saved) : [
+      { id: 1, titre: "Collecte Alimentaire", date: "2024-05-20", lieu: "Super U Centre", budget: "200", materiel: "Gilets, Flyers", benevolesInscrits: "Marie, Paul", documents: "affiche_collecte.pdf" },
+    ];
+  });
+
+  // SAUVEGARDE AUTOMATIQUE DANS LE NAVIGATEUR
   useEffect(() => {
-    localStorage.setItem('benevoles_data', JSON.stringify(benevoles));
-  }, [benevoles]);
+    localStorage.setItem('benevoles_data', JSON.stringify(benevoles)); // MODIFICATION : Sync LocalStorage Bénévoles
+    localStorage.setItem('evenements_data', JSON.stringify(events)); // MODIFICATION : Sync LocalStorage Événements
+  }, [benevoles, events])
 
   // 3. LOGIQUE DE FILTRAGE (SÉCURISÉE)
-  const filteredBenevoles = benevoles.filter((b) => {
+  const getFilteredData = () => {
     const q = searchQuery.toLowerCase();
-    return (
-      (b.nom || "").toLowerCase().includes(q) ||
-      (b.prenom || "").toLowerCase().includes(q) ||
-      (b.email || "").toLowerCase().includes(q) ||
-      (b.ville || "").toLowerCase().includes(q)
-    );
-  });
+    if (activeTab === 'benevoles') {
+      // MODIFICATION : Filtre spécifique pour l'onglet bénévoles
+      return benevoles.filter(b => (b.nom || "").toLowerCase().includes(q) || (b.prenom || "").toLowerCase().includes(q) || (b.ville || "").toLowerCase().includes(q));
+    }
+    if (activeTab === 'evenements') {
+      // MODIFICATION : Filtre spécifique pour l'onglet événements (Titre ou Lieu)
+      return events.filter(e => (e.titre || "").toLowerCase().includes(q) || (e.lieu || "").toLowerCase().includes(q));
+    }
+    return [];
+  };
+
+  const filteredData = getFilteredData(); // MODIFICATION : Variable qui contient les résultats affichés
 
   // 4. ÉTAT POUR LE FORMULAIRE
   const [formBenevole, setFormBenevole] = useState({
     nom: '', prenom: '', email: '', telephone: '', ville: '', dateNaissance: '', profession: '', regime: '', sante: '', infos: '', dispo: 'Semaine', cotisation: 'À jour'
   });
+  const [formEvent, setFormEvent] = useState({ titre: '', date: '', lieu: '', budget: '', materiel: '', benevolesInscrits: '', documents: '' 
+
+  });
 
   // 5. FONCTIONS DE GESTION
-  const deleteBenevole = (id) => {
-    if(window.confirm("Voulez-vous vraiment supprimer ce membre ?")) {
-      setBenevoles(benevoles.filter(b => b.id !== id));
-    }
+  const handleDelete = (id) => {
+    if(!window.confirm("Supprimer cet élément ?")) return;
+    if (activeTab === 'benevoles') setBenevoles(benevoles.filter(b => b.id !== id)); // MODIFICATION : Suppr selon l'onglet
+    if (activeTab === 'evenements') setEvents(events.filter(e => e.id !== id)); // MODIFICATION : Suppr selon l'onglet
   };
 
-  const openEditModal = (benevole) => {
+  const openEdit = (item) => {
     setIsEditing(true);
-    setCurrentId(benevole.id);
-    setFormBenevole({ ...benevole });
-    setShowModal(true);
+    setCurrentId(item.id);
+    if (activeTab === 'benevoles') { setFormBenevole({...item}); setShowBenevoleModal(true); } // MODIFICATION : Ouvre la bonne modale
+    if (activeTab === 'evenements') { setFormEvent({...item}); setShowEventModal(true); } // MODIFICATION : Ouvre la bonne modale
   };
 
-  const openViewModal = (benevole) => {
-    setSelectedBenevole(benevole);
+  const openViewModal = (item) => {
+    setSelectedItem(item);
     setShowViewModal(true);
   };
 
-const handleSubmit = (e) => {
+const handleBenevoleSubmit = (e) => {
     e.preventDefault();
     if (isEditing) {
-      // Mise à jour d'un existant
-      const updatedList = benevoles.map(b => 
-        b.id === currentId ? { 
-          ...formBenevole, 
-          id: currentId, 
-          status: formBenevole.cotisation === 'À jour' ? 'actif' : 'retard' 
-        } : b
-      );
-      setBenevoles(updatedList);
+      setBenevoles(benevoles.map(b => b.id === currentId ? { ...formBenevole, id: currentId, status: formBenevole.cotisation === 'À jour' ? 'actif' : 'retard' } : b));
     } else {
-      // Ajout d'un nouveau
-      const newEntry = {
-        ...formBenevole,
-        id: Date.now(),
-        status: formBenevole.cotisation === 'À jour' ? 'actif' : 'retard'
-      };
-      setBenevoles([...benevoles, newEntry]);
+      setBenevoles([...benevoles, { ...formBenevole, id: Date.now(), status: formBenevole.cotisation === 'À jour' ? 'actif' : 'retard' }]);
     }
-    closeModal();
+    closeModals();
   };
 
-  const closeModal = () => {
-    setShowModal(false);
-    setShowViewModal(false);
-    setIsEditing(false);
+  // MODIF : Nouvelle fonction pour enregistrer une mission
+  const handleEventSubmit = (e) => {
+    e.preventDefault();
+    if (isEditing) {
+      setEvents(events.map(ev => ev.id === currentId ? { ...formEvent, id: currentId } : ev));
+    } else {
+      setEvents([...events, { ...formEvent, id: Date.now() }]);
+    }
+    closeModals();
+  };
+
+  const closeModals = () => {
+    setShowBenevoleModal(false); setShowEventModal(false); setShowViewModal(false); setIsEditing(false);
     setFormBenevole({ nom: '', prenom: '', email: '', telephone: '', ville: '', dateNaissance: '', profession: '', regime: '', sante: '', infos: '', dispo: 'Semaine', cotisation: 'À jour' });
+    setFormEvent({ titre: '', date: '', lieu: '', budget: '', materiel: '', benevolesInscrits: '', documents: '' });
   };
 
   const menuItems = [
@@ -328,86 +342,154 @@ const handleSubmit = (e) => {
         .full-width { grid-column: span 2; }
       `}</style>
 
-      {/* MODALE : FORMULAIRE DYNAMIQUE (D'APRÈS PHOTO) */}
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-card">
-            <div style={{display:'flex', justifyContent:'space-between', marginBottom:20}}>
-              <h2 style={{fontSize: 24, fontWeight: 700, margin:0}}>{isEditing ? "Modifier le membre" : "Ajouter un Bénévole"}</h2>
-              <X onClick={closeModal} style={{cursor:'pointer', color:'#6B7280'}}/>
-            </div>
-            
-            <form onSubmit={handleSubmit}>
-              <div className="form-row">
-                <div className="form-group"><label>Nom <span>*</span></label><input type="text" required value={formBenevole.nom} onChange={e => setFormBenevole({...formBenevole, nom: e.target.value})} placeholder="Nom" /></div>
-                <div className="form-group"><label>Prénom <span>*</span></label><input type="text" required value={formBenevole.prenom} onChange={e => setFormBenevole({...formBenevole, prenom: e.target.value})} placeholder="Prénom" /></div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group"><label>Email <span>*</span></label><input type="email" required value={formBenevole.email} onChange={e => setFormBenevole({...formBenevole, email: e.target.value})} placeholder="exemple@mail.com" /></div>
-                <div className="form-group"><label>Téléphone</label><input type="text" value={formBenevole.telephone} onChange={e => setFormBenevole({...formBenevole, telephone: e.target.value})} /></div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group"><label>Ville</label><input type="text" value={formBenevole.ville} onChange={e => setFormBenevole({...formBenevole, ville: e.target.value})} /></div>
-                <div className="form-group"><label>Date de naissance</label><input type="date" value={formBenevole.dateNaissance} onChange={e => setFormBenevole({...formBenevole, dateNaissance: e.target.value})} /></div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group"><label>Profession</label><input type="text" value={formBenevole.profession} onChange={e => setFormBenevole({...formBenevole, profession: e.target.value})} /></div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group"><label>Régime Alimentaire</label><input type="text" value={formBenevole.regime} onChange={e => setFormBenevole({...formBenevole, regime: e.target.value})} placeholder="Ex: Végétarien" /></div>
-                <div className="form-group"><label>Restrictions Santé</label><input type="text" value={formBenevole.sante} onChange={e => setFormBenevole({...formBenevole, sante: e.target.value})} placeholder="Ex: Mal de dos" /></div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group"><label>Champs Complémentaires</label><textarea value={formBenevole.infos} onChange={e => setFormBenevole({...formBenevole, infos: e.target.value})} placeholder="Saisissez ici des informations supplémentaires"></textarea></div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group"><label>Cotisation <span>*</span></label><select value={formBenevole.cotisation} onChange={e => setFormBenevole({...formBenevole, cotisation: e.target.value})}><option>À jour</option><option>Échue</option></select></div>
-                <div className="form-group"><label>Disponibilité <span>*</span></label><select value={formBenevole.dispo} onChange={e => setFormBenevole({...formBenevole, dispo: e.target.value})}><option>Semaine</option><option>Weekend</option><option>Libre</option></select></div>
-              </div>
-
-              <div className="btn-container">
-                <button type="submit" className="btn-save">Enregistrer</button>
-              </div>
-            </form>
+      {/* MODALE : FORMULAIRE DYNAMIQUE POUR LES BÉNÉVOLES */}
+      {showBenevoleModal && (
+      <div className="modal-overlay">
+        <div className="modal-card">
+          <div style={{display:'flex', justifyContent:'space-between', marginBottom:20}}>
+            <h2 style={{fontSize: 24, fontWeight: 700, margin:0}}>{isEditing ? "Modifier le membre" : "Ajouter un Bénévole"}</h2>
+            <X onClick={closeModals} style={{cursor:'pointer', color:'#6B7280'}}/>
           </div>
-        </div>
-      )}
+          
+          <form onSubmit={handleBenevoleSubmit}>
+            <div className="form-row">
+              <div className="form-group"><label>Nom <span>*</span></label><input type="text" required value={formBenevole.nom} onChange={e => setFormBenevole({...formBenevole, nom: e.target.value})} placeholder="Nom" /></div>
+              <div className="form-group"><label>Prénom <span>*</span></label><input type="text" required value={formBenevole.prenom} onChange={e => setFormBenevole({...formBenevole, prenom: e.target.value})} placeholder="Prénom" /></div>
+            </div>
 
-      {/* MODALE : FICHE DÉTAILLÉE AVEC CORRECTIFS */}
-      {showViewModal && selectedBenevole && (
-        <div className="modal-overlay">
-          <div className="modal-card">
-            <div style={{display:'flex', justifyContent:'space-between', borderBottom:'1px solid #EEE', paddingBottom:15, marginBottom:10}}>
-              <h2 style={{fontSize: 22, fontWeight: 800, color:'#1A1C23'}}>Fiche de membre : {selectedBenevole.prenom} {selectedBenevole.nom}</h2>
-              <X onClick={closeModal} style={{cursor:'pointer', color:'#6B7280'}}/>
+            <div className="form-row">
+              <div className="form-group"><label>Email <span>*</span></label><input type="email" required value={formBenevole.email} onChange={e => setFormBenevole({...formBenevole, email: e.target.value})} placeholder="exemple@mail.com" /></div>
+              <div className="form-group"><label>Téléphone</label><input type="text" value={formBenevole.telephone} onChange={e => setFormBenevole({...formBenevole, telephone: e.target.value})} /></div>
             </div>
-            <div className="info-grid">
-              <div className="info-item"><div className="info-label">Email</div><div className="info-value">{selectedBenevole.email}</div></div>
-              <div className="info-item"><div className="info-label">Téléphone</div><div className="info-value">{selectedBenevole.telephone || "N/A"}</div></div>
-              <div className="info-item"><div className="info-label">Ville</div><div className="info-value">{selectedBenevole.ville}</div></div>
-              <div className="info-item"><div className="info-label">Date de Naissance</div><div className="info-value">{selectedBenevole.dateNaissance}</div></div>
-              <div className="info-item"><div className="info-label">Profession</div><div className="info-value">{selectedBenevole.profession}</div></div>
-              
-              {/* DISPONIBILITÉ ET COTISATION AJOUTÉES */}
-              <div className="info-item"><div className="info-label">Disponibilité</div><div className="info-value">{selectedBenevole.dispo}</div></div>
-              <div className="info-item"><div className="info-label">Statut Cotisation</div><div className={`status-badge status-${selectedBenevole.status}`} style={{display:'inline-block', marginTop:'5px'}}>{selectedBenevole.cotisation}</div></div>
-              
-              <div className="info-item"><div className="info-label">Régime Alimentaire</div><div className="info-value">{selectedBenevole.regime || "Aucun"}</div></div>
-              <div className="info-item"><div className="info-label">Santé</div><div className="info-value">{selectedBenevole.sante || "RAS"}</div></div>
-              <div className="info-item full-width"><div className="info-label">Notes / Infos Complémentaires</div><div className="info-value" style={{fontWeight:400}}>{selectedBenevole.infos || "Aucune note particulière."}</div></div>
+
+            <div className="form-row">
+              <div className="form-group"><label>Ville</label><input type="text" value={formBenevole.ville} onChange={e => setFormBenevole({...formBenevole, ville: e.target.value})} /></div>
+              <div className="form-group"><label>Date de naissance</label><input type="date" value={formBenevole.dateNaissance} onChange={e => setFormBenevole({...formBenevole, dateNaissance: e.target.value})} /></div>
             </div>
+
+            <div className="form-row">
+              <div className="form-group"><label>Profession</label><input type="text" value={formBenevole.profession} onChange={e => setFormBenevole({...formBenevole, profession: e.target.value})} /></div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group"><label>Régime Alimentaire</label><input type="text" value={formBenevole.regime} onChange={e => setFormBenevole({...formBenevole, regime: e.target.value})} placeholder="Ex: Végétarien" /></div>
+              <div className="form-group"><label>Restrictions Santé</label><input type="text" value={formBenevole.sante} onChange={e => setFormBenevole({...formBenevole, sante: e.target.value})} placeholder="Ex: Mal de dos" /></div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group"><label>Champs Complémentaires</label><textarea value={formBenevole.infos} onChange={e => setFormBenevole({...formBenevole, infos: e.target.value})} placeholder="Saisissez ici des informations supplémentaires"></textarea></div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group"><label>Cotisation <span>*</span></label><select value={formBenevole.cotisation} onChange={e => setFormBenevole({...formBenevole, cotisation: e.target.value})}><option>À jour</option><option>Échue</option></select></div>
+              <div className="form-group"><label>Disponibilité <span>*</span></label><select value={formBenevole.dispo} onChange={e => setFormBenevole({...formBenevole, dispo: e.target.value})}><option>Semaine</option><option>Weekend</option><option>Libre</option></select></div>
+            </div>
+
             <div className="btn-container">
-              <button className="btn-save" onClick={closeModal}>Fermer la fiche</button>
+              <button type="submit" className="btn-save">Enregistrer</button>
             </div>
+          </form>
+        </div>
+      </div>
+    )}
+
+      {/* MODALE : FICHE DÉTAILLÉE LORS DU CLIQUE SUR LE NOM POUR LES BÉNÉVOLES */}
+      {showViewModal && selectedItem && activeTab === 'benevoles' && (
+      <div className="modal-overlay">
+        <div className="modal-card">
+          <div style={{display:'flex', justifyContent:'space-between', borderBottom:'1px solid #EEE', paddingBottom:15, marginBottom:10}}>
+            <h2 style={{fontSize: 22, fontWeight: 800, color:'#1A1C23'}}>Fiche de membre : {selectedItem.prenom} {selectedItem.nom}</h2>
+            <X onClick={closeModals} style={{cursor:'pointer', color:'#6B7280'}}/>
+          </div>
+          <div className="info-grid">
+            <div className="info-item"><div className="info-label">Email</div><div className="info-value">{selectedItem.email}</div></div>
+            <div className="info-item"><div className="info-label">Téléphone</div><div className="info-value">{selectedItem.telephone || "N/A"}</div></div>
+            <div className="info-item"><div className="info-label">Ville</div><div className="info-value">{selectedItem.ville}</div></div>
+            <div className="info-item"><div className="info-label">Date de Naissance</div><div className="info-value">{selectedItem.dateNaissance || "N/A"}</div></div>
+            <div className="info-item"><div className="info-label">Profession</div><div className="info-value">{selectedItem.profession || "N/A"}</div></div>
+            
+            <div className="info-item"><div className="info-label">Disponibilité</div><div className="info-value">{selectedItem.dispo}</div></div>
+            <div className="info-item"><div className="info-label">Statut Cotisation</div><div className={`status-badge status-${selectedItem.status}`} style={{display:'inline-block', marginTop:'5px'}}>{selectedItem.cotisation}</div></div>
+            
+            <div className="info-item"><div className="info-label">Régime Alimentaire</div><div className="info-value">{selectedItem.regime || "Aucun"}</div></div>
+            <div className="info-item"><div className="info-label">Santé</div><div className="info-value">{selectedItem.sante || "RAS"}</div></div>
+            <div className="info-item full-width"><div className="info-label">Notes / Infos Complémentaires</div><div className="info-value" style={{fontWeight:400}}>{selectedItem.infos || "Aucune note particulière."}</div></div>
+          </div>
+          <div className="btn-container">
+            <button className="btn-save" onClick={closeModals}>Fermer la fiche</button>
           </div>
         </div>
-      )}
+      </div>
+    )}
+
+    {/* MODALE : FORMULAIRE DYNAMIQUE POUR LES ÉVÈNEMENTS */}
+    {showEventModal && (
+      <div className="modal-overlay">
+        <div className="modal-card">
+          <div style={{display:'flex', justifyContent:'space-between', marginBottom:20}}>
+            <h2 style={{fontSize: 24, fontWeight: 700, margin:0}}>{isEditing ? "Modifier la mission" : "Planifier un Événement"}</h2>
+            <X onClick={closeModals} style={{cursor:'pointer', color:'#6B7280'}}/>
+          </div>
+          
+          <form onSubmit={handleEventSubmit}>
+            <div className="form-row">
+              <div className="form-group"><label>Nom de la mission <span>*</span></label><input type="text" required value={formEvent.titre} onChange={e => setFormEvent({...formEvent, titre: e.target.value})} placeholder="Ex: Collecte Alimentaire" /></div>
+              <div className="form-group"><label>Date <span>*</span></label><input type="date" required value={formEvent.date} onChange={e => setFormEvent({...formEvent, date: e.target.value})} /></div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group"><label>Lieu <span>*</span></label><input type="text" required value={formEvent.lieu} onChange={e => setFormEvent({...formEvent, lieu: e.target.value})} placeholder="Ex: Super U Centre" /></div>
+              <div className="form-group"><label>Budget Prévisionnel (€)</label><input type="number" value={formEvent.budget} onChange={e => setFormEvent({...formEvent, budget: e.target.value})} placeholder="0" /></div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group"><label>Logistique & Matériel</label><textarea value={formEvent.materiel} onChange={e => setFormEvent({...formEvent, materiel: e.target.value})} placeholder="Ex: Barnum, 2 tables, sonos..."></textarea></div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group"><label>Bénévoles Inscrits</label><input type="text" value={formEvent.benevolesInscrits} onChange={e => setFormEvent({...formEvent, benevolesInscrits: e.target.value})} placeholder="Ex: Nadia, Thomas, Julie..." /></div>
+              <div className="form-group"><label>Documents (Affiches, PDF)</label><input type="text" value={formEvent.documents} onChange={e => setFormEvent({...formEvent, documents: e.target.value})} placeholder="Ex: affiche_v1.pdf" /></div>
+            </div>
+
+            <div className="form-row">
+              <div className="form-group"><label>Notes / Informations supplémentaires</label><textarea value={formEvent.infos} onChange={e => setFormEvent({...formEvent, infos: e.target.value})} placeholder="Précisions sur la mission..."></textarea></div>
+            </div>
+
+            <div className="btn-container">
+              <button type="submit" className="btn-save">Enregistrer la mission</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )}
+
+    {/* MODALE : FICHE DÉTAILLÉE LORS DU CLIQUE SUR LE NOM POUR LES ÉVÈNEMENTS */}
+
+    {showViewModal && selectedItem && activeTab === 'evenements' && (
+  <div className="modal-overlay">
+    <div className="modal-card">
+      <div style={{display:'flex', justifyContent:'space-between', borderBottom:'1px solid #EEE', paddingBottom:15, marginBottom:10}}>
+        <h2 style={{fontSize: 22, fontWeight: 800, color:'#1A1C23'}}>Détails de la mission : {selectedItem.titre}</h2>
+        <X onClick={closeModals} style={{cursor:'pointer', color:'#6B7280'}}/>
+      </div>
+      <div className="info-grid">
+        <div className="info-item"><div className="info-label">Date</div><div className="info-value">{selectedItem.date}</div></div>
+        <div className="info-item"><div className="info-label">Lieu</div><div className="info-value">{selectedItem.lieu}</div></div>
+        <div className="info-item"><div className="info-label">Budget</div><div className="info-value">{selectedItem.budget ? `${selectedItem.budget} €` : "Non défini"}</div></div>
+        <div className="info-item"><div className="info-label">Documents</div><div className="info-value" style={{color: '#2563EB'}}>{selectedItem.documents || "Aucun document"}</div></div>
+        
+        <div className="info-item full-width"><div className="info-label">Logistique & Matériel</div><div className="info-value" style={{fontWeight:400}}>{selectedItem.materiel || "Rien à prévoir."}</div></div>
+        
+        <div className="info-item full-width"><div className="info-label">Bénévoles Mobilisés</div><div className="info-value">{selectedItem.benevolesInscrits || "Aucun bénévole inscrit."}</div></div>
+        
+        <div className="info-item full-width"><div className="info-label">Notes de mission</div><div className="info-value" style={{fontWeight:400}}>{selectedItem.infos || "Aucune note particulière."}</div></div>
+      </div>
+      <div className="btn-container">
+        <button className="btn-save" onClick={closeModals}>Fermer</button>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* SIDEBAR */}
       <aside className="sidebar">
@@ -420,6 +502,7 @@ const handleSubmit = (e) => {
             <button
               key={item.id}
               className={`nav-item ${activeTab === item.id ? 'active' : ''}`}
+              // MODIF : On vide la recherche quand on change d'univers
               onClick={() => { setActiveTab(item.id); setSearchQuery(""); }}
             >
               {item.icon}
@@ -454,12 +537,19 @@ const handleSubmit = (e) => {
                 <input 
                   type="text" 
                   className="search-input" 
-                  placeholder="Rechercher..." 
+                  placeholder={`Rechercher dans ${activeTab}...`} 
                   value={searchQuery} 
                   onChange={(e) => setSearchQuery(e.target.value)} 
                 />
               </div>
-              <button className="btn-add" onClick={() => { setIsEditing(false); setShowModal(true); }}><Plus size={18}/> NOUVEAU</button>
+              {/* MODIF : Le bouton Nouveau ouvre la bonne modale selon l'onglet actif */}
+              <button className="btn-add" onClick={() => { 
+                setIsEditing(false); 
+                if(activeTab === 'benevoles') setShowBenevoleModal(true);
+                if(activeTab === 'evenements') setShowEventModal(true);
+              }}>
+                <Plus size={18}/> NOUVEAU
+              </button>
             </div>
           )}
         </header>
@@ -472,8 +562,9 @@ const handleSubmit = (e) => {
                 <UserCheck size={32} color="#ED1B24"/>
               </div>
               <div className="stat-card">
-                <div><span className="stat-label">Donateurs</span><p className="stat-value">842</p></div>
-                <Users size={32} color="#ED1B24"/>
+                {/* MODIF : Statistique dynamique des missions pour Thomas et Julie */}
+                <div><span className="stat-label">Événements</span><p className="stat-value">{events.length}</p></div>
+                <Calendar size={32} color="#ED1B24"/>
               </div>
               <div className="stat-card">
                 <div><span className="stat-label">Total des Dons</span><p className="stat-value">45 200€</p></div>
@@ -515,7 +606,6 @@ const handleSubmit = (e) => {
             </div>
           </div>
         ) : activeTab === 'benevoles' ? (
-          /* TABLEAU DE GESTION DES BÉNÉVOLES AVEC FILTRAGE */
           <div className="table-container">
             <table>
               <thead>
@@ -528,7 +618,8 @@ const handleSubmit = (e) => {
                 </tr>
               </thead>
               <tbody>
-                {filteredBenevoles.map((b) => (
+                {/* MODIF : Utilisation de filteredData (notre fonction de filtrage universelle) */}
+                {filteredData.map((b) => (
                   <tr key={b.id}>
                     <td className="clickable-name" onClick={() => openViewModal(b)}>{b.nom} {b.prenom}</td>
                     <td>
@@ -539,8 +630,39 @@ const handleSubmit = (e) => {
                     <td><span className={`status-badge status-${b.status}`}>{b.cotisation}</span></td>
                     <td>
                       <div style={{display:'flex', gap:10}}>
-                        <Edit size={16} onClick={() => openEditModal(b)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
-                        <Trash2 size={16} onClick={() => deleteBenevole(b.id)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
+                        <Edit size={16} onClick={() => openEdit(b)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
+                        <Trash2 size={16} onClick={() => handleDelete(b.id)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : activeTab === 'evenements' ? (
+          /* MODIF : TABLEAU DÉDIÉ AUX ÉVÉNEMENTS (Besoins Thomas/Nadia/Julie) */
+          <div className="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Mission</th>
+                  <th>Date</th>
+                  <th>Lieu</th>
+                  <th>Budget</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredData.map((ev) => (
+                  <tr key={ev.id}>
+                    <td className="clickable-name" onClick={() => openViewModal(ev)}>{ev.titre}</td>
+                    <td>{ev.date}</td>
+                    <td>{ev.lieu}</td>
+                    <td>{ev.budget} €</td>
+                    <td>
+                      <div style={{display:'flex', gap:10}}>
+                        <Edit size={16} onClick={() => openEdit(ev)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
+                        <Trash2 size={16} onClick={() => handleDelete(ev.id)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
                       </div>
                     </td>
                   </tr>
