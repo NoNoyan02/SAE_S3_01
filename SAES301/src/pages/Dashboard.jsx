@@ -15,6 +15,11 @@ const Dashboard = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
 
+  // États pour les filtres avancés
+  const [filterVille, setFilterVille] = useState("");
+  const [filterProfession, setFilterProfession] = useState("");
+  const [filterDispo, setFilterDispo] = useState("");
+
 // 2. DONNÉES DES BÉNÉVOLES (LOCAL STORAGE)
   const [benevoles, setBenevoles] = useState(() => {
     const saved = localStorage.getItem('benevoles_data'); 
@@ -42,9 +47,21 @@ const Dashboard = () => {
   const getFilteredData = () => {
     const q = searchQuery.toLowerCase();
     if (activeTab === 'benevoles') {
-      // MODIFICATION : Filtre spécifique pour l'onglet bénévoles
-      return benevoles.filter(b => (b.nom || "").toLowerCase().includes(q) || (b.prenom || "").toLowerCase().includes(q) || (b.ville || "").toLowerCase().includes(q));
-    }
+    return benevoles.filter(b => {
+      // Recherche textuelle (Nom, Prénom, Ville)
+      const matchesSearch = 
+        (b.nom || "").toLowerCase().includes(q) || 
+        (b.prenom || "").toLowerCase().includes(q) || 
+        (b.ville || "").toLowerCase().includes(q);
+
+      // Filtres par menus déroulants
+      const matchesVille = filterVille === "" || b.ville === filterVille;
+      const matchesProfession = filterProfession === "" || b.profession === filterProfession;
+      const matchesDispo = filterDispo === "" || b.dispo === filterDispo;
+
+      return matchesSearch && matchesVille && matchesProfession && matchesDispo;
+    });
+  }
     if (activeTab === 'evenements') {
       // MODIFICATION : Filtre spécifique pour l'onglet événements (Titre ou Lieu)
       return events.filter(e => (e.titre || "").toLowerCase().includes(q) || (e.lieu || "").toLowerCase().includes(q));
@@ -502,7 +519,25 @@ const handleBenevoleSubmit = (e) => {
 
             <div className="form-row">
               <div className="form-group"><label>Bénévoles Inscrits</label><input type="text" value={formEvent.benevolesInscrits} onChange={e => setFormEvent({...formEvent, benevolesInscrits: e.target.value})} placeholder="Ex: Nadia, Thomas, Julie..." /></div>
-              <div className="form-group"><label>Documents (Affiches, PDF)</label><input type="text" value={formEvent.documents} onChange={e => setFormEvent({...formEvent, documents: e.target.value})} placeholder="Ex: affiche_v1.pdf" /></div>
+              <div className="form-group">
+            <label>Documents (Affiches, CR) <span>*PDF uniquement</span></label>
+            <input 
+              type="file" 
+              accept=".pdf"
+              style={{ padding: '8px', fontSize: '12px' }}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  setFormEvent({...formEvent, documents: file.name}); // On stocke le nom du fichier
+                }
+              }} 
+            />
+            {formEvent.documents && (
+              <span style={{ fontSize: '11px', color: '#2563EB', marginTop: '5px' }}>
+                Fichier sélectionné : {formEvent.documents}
+              </span>
+            )}
+          </div>
             </div>
 
             <div className="form-row">
@@ -536,7 +571,18 @@ const handleBenevoleSubmit = (e) => {
         <div className="info-item"><div className="info-label">Période</div><div className="info-value">Du {selectedItem.dateDebut} au {selectedItem.dateFin}</div></div>
         <div className="info-item"><div className="info-label">Lieu</div><div className="info-value">{selectedItem.lieu}</div></div>
         <div className="info-item"><div className="info-label">Budget</div><div className="info-value">{selectedItem.budget ? `${selectedItem.budget} €` : "Non défini"}</div></div>
-        <div className="info-item"><div className="info-label">Documents</div><div className="info-value" style={{color: '#2563EB'}}>{selectedItem.documents || "Aucun document"}</div></div>
+        <div className="info-item full-width">
+          <div className="info-label">Documents joints</div>
+          <div className="info-value" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <FileText size={18} color="#2563EB" />
+            {selectedItem.documents ? (
+              <span style={{ color: '#2563EB', fontWeight: 'bold' }}>{selectedItem.documents}</span>
+            ) : (
+              <span style={{ color: '#718096' }}>Aucun document PDF associé.</span>
+            )}
+          </div>
+        </div>
+      </div>
         
         <div className="info-item full-width"><div className="info-label">Logistique & Matériel</div><div className="info-value" style={{fontWeight:400}}>{selectedItem.materiel || "Rien à prévoir."}</div></div>
         
@@ -548,7 +594,6 @@ const handleBenevoleSubmit = (e) => {
         <button className="btn-save" onClick={closeModals}>Fermer</button>
       </div>
     </div>
-  </div>
 )}
 
       {/* SIDEBAR */}
@@ -665,40 +710,105 @@ const handleBenevoleSubmit = (e) => {
               </div>
             </div>
           </div>
-        ) : activeTab === 'benevoles' ? (
-          <div className="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>Nom Prénom</th>
-                  <th>Email / Téléphone</th>
-                  <th>Ville</th>
-                  <th>Cotisation</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* MODIF : Utilisation de filteredData (notre fonction de filtrage universelle) */}
-                {filteredData.map((b) => (
-                  <tr key={b.id}>
-                    <td className="clickable-name" onClick={() => openViewModal(b)}>{b.nom} {b.prenom}</td>
-                    <td>
-                      <div style={{fontSize:13}}>{b.email}</div>
-                      <div style={{fontSize:11, color:'#A0AEC0'}}>{b.telephone}</div>
-                    </td>
-                    <td>{b.ville}</td>
-                    <td><span className={`status-badge status-${b.status}`}>{b.cotisation}</span></td>
-                    <td>
-                      <div style={{display:'flex', gap:10}}>
-                        <Edit size={16} onClick={() => openEdit(b)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
-                        <Trash2 size={16} onClick={() => handleDelete(b.id)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
-                      </div>
-                    </td>
+) : activeTab === 'benevoles' ? (
+  <>
+    {activeTab === 'benevoles' && (
+      <div style={{ 
+        display: 'flex', 
+        gap: '12px', 
+        marginBottom: '20px', 
+        background: 'white', 
+        padding: '12px 20px', 
+        borderRadius: '16px',
+        boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
+        alignItems: 'center',
+        flexWrap: 'wrap'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#718096', fontSize: '13px', fontWeight: '600' }}>
+          <Search size={14} /> Filtres :
+        </div>
+
+        {/* SELECT VILLE */}
+        <select 
+          value={filterVille} 
+          onChange={(e) => setFilterVille(e.target.value)}
+          style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '13px', outline: 'none', cursor: 'pointer' }}
+        >
+          <option value="">Toutes les villes</option>
+          {[...new Set(benevoles.map(b => b.ville))].filter(Boolean).map(v => (
+            <option key={v} value={v}>{v}</option>
+          ))}
+        </select>
+
+        {/* SELECT PROFESSION */}
+        <select 
+          value={filterProfession} 
+          onChange={(e) => setFilterProfession(e.target.value)}
+          style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '13px', outline: 'none', cursor: 'pointer' }}
+        >
+          <option value="">Toutes les professions</option>
+          {[...new Set(benevoles.map(b => b.profession))].filter(Boolean).map(p => (
+            <option key={p} value={p}>{p}</option>
+          ))}
+        </select>
+
+        {/* SELECT DISPO */}
+        <select 
+          value={filterDispo} 
+          onChange={(e) => setFilterDispo(e.target.value)}
+          style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '13px', outline: 'none', cursor: 'pointer' }}
+        >
+          <option value="">Toutes les dispos</option>
+          <option value="Semaine">Semaine</option>
+          <option value="Weekend">Weekend</option>
+          <option value="Libre">Libre</option>
+        </select>
+
+        {/* BOUTON RÉINITIALISER */}
+        {(filterVille || filterProfession || filterDispo) && (
+          <button 
+            onClick={() => { setFilterVille(""); setFilterProfession(""); setFilterDispo(""); }}
+            style={{ background: 'none', border: 'none', color: '#ED1B24', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', padding: '0 10px' }}
+          >
+            Réinitialiser
+          </button>
+        )}
+      </div>
+    )}
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nom Prénom</th>
+                    <th>Email / Téléphone</th>
+                    <th>Ville</th>
+                    <th>Cotisation</th>
+                    <th>Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {/* MODIF : Utilisation de filteredData (notre fonction de filtrage universelle) */}
+                  {filteredData.map((b) => (
+                    <tr key={b.id}>
+                      <td className="clickable-name" onClick={() => openViewModal(b)}>{b.nom} {b.prenom}</td>
+                      <td>
+                        <div style={{fontSize:13}}>{b.email}</div>
+                        <div style={{fontSize:11, color:'#A0AEC0'}}>{b.telephone}</div>
+                      </td>
+                      <td>{b.ville}</td>
+                      <td><span className={`status-badge status-${b.status}`}>{b.cotisation}</span></td>
+                      <td>
+                        <div style={{display:'flex', gap:10}}>
+                          <Edit size={16} onClick={() => openEdit(b)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
+                          <Trash2 size={16} onClick={() => handleDelete(b.id)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         ) : activeTab === 'evenements' ? (
           /* MODIF : TABLEAU DÉDIÉ AUX ÉVÉNEMENTS */
           <div className="table-container">
