@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 
 const Dashboard = () => {
-  // 1. ÉTATS (DÉCLARÉS EN PREMIER POUR ÉVITER LES ERREURS)
+  // 1. ÉTATS GÉNÉRALS
   const [activeTab, setActiveTab] = useState('analyse');
   const [searchQuery, setSearchQuery] = useState(""); 
   const [showBenevoleModal, setShowBenevoleModal] = useState(false); 
@@ -22,6 +22,10 @@ const Dashboard = () => {
 
   // États pour le calendrier
   const [currentDate, setCurrentDate] = useState(new Date(2026, 0, 1)); // Commence en Janvier 2026
+
+  // États pour les Partenaires et Subventions
+  const [showPartenaireModal, setShowPartenaireModal] = useState(false);
+  const [formPartenaire, setFormPartenaire] = useState({ type: 'Entreprise', nom: '', contact: '', email: '', telephone: '', organisme: '', montant: '', dateReception: '', status: 'Actif' });
 
 // 2. DONNÉES DES BÉNÉVOLES (LOCAL STORAGE)
   const [benevoles, setBenevoles] = useState(() => {
@@ -49,12 +53,20 @@ const Dashboard = () => {
 });
 
 // 4. DONNÉES DES SUBVENTIONS (LOCAL STORAGE)
+const [subventions, setSubventions] = useState(() => {
+  const saved = localStorage.getItem('subventions_data');
+  return saved ? JSON.parse(saved) : [
+    { id: 1, type: 'Subvention', nom: "Aide Mairie 2026", organisme: "Ville de Paris", montant: "5000", dateReception: "2026-01-05", status: "Reçue" }
+  ];
+});
 
   // SAUVEGARDE AUTOMATIQUE DANS LE NAVIGATEUR
   useEffect(() => {
     localStorage.setItem('benevoles_data', JSON.stringify(benevoles)); 
     localStorage.setItem('evenements_data', JSON.stringify(events));
-  }, [benevoles, events])
+    localStorage.setItem('partenaires_data', JSON.stringify(partenaires));
+    localStorage.setItem('subventions_data', JSON.stringify(subventions));
+  }, [benevoles, events, partenaires, subventions])
 
   // 3. LOGIQUE DE FILTRAGE (SÉCURISÉE)
   const getFilteredData = () => {
@@ -625,7 +637,7 @@ const handleBenevoleSubmit = (e) => {
           {item.icon}
           <span>{item.label}</span>
         </button>
-      {/* SOUS-MENU ÉVÉNEMENTS NETTOYÉ */}
+      {/* SOUS-MENU ÉVÉNEMENTS */}
       {item.id === 'evenements' && (activeTab === 'evenements' || activeTab === 'calendrier') && (
         <div style={{ 
           paddingLeft: '54px', // Aligné sur le début du texte "Événements"
@@ -708,7 +720,7 @@ const handleBenevoleSubmit = (e) => {
   </div>
 
   {/* On cache les actions si Analyse OU Calendrier */}
-  {activeTab !== 'analyse' && activeTab !== 'calendrier' && (
+  {activeTab !== 'analyse' && activeTab !== 'calendrier' && activeTab !== 'partenaires' && (
     <div className="header-actions">
       <div className="search-box">
         <Search style={{position:'absolute', left:12, top:13, color:'#A0AEC0'}} size={18}/>
@@ -1041,6 +1053,135 @@ const handleBenevoleSubmit = (e) => {
             <p>Interface de gestion pour le module {activeTab}<br/>Utilisez la recherche pour filtrer les résultats.</p>
           </div>
         )}
+
+        {activeTab === 'partenaires' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '25px', marginTop: '-20px' }}>
+    
+    {/* BLOC 1 : PARTENAIRES (ENTREPRISES) */}
+    <div className="card">
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <h3 style={{ margin: 0, fontWeight: 900, display: 'flex', alignItems: 'center' }}>
+          <Handshake size={20} color="#ED1B24" style={{ marginRight: 10 }} /> Partenaires Entreprises
+        </h3>
+        <div style={{ display: 'flex', gap: '15px' }}>
+          {/* Barre de recherche locale pour les entreprises */}
+          <div className="search-box">
+            <Search style={{position:'absolute', left:12, top:10, color:'#A0AEC0'}} size={16}/>
+            <input 
+              type="text" 
+              className="search-input" 
+              style={{ width: '200px', padding: '8px 12px 8px 35px' }}
+              placeholder="Rechercher entreprise..." 
+              value={searchQuery} 
+              onChange={(e) => setSearchQuery(e.target.value)} 
+            />
+          </div>
+        <button className="btn-add" onClick={() => { setFormPartenaire({type:'Entreprise'}); setIsEditing(false); setShowPartenaireModal(true); }}>
+          <Plus size={16}/> NOUVELLE ENTREPRISE
+        </button>
+      </div>
+      </div>
+      <div className="table-container" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+        <table>
+          <thead>
+            <tr>
+              <th>Nom de l'entreprise</th>
+              <th>Contact</th>
+              <th>Email / Tel</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {partenaires.filter(p => p.nom.toLowerCase().includes(searchQuery.toLowerCase())).map(p => (
+              <tr key={p.id}>
+                <td className="clickable-name" onClick={() => openViewModal(p)}>{p.nom}</td>
+                <td>{p.contact}</td>
+                <td><div style={{fontSize:'12px'}}>{p.email}</div><div style={{fontSize:'10px', color:'#718096'}}>{p.telephone}</div></td>
+                <td>
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    <Edit size={16} onClick={() => { setFormPartenaire(p); setIsEditing(true); setCurrentId(p.id); setShowPartenaireModal(true); }} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+                    <Trash2 size={16} onClick={() => setPartenaires(partenaires.filter(x => x.id !== p.id))} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {/* BLOC 2 : SUBVENTIONS */}
+    <div className="card">
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <h3 style={{ margin: 0, fontWeight: 900, display: 'flex', alignItems: 'center' }}>
+          <FileText size={20} color="#ED1B24" style={{ marginRight: 10 }} /> Subventions & Aides Publiques
+        </h3>
+        <div style={{ display: 'flex', gap: '15px' }}>
+          {/* Barre de recherche locale pour les subventions */}
+          <div className="search-box">
+            <Search style={{position:'absolute', left:12, top:10, color:'#A0AEC0'}} size={16}/>
+            <input 
+              type="text" 
+              className="search-input" 
+              style={{ width: '200px', padding: '8px 12px 8px 35px' }}
+              placeholder="Rechercher aide..." 
+              value={searchQuery} 
+              onChange={(e) => setSearchQuery(e.target.value)} 
+            />
+          </div>
+        <button className="btn-add" onClick={() => { setFormPartenaire({type:'Subvention'}); setIsEditing(false); setShowPartenaireModal(true); }}>
+          <Plus size={16}/> NOUVELLE SUBVENTION
+        </button>
+      </div>
+      </div>
+      <div className="table-container" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+        <table>
+          <thead>
+            <tr>
+              <th>Nom Subvention</th>
+              <th>Organisme</th>
+              <th>Montant</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {subventions.filter(s => s.nom.toLowerCase().includes(searchQuery.toLowerCase())).map(s => (
+              <tr key={s.id}>
+                <td className="clickable-name" onClick={() => openViewModal(s)}>{s.nom}</td>
+                <td>{s.organisme}</td>
+                <td style={{ fontWeight: 'bold', color: '#03543F' }}>{s.montant} €</td>
+                <td>
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    <Edit size={16} onClick={() => { setFormPartenaire(s); setIsEditing(true); setCurrentId(s.id); setShowPartenaireModal(true); }} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+                    <Trash2 size={16} onClick={() => setSubventions(subventions.filter(x => x.id !== s.id))} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    {/* BLOC 3 : DONATEURS (Comme demandé dans le sujet) */}
+    <div className="card">
+      <h3 style={{ margin: '0 0 20px 0', fontWeight: 900 }}>Historique des Donateurs</h3>
+      <p style={{ fontSize: '12px', color: '#718096', marginBottom: '15px' }}>Ce module permet de valoriser nos soutiens dans nos communications.</p>
+      {[1, 2, 3, 4].map(i => (
+        <div key={i} className="activity-item">
+          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+            <div className="avatar" style={{ background: '#ED1B24' }}>D</div>
+            <div>
+              <span style={{ fontSize: 13, fontWeight: 'bold' }}>Donateur Fidèle #{i}</span>
+              <div style={{ fontSize: 11, color: '#718096' }}>Contribution annuelle : 200€</div>
+            </div>
+          </div>
+          <button style={{ background: '#F4F7F9', border: 'none', padding: '5px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>DÉTAILS</button>
+        </div>
+      ))}
+    </div>
+  </div>
+)}
       </main>
     </div>
   );
