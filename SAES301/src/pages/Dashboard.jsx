@@ -40,6 +40,16 @@ const Dashboard = () => {
     ];
   });
 
+  // 4. DONNÉES DES PARTENAIRES (LOCAL STORAGE)
+  const [partenaires, setPartenaires] = useState(() => {
+  const saved = localStorage.getItem('partenaires_data');
+  return saved ? JSON.parse(saved) : [
+    { id: 1, type: 'Entreprise', nom: "Boulangerie Soleil", contact: "Jean Pain", email: "contact@soleil.fr", telephone: "0145223344", status: "Actif" }
+  ];
+});
+
+// 4. DONNÉES DES SUBVENTIONS (LOCAL STORAGE)
+
   // SAUVEGARDE AUTOMATIQUE DANS LE NAVIGATEUR
   useEffect(() => {
     localStorage.setItem('benevoles_data', JSON.stringify(benevoles)); 
@@ -143,8 +153,8 @@ const handleBenevoleSubmit = (e) => {
   const menuItems = [
     { id: 'tableau-de-bord', label: 'Tableau de bord', icon: <LayoutDashboard size={20} /> },
     { id: 'benevoles', label: 'Bénévoles', icon: <Users size={20} /> },
-    { id: 'partenaires', label: 'Partenaires', icon: <Handshake size={20} /> },
-    { id: 'evenements', label: 'Événements', icon: <Calendar size={20} /> },
+    { id: 'partenaires', label: 'Partenaires & Donateurs', icon: <Handshake size={20} /> },
+    { id: 'evenements', label: 'Événements & Missions', icon: <Calendar size={20} /> },
     { id: 'analyse', label: 'Analyse & Stats', icon: <BarChart3 size={20} /> },
   ];
 
@@ -643,7 +653,7 @@ const handleBenevoleSubmit = (e) => {
             }}
           >
             <span style={{ color: activeTab === 'evenements' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
-            Liste des missions
+            Gestion des missions et événements
           </button>
           <button 
             onClick={() => setActiveTab('calendrier')}
@@ -663,7 +673,7 @@ const handleBenevoleSubmit = (e) => {
             }}
           >
             <span style={{ color: activeTab === 'calendrier' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
-            Calendrier global
+            Planning
           </button>
         </div>
       )}
@@ -686,7 +696,14 @@ const handleBenevoleSubmit = (e) => {
       <main className="main-content">
         <header className="header">
           <div className="title-section">
-    <h2>{activeTab === 'calendrier' ? 'Calendrier Global' : activeTab.replace('-', ' ')}</h2>
+    <h2>
+  {activeTab === 'calendrier'
+    ? 'Planning'
+    : activeTab === 'evenements'
+      ? 'Gestion des évènements & missions'
+      : activeTab.replace('-', ' ')
+  }
+</h2>
     <p>Gestion interne de l'association</p>
   </div>
 
@@ -739,64 +756,81 @@ const handleBenevoleSubmit = (e) => {
     )}
     
 
-    <div className={activeTab === 'calendrier' ? "" : "analysis-section"}>
-      <div className="card" style={{ gridColumn: activeTab === 'calendrier' ? "span 2" : "auto" }}>
-        <div style={{display:'flex', justifyContent:'space-between', marginBottom:20}}>
-          <h3 style={{margin:0, fontWeight:900}}>
-            <TrendingUp size={20} color="#ED1B24" style={{marginRight:10}}/> 
-            Analyse des Flux & Graphs
-          </h3>
-        </div>
+    {/* CONTENEUR DYNAMIQUE */}
+
+    <div className={activeTab === 'analyse' ? "analysis-section" : ""}>
+  
+  <div className="card" style={{ 
+    width: '100%',
+    gridColumn: activeTab === 'calendrier' ? "span 2" : "auto",
+    padding: activeTab === 'calendrier' ? '25px' : '30px' 
+  }}>
+    
+    {/* Le titre "Analyse" n'apparaît QUE sur l'onglet analyse */}
+    {activeTab === 'analyse' && (
+      <div style={{display:'flex', justifyContent:'space-between', marginBottom:20}}>
+        <h3 style={{margin:0, fontWeight:900, display:'flex', alignItems:'center'}}>
+          <TrendingUp size={20} color="#ED1B24" style={{marginRight:10}}/> 
+          Analyse des Flux & Graphs
+        </h3>
+        <button style={{border:'none', background:'#F4F7F9', padding:'5px 15px', borderRadius:20, fontSize:10, fontWeight:'bold', cursor:'pointer'}}>
+          <FileText size={12} style={{marginRight:5}}/> EXPORT PDF
+        </button>
+      </div>
+      )}
         
+        {/* Affichage du Calendrier Global */}
         {activeTab === 'calendrier' ? (
           <div className="calendar-wrapper" style={{ background: 'white', borderRadius: '12px' }}>
+
             {/* NAVIGATION DU CALENDRIER */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                <h4 style={{ margin: 0, fontSize: '18px', fontWeight: '800', textTransform: 'capitalize' }}>
-                  {currentDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
-                </h4>
-                <div style={{ display: 'flex', gap: '5px' }}>
-                  <button onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)))} style={{ padding: '5px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', cursor: 'pointer', background: 'white' }}> &lt; </button>
-                  <button onClick={() => setCurrentDate(new Date())} style={{ padding: '5px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', cursor: 'pointer', background: 'white', fontSize: '11px' }}> Aujourd'hui </button>
-                  <button onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))} style={{ padding: '5px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', cursor: 'pointer', background: 'white' }}> &gt; </button>
-                </div>
-              </div>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px' }}><div style={{ width: '8px', height: '8px', background: '#2B6CB0', borderRadius: '50%' }}></div> Mission</div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px' }}><div style={{ width: '8px', height: '8px', background: '#D97706', borderRadius: '50%' }}></div> Événement</div>
-              </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <h4 style={{ margin: 0, fontSize: '18px', fontWeight: '800', textTransform: 'capitalize' }}>
+              {currentDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+            </h4>
+            <div style={{ display: 'flex', gap: '5px' }}>
+              <button onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)))} style={{ padding: '5px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', cursor: 'pointer', background: 'white' }}> &lt; </button>
+              <button onClick={() => setCurrentDate(new Date())} style={{ padding: '5px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', cursor: 'pointer', background: 'white', fontSize: '11px' }}> Aujourd'hui </button>
+              <button onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))} style={{ padding: '5px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', cursor: 'pointer', background: 'white' }}> &gt; </button>
             </div>
+          </div>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px' }}>
+              <div style={{ width: '8px', height: '8px', background: '#2B6CB0', borderRadius: '50%' }}></div> Mission
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px' }}>
+              <div style={{ width: '8px', height: '8px', background: '#D97706', borderRadius: '50%' }}></div> Événement
+            </div>
+          </div>
+        </div>
 
             {/* GRILLE DYNAMIQUE GOOGLE CALENDAR */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', backgroundColor: '#E2E8F0', gap: '1px', border: '1px solid #E2E8F0', borderRadius: '12px', overflow: 'hidden' }}>
-              {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(d => (
-                <div key={d} style={{ background: '#F8FAFC', padding: '10px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: '#64748B' }}>{d}</div>
-              ))}
-              {(() => {
-                const year = currentDate.getFullYear();
-                const month = currentDate.getMonth();
-                const firstDay = new Date(year, month, 1).getDay();
-                const offset = firstDay === 0 ? 6 : firstDay - 1;
-                const days = [];
-                for (let i = 0; i < 42; i++) {
-                  const d = new Date(year, month, i - offset + 1);
-                  const dStr = d.toISOString().split('T')[0];
-                  const isCur = d.getMonth() === month;
-                  days.push(
-                    <div key={i} style={{ minHeight: '100px', background: isCur ? 'white' : '#F1F5F9', padding: '5px' }}>
-                      <span style={{ fontSize: '11px', fontWeight: '700', color: isCur ? '#4A5568' : '#CBD5E0' }}>{d.getDate()}</span>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '5px' }}>
-                      {events.filter(ev => dStr >= ev.dateDebut && dStr <= ev.dateFin).map(ev => {
-                        const isStart = dStr === ev.dateDebut;
-                        const isEnd = dStr === ev.dateFin;
-                        const color = ev.type === 'Mission' ? '#2B6CB0' : '#D97706';
-                        
-                        // Préparation du texte de l'infobulle de manière ultra-sécurisée
-                        const tooltipText = `📌 ${(ev.type || 'Élément').toUpperCase()}\n` +
-                                            `🏷️ Nom : ${ev.titre || 'Sans titre'}\n` +
-                                            `📍 Lieu : ${ev.lieu || 'Non défini'}\n` +
-                                            `📅 Du : ${ev.dateDebut || '?'} au ${ev.dateFin || '?'}`;
+          {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(d => (
+            <div key={d} style={{ background: '#F8FAFC', padding: '10px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: '#64748B' }}>{d}</div>
+          ))}
+
+          {(() => {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const offset = firstDay === 0 ? 6 : firstDay - 1;
+            const days = [];
+
+            for (let i = 0; i < 42; i++) {
+              const d = new Date(year, month, i - offset + 1);
+              const dStr = d.toISOString().split('T')[0];
+              const isCur = d.getMonth() === month;
+
+              days.push(
+                <div key={i} style={{ minHeight: '100px', background: isCur ? 'white' : '#F1F5F9', padding: '5px', position: 'relative' }}>
+                  <span style={{ fontSize: '11px', fontWeight: '700', color: isCur ? '#4A5568' : '#CBD5E0' }}>{d.getDate()}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '5px' }}>
+                    {events.filter(ev => dStr >= ev.dateDebut && dStr <= ev.dateFin).map(ev => {
+                      const isStart = dStr === ev.dateDebut;
+                      const isEnd = dStr === ev.dateFin;
+                      const tooltipText = `📌 ${(ev.type || 'Elément').toUpperCase()}\n🏷️ ${ev.titre}\n📍 ${ev.lieu || 'N/A'}\n📅 Du ${ev.dateDebut} au ${ev.dateFin}`;
 
                         return (
                           <div 
@@ -804,20 +838,12 @@ const handleBenevoleSubmit = (e) => {
                             onClick={() => openViewModal(ev)} 
                             title={tooltipText}
                             style={{ 
-                              fontSize: '9px', 
-                              padding: '3px 6px', 
-                              color: 'white', 
-                              fontWeight: 'bold', 
-                              cursor: 'pointer', 
-                              overflow: 'hidden', 
-                              textOverflow: 'ellipsis', 
-                              whiteSpace: 'nowrap',
-                              background: color,
-                              borderRadius: isStart ? '4px 0 0 4px' : isEnd ? '0 4px 4px 0' : '0',
-                              marginLeft: isStart ? '0' : '-6px',
-                              marginRight: isEnd ? '0' : '-6px',
-                              zIndex: 50,
-                              position: 'relative'
+                          fontSize: '9px', padding: '3px 6px', color: 'white', fontWeight: 'bold', cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', minHeight: '16px',
+                          background: ev.type === 'Mission' ? '#2B6CB0' : '#D97706',
+                          borderRadius: isStart ? '4px 0 0 4px' : isEnd ? '0 4px 4px 0' : '0',
+                          marginLeft: isStart ? '0' : '-9px',
+                          marginRight: isEnd ? '0' : '-9px',
+                          zIndex: 10, position: 'relative'
                             }}
                           >
                             {(isStart || d.getDay() === 1) && ev.titre}
@@ -832,13 +858,13 @@ const handleBenevoleSubmit = (e) => {
               })()}
             </div>
           </div>
-        ) : (
+        ) : activeTab === 'analyse' ? (
           <div className="placeholder-chart">
             <p>Remontée des données PHP pour graphiques dynamiques</p>
           </div>
-        )}
+        ): null}
   </div>
-              {activeTab !== 'calendrier' && (
+              {activeTab === 'analyse' && (
     <div className="card">
       <h3 style={{margin:'0 0 20px 0', fontWeight:900}}>Derniers Donateurs</h3>
       {[1, 2, 3, 4].map(i => (
