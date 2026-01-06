@@ -8,9 +8,9 @@ import {
 const Dashboard = () => {
   // 1. ÉTATS (DÉCLARÉS EN PREMIER POUR ÉVITER LES ERREURS)
   const [activeTab, setActiveTab] = useState('analyse');
-  const [searchQuery, setSearchQuery] = useState(""); // État pour la recherche
-  const [showBenevoleModal, setShowBenevoleModal] = useState(false); // MODIFICATION : Modale spécifique Bénévoles
-  const [showEventModal, setShowEventModal] = useState(false); // MODIFICATION : Modale spécifique Événements
+  const [searchQuery, setSearchQuery] = useState(""); 
+  const [showBenevoleModal, setShowBenevoleModal] = useState(false); 
+  const [showEventModal, setShowEventModal] = useState(false);
   const [showViewModal, setShowViewModal] = useState(false); 
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
@@ -18,15 +18,15 @@ const Dashboard = () => {
 
 // 2. DONNÉES DES BÉNÉVOLES (LOCAL STORAGE)
   const [benevoles, setBenevoles] = useState(() => {
-    const saved = localStorage.getItem('benevoles_data'); // MODIFICATION : Lecture de la mémoire bénévole
+    const saved = localStorage.getItem('benevoles_data'); 
     return saved ? JSON.parse(saved) : [
       { id: 1, nom: "Davud", prenom: "Dupont", email: "david.dupontg@gmail.com", telephone: "0102030405", ville: "Paris", status: "actif", cotisation: "À jour", dispo: "Semaine" },
     ];
   });
 
-  // 3. DONNÉES DES ÉVÉNEMENTS (LOCAL STORAGE) - BESOIN THOMAS/NADIA
+  // 3. DONNÉES DES ÉVÉNEMENTS (LOCAL STORAGE) 
   const [events, setEvents] = useState(() => {
-    const saved = localStorage.getItem('evenements_data'); // MODIFICATION : Lecture de la mémoire événements
+    const saved = localStorage.getItem('evenements_data'); 
     return saved ? JSON.parse(saved) : [
       { id: 1, titre: "Collecte Alimentaire", date: "2024-05-20", lieu: "Super U Centre", budget: "200", materiel: "Gilets, Flyers", benevolesInscrits: "Marie, Paul", documents: "affiche_collecte.pdf" },
     ];
@@ -34,8 +34,8 @@ const Dashboard = () => {
 
   // SAUVEGARDE AUTOMATIQUE DANS LE NAVIGATEUR
   useEffect(() => {
-    localStorage.setItem('benevoles_data', JSON.stringify(benevoles)); // MODIFICATION : Sync LocalStorage Bénévoles
-    localStorage.setItem('evenements_data', JSON.stringify(events)); // MODIFICATION : Sync LocalStorage Événements
+    localStorage.setItem('benevoles_data', JSON.stringify(benevoles)); 
+    localStorage.setItem('evenements_data', JSON.stringify(events));
   }, [benevoles, events])
 
   // 3. LOGIQUE DE FILTRAGE (SÉCURISÉE)
@@ -52,7 +52,7 @@ const Dashboard = () => {
     return [];
   };
 
-  const filteredData = getFilteredData(); // MODIFICATION : Variable qui contient les résultats affichés
+  const filteredData = getFilteredData(); 
 
   // 4. ÉTAT POUR LE FORMULAIRE
   const [formBenevole, setFormBenevole] = useState({
@@ -65,15 +65,15 @@ const Dashboard = () => {
   // 5. FONCTIONS DE GESTION
   const handleDelete = (id) => {
     if(!window.confirm("Supprimer cet élément ?")) return;
-    if (activeTab === 'benevoles') setBenevoles(benevoles.filter(b => b.id !== id)); // MODIFICATION : Suppr selon l'onglet
-    if (activeTab === 'evenements') setEvents(events.filter(e => e.id !== id)); // MODIFICATION : Suppr selon l'onglet
+    if (activeTab === 'benevoles') setBenevoles(benevoles.filter(b => b.id !== id)); 
+    if (activeTab === 'evenements') setEvents(events.filter(e => e.id !== id)); 
   };
 
   const openEdit = (item) => {
     setIsEditing(true);
     setCurrentId(item.id);
-    if (activeTab === 'benevoles') { setFormBenevole({...item}); setShowBenevoleModal(true); } // MODIFICATION : Ouvre la bonne modale
-    if (activeTab === 'evenements') { setFormEvent({...item}); setShowEventModal(true); } // MODIFICATION : Ouvre la bonne modale
+    if (activeTab === 'benevoles') { setFormBenevole({...item}); setShowBenevoleModal(true); } 
+    if (activeTab === 'evenements') { setFormEvent({...item}); setShowEventModal(true); }
   };
 
   const openViewModal = (item) => {
@@ -562,7 +562,7 @@ const handleBenevoleSubmit = (e) => {
                 <UserCheck size={32} color="#ED1B24"/>
               </div>
               <div className="stat-card">
-                {/* MODIF : Statistique dynamique des missions pour Thomas et Julie */}
+                {/* MODIF : Statistique dynamique des missions */}
                 <div><span className="stat-label">Événements</span><p className="stat-value">{events.length}</p></div>
                 <Calendar size={32} color="#ED1B24"/>
               </div>
@@ -640,7 +640,7 @@ const handleBenevoleSubmit = (e) => {
             </table>
           </div>
         ) : activeTab === 'evenements' ? (
-          /* MODIF : TABLEAU DÉDIÉ AUX ÉVÉNEMENTS (Besoins Thomas/Nadia/Julie) */
+          /* MODIF : TABLEAU DÉDIÉ AUX ÉVÉNEMENTS */
           <div className="table-container">
             <table>
               <thead>
