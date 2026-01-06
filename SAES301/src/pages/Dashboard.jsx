@@ -615,52 +615,58 @@ const handleBenevoleSubmit = (e) => {
           {item.icon}
           <span>{item.label}</span>
         </button>
-        {/* INSERTION DU SOUS-MENU SI C'EST L'ITEM ÉVÉNEMENTS */}
-        {item.id === 'evenements' && (activeTab === 'evenements' || activeTab === 'calendrier') && (
-          <div style={{ 
-            paddingLeft: '48px', 
-            display: 'flex', 
-            flexDirection: 'column', 
-            gap: '8px', 
-            marginTop: '-4px', 
-            marginBottom: '12px',
-            borderLeft: '2px solid #2D2D2D',
-            marginLeft: '28px' 
-          }}>
-            <button 
-              onClick={() => setActiveTab('evenements')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: activeTab === 'evenements' ? 'white' : '#A0AEC0', 
-                fontSize: '12px', 
-                cursor: 'pointer', 
-                textAlign: 'left', 
-                padding: '4px 0',
-                fontWeight: activeTab === 'evenements' ? 'bold' : 'normal',
-                transition: '0.2s'
-              }}
-            >
-              • Liste des missions
-            </button>
-            <button 
-              onClick={() => setActiveTab('calendrier')}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: activeTab === 'calendrier' ? 'white' : '#A0AEC0', 
-                fontSize: '12px', 
-                cursor: 'pointer', 
-                textAlign: 'left', 
-                padding: '4px 0',
-                fontWeight: activeTab === 'calendrier' ? 'bold' : 'normal',
-                transition: '0.2s'
-              }}
-            >
-              • Calendrier global
-            </button>
-          </div>
-        )}
+      {/* SOUS-MENU ÉVÉNEMENTS NETTOYÉ */}
+      {item.id === 'evenements' && (activeTab === 'evenements' || activeTab === 'calendrier') && (
+        <div style={{ 
+          paddingLeft: '54px', // Aligné sur le début du texte "Événements"
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: '4px', 
+          marginTop: '4px', 
+          marginBottom: '10px'
+        }}>
+          <button 
+            onClick={() => setActiveTab('evenements')}
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              color: activeTab === 'evenements' ? 'white' : '#A0AEC0', 
+              fontSize: '13px', 
+              cursor: 'pointer', 
+              textAlign: 'left', 
+              padding: '6px 0',
+              fontWeight: activeTab === 'evenements' ? '700' : '500',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: '0.2s'
+            }}
+          >
+            <span style={{ color: activeTab === 'evenements' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
+            Liste des missions
+          </button>
+          <button 
+            onClick={() => setActiveTab('calendrier')}
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              color: activeTab === 'calendrier' ? 'white' : '#A0AEC0', 
+              fontSize: '13px', 
+              cursor: 'pointer', 
+              textAlign: 'left', 
+              padding: '6px 0',
+              fontWeight: activeTab === 'calendrier' ? '700' : '500',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              transition: '0.2s'
+            }}
+          >
+            <span style={{ color: activeTab === 'calendrier' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
+            Calendrier global
+          </button>
+        </div>
+      )}
       </div>
     ))}
   </nav>
