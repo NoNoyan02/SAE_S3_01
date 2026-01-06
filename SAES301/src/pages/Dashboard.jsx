@@ -14,7 +14,6 @@ const Dashboard = () => {
   const [showViewModal, setShowViewModal] = useState(false); 
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
-  const [selectedBenevole, setSelectedBenevole] = useState(null); 
 
 // 2. DONNÉES DES BÉNÉVOLES (LOCAL STORAGE)
   const [benevoles, setBenevoles] = useState(() => {
@@ -28,7 +27,8 @@ const Dashboard = () => {
   const [events, setEvents] = useState(() => {
     const saved = localStorage.getItem('evenements_data'); 
     return saved ? JSON.parse(saved) : [
-      { id: 1, titre: "Collecte Alimentaire", date: "2024-05-20", lieu: "Super U Centre", budget: "200", materiel: "Gilets, Flyers", benevolesInscrits: "Marie, Paul", documents: "affiche_collecte.pdf" },
+      { id: 1, type: "Mission", titre: "Collecte Alimentaire", date: "2024-05-20", lieu: "Super U Centre", budget: "200", status: "Planifié" },
+      { id: 2, type: "Événement", titre: "Gala de charité", date: "2024-12-15", lieu: "Mairie", budget: "1500", status: "En préparation" }
     ];
   });
 
@@ -55,12 +55,24 @@ const Dashboard = () => {
   const filteredData = getFilteredData(); 
 
   // 4. ÉTAT POUR LE FORMULAIRE
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  // 4. ÉTAT POUR LE FORMULAIRE
   const [formBenevole, setFormBenevole] = useState({
     nom: '', prenom: '', email: '', telephone: '', ville: '', dateNaissance: '', profession: '', regime: '', sante: '', infos: '', dispo: 'Semaine', cotisation: 'À jour'
   });
-  const [formEvent, setFormEvent] = useState({ titre: '', date: '', lieu: '', budget: '', materiel: '', benevolesInscrits: '', documents: '' 
-
-  });
+  const [formEvent, setFormEvent] = useState({ 
+  type: 'Événement', 
+  titre: '', 
+  dateDebut: '', 
+  dateFin: '', 
+  lieu: '', 
+  budget: '', 
+  materiel: '', 
+  benevolesInscrits: '', 
+  documents: '', 
+  infos: '' 
+});
 
   // 5. FONCTIONS DE GESTION
   const handleDelete = (id) => {
@@ -427,14 +439,56 @@ const handleBenevoleSubmit = (e) => {
       <div className="modal-overlay">
         <div className="modal-card">
           <div style={{display:'flex', justifyContent:'space-between', marginBottom:20}}>
-            <h2 style={{fontSize: 24, fontWeight: 700, margin:0}}>{isEditing ? "Modifier la mission" : "Planifier un Événement"}</h2>
+            <h2 style={{fontSize: 24, fontWeight: 700, margin:0}}>
+              {isEditing ? "Modifier" : "Créer un nouvel élément"}
+            </h2>
             <X onClick={closeModals} style={{cursor:'pointer', color:'#6B7280'}}/>
           </div>
           
           <form onSubmit={handleEventSubmit}>
+            {/* MODIF : Choix entre Mission et Événement */}
+            <div className="form-group" style={{marginBottom: 15}}>
+              <label>Type d'élément <span>*</span></label>
+              <select 
+                value={formEvent.type || "Événement"} 
+                onChange={e => setFormEvent({...formEvent, type: e.target.value})}
+                style={{padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB'}}
+              >
+                <option value="Événement">Événement (Gala, fête, etc.)</option>
+                <option value="Mission">Mission de terrain (Maraude, collecte...)</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Nom de l'élément <span>*</span></label>
+              <input 
+                type="text" 
+                required 
+                value={formEvent.titre} 
+                onChange={e => setFormEvent({...formEvent, titre: e.target.value})} 
+                placeholder="Ex: Collecte Hivernale" 
+              />
+            </div>
+
+            {/* DATES DÉBUT ET FIN */}
             <div className="form-row">
-              <div className="form-group"><label>Nom de la mission <span>*</span></label><input type="text" required value={formEvent.titre} onChange={e => setFormEvent({...formEvent, titre: e.target.value})} placeholder="Ex: Collecte Alimentaire" /></div>
-              <div className="form-group"><label>Date <span>*</span></label><input type="date" required value={formEvent.date} onChange={e => setFormEvent({...formEvent, date: e.target.value})} /></div>
+              <div className="form-group">
+                <label>Date de début <span>*</span></label>
+                <input 
+                  type="date" 
+                  required 
+                  value={formEvent.dateDebut} 
+                  onChange={e => setFormEvent({...formEvent, dateDebut: e.target.value})} 
+                />
+              </div>
+              <div className="form-group">
+                <label>Date de fin <span>*</span></label>
+                <input 
+                  type="date" 
+                  required 
+                  value={formEvent.dateFin} 
+                  onChange={e => setFormEvent({...formEvent, dateFin: e.target.value})} 
+                />
+              </div>
             </div>
 
             <div className="form-row">
@@ -468,12 +522,18 @@ const handleBenevoleSubmit = (e) => {
     {showViewModal && selectedItem && activeTab === 'evenements' && (
   <div className="modal-overlay">
     <div className="modal-card">
-      <div style={{display:'flex', justifyContent:'space-between', borderBottom:'1px solid #EEE', paddingBottom:15, marginBottom:10}}>
-        <h2 style={{fontSize: 22, fontWeight: 800, color:'#1A1C23'}}>Détails de la mission : {selectedItem.titre}</h2>
+      <div style={{
+        display:'flex', 
+        justifyContent:'space-between', 
+        borderBottom: `4px solid ${selectedItem.type === 'Mission' ? '#2B6CB0' : '#D97706'}`, 
+        paddingBottom:15, 
+        marginBottom:10
+      }}>
+        <h2 style={{fontSize: 22, fontWeight: 800, color:'#1A1C23'}}>[{selectedItem.type}] {selectedItem.titre}</h2>
         <X onClick={closeModals} style={{cursor:'pointer', color:'#6B7280'}}/>
       </div>
       <div className="info-grid">
-        <div className="info-item"><div className="info-label">Date</div><div className="info-value">{selectedItem.date}</div></div>
+        <div className="info-item"><div className="info-label">Période</div><div className="info-value">Du {selectedItem.dateDebut} au {selectedItem.dateFin}</div></div>
         <div className="info-item"><div className="info-label">Lieu</div><div className="info-value">{selectedItem.lieu}</div></div>
         <div className="info-item"><div className="info-label">Budget</div><div className="info-value">{selectedItem.budget ? `${selectedItem.budget} €` : "Non défini"}</div></div>
         <div className="info-item"><div className="info-label">Documents</div><div className="info-value" style={{color: '#2563EB'}}>{selectedItem.documents || "Aucun document"}</div></div>
@@ -645,7 +705,8 @@ const handleBenevoleSubmit = (e) => {
             <table>
               <thead>
                 <tr>
-                  <th>Mission</th>
+                  <th>Type</th>
+                  <th>Nom</th>
                   <th>Date</th>
                   <th>Lieu</th>
                   <th>Budget</th>
@@ -655,7 +716,31 @@ const handleBenevoleSubmit = (e) => {
               <tbody>
                 {filteredData.map((ev) => (
                   <tr key={ev.id}>
-                    <td className="clickable-name" onClick={() => openViewModal(ev)}>{ev.titre}</td>
+                    <td>{/* BADGE DYNAMIQUE */}
+                      <span style={{
+                        flexShrink: 0, 
+                        padding: '2px 8px',
+                        borderRadius: '12px',
+                        fontSize: '10px',
+                        fontWeight: 'bold',
+                        textTransform: 'uppercase',
+                        background: ev.type === 'Mission' ? '#DEF7EC' : '#E1EFFE', 
+                        color: ev.type === 'Mission' ? '#03543F' : '#1E429F',
+                        border: `1px solid ${ev.type === 'Mission' ? '#84E1BC' : '#A4CAFE'}`,
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minWidth: '80px' // Largeur fixe pour que "MISSION" et "ÉVÉNEMENT" soient alignés
+                      }}>
+                        {ev.type ? ev.type.toUpperCase() : 'ÉVÉNEMENT'}
+                      </span></td>
+                    <td style= {{minWidth: '205px'}}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}></div>
+                      <span 
+                        className="clickable-name" onClick={() => openViewModal(ev)} style={{ fontWeight: '600', fontSize: '14px', color: '#1A1C23',cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1, marginLeft: '10px' }}
+                      >{ev.titre || "Sans titre"}
+                      </span>
+                    </td>
                     <td>{ev.date}</td>
                     <td>{ev.lieu}</td>
                     <td>{ev.budget} €</td>
