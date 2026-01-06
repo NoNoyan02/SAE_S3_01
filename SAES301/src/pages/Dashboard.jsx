@@ -564,7 +564,7 @@ const handleBenevoleSubmit = (e) => {
         paddingBottom:15, 
         marginBottom:10
       }}>
-        <h2 style={{fontSize: 22, fontWeight: 800, color:'#1A1C23'}}>[{selectedItem.type}] {selectedItem.titre}</h2>
+        <h2 style={{fontSize: 22, fontWeight: 800, color:'#1A1C23'}}>[{selectedItem.type === 'Mission' ? 'MISSION' : 'ÉVÉNEMENT'}] {selectedItem.titre}</h2>
         <X onClick={closeModals} style={{cursor:'pointer', color:'#6B7280'}}/>
       </div>
       <div className="info-grid">
@@ -589,9 +589,6 @@ const handleBenevoleSubmit = (e) => {
         <div className="info-item full-width"><div className="info-label">Bénévoles Mobilisés</div><div className="info-value">{selectedItem.benevolesInscrits || "Aucun bénévole inscrit."}</div></div>
         
         <div className="info-item full-width"><div className="info-label">Notes de mission</div><div className="info-value" style={{fontWeight:400}}>{selectedItem.infos || "Aucune note particulière."}</div></div>
-      </div>
-      <div className="btn-container">
-        <button className="btn-save" onClick={closeModals}>Fermer</button>
       </div>
     </div>
 )}
@@ -817,7 +814,7 @@ const handleBenevoleSubmit = (e) => {
                 <tr>
                   <th>Type</th>
                   <th>Nom</th>
-                  <th>Date</th>
+                  <th>Date de début</th>
                   <th>Lieu</th>
                   <th>Budget</th>
                   <th>Actions</th>
@@ -851,7 +848,7 @@ const handleBenevoleSubmit = (e) => {
                       >{ev.titre || "Sans titre"}
                       </span>
                     </td>
-                    <td>{ev.date}</td>
+                    <td>{ev.dateDebut}</td>
                     <td>{ev.lieu}</td>
                     <td>{ev.budget} €</td>
                     <td>
