@@ -1,0 +1,498 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
+import Header from "../components/Header/Header.jsx";
+
+const PageIntrouvable = () => {
+    return (
+        <div className="error-page">
+            <Helmet>
+                <title>Page introuvable | Croix-Rouge française</title>
+            </Helmet>
+
+            {/* DÉBUT DU CSS INTÉGRÉ */}
+            <style>{`
+                .error-page *,
+                .error-page *:before,
+                .error-page *:after {
+                    box-sizing: border-box;
+                }
+
+                .error-page {
+                    margin: 0;
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+                    line-height: 1.5;
+                    color: #000;
+                }
+
+                .error-page h1,
+                .error-page h2 {
+                    margin: 0;
+                    font-weight: inherit;
+                }
+
+                .error-page p,
+                .error-page ul {
+                    margin: 0;
+                }
+
+                .error-page ul {
+                    list-style: none;
+                    padding-left: 0;
+                }
+
+                .error-page a {
+                    text-decoration: none;
+                    transition: all .2s linear;
+                }
+
+                .error-page a:hover,
+                .error-page a:focus {
+                    text-decoration: none;
+                }
+
+                .error-page img {
+                    max-width: 100%;
+                    height: auto;
+                    vertical-align: middle;
+                }
+
+                /* Hero Section */
+                .error-hero {
+                    position: relative;
+                    display: flex;
+                    color: #fff;
+                    background-color: #075c68;
+                    padding: 88px 64px;
+                    margin-bottom: 88px;
+                    min-height: 180px;
+                }
+
+                .error-hero__container {
+                    width: 100%;
+                    max-width: 1170px;
+                    margin-left: auto;
+                    margin-right: auto;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+
+                .error-hero__content {
+                    flex: 1;
+                    line-height: 1.2;
+                    text-align: center;
+                }
+
+                .error-hero__title {
+                    margin-bottom: 1rem;
+                    font-weight: 800;
+                    font-size: 10rem;
+                    line-height: 1.2;
+                    text-shadow: 0 4px 4px rgba(0, 0, 0, .45);
+                    color: #fff;
+                }
+
+                .error-hero__subtitle {
+                    font-size: 2rem;
+                    font-weight: 300;
+                    color: #fff;
+                }
+
+                /* Container */
+                .error-wrapper {
+                    margin-bottom: 88px;
+                    padding-left: 64px;
+                    padding-right: 64px;
+                }
+
+                .error-container {
+                    width: 100%;
+                    max-width: 1170px;
+                    margin-left: auto;
+                    margin-right: auto;
+                    padding: 0;
+                }
+
+                /* Section Header */
+                .error-section-header {
+                    margin-bottom: 3rem;
+                    text-align: center;
+                }
+
+                .error-section-header__title {
+                    margin-bottom: 1rem;
+                    font-size: 2.4rem;
+                    font-weight: 700;
+                    line-height: 1.2;
+                    color: #000;
+                }
+
+                .error-section-header__badge {
+                    padding: 2px 8px;
+                    border-radius: 2px;
+                    color: #fff;
+                    background-color: #075c68;
+                    line-height: 1.5;
+                }
+
+                .error-section-header__subtitle {
+                    font-weight: 300;
+                    font-size: 2rem;
+                    line-height: 1.2;
+                    color: #000;
+                }
+
+                /* Cards Grid */
+                .error-cards {
+                    display: flex;
+                    flex-wrap: wrap;
+                    justify-content: center;
+                    gap: 30px;
+                }
+
+                .error-card {
+                    flex: 1;
+                    max-width: 470px;
+                    min-width: 280px;
+                }
+
+                .error-card__link {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                    min-height: 500px; /* Note: Sans image, cela créera de grands blocs vides */
+                    color: #000;
+                    text-align: center;
+                    text-decoration: none;
+                    transition: transform 0.3s ease;
+                    border-radius: 8px;
+                    overflow: hidden;
+                    position: relative;
+                    background-color: #f6f7fa; /* Ajout d'un fond gris par défaut si pas d'image */
+                }
+
+                .error-card__link:hover {
+                    transform: translateY(-5px);
+                }
+
+                .error-card__image {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    z-index: 1;
+                }
+
+                .error-card__image img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    object-position: center top;
+                    display: block;
+                }
+
+                .error-card__content {
+                    position: relative;
+                    z-index: 2;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 1rem;
+                    flex: 1;
+                    justify-content: flex-end;
+                    padding: 24px;
+                    background: linear-gradient(to bottom, transparent 0%, transparent 50%, rgba(255, 255, 255, 0.50) 70%, rgba(255, 255, 255, 0.98));
+                }
+
+                .error-card__title {
+                    font-size: 1.8rem;
+                    font-weight: 600;
+                    line-height: 1.3;
+                    min-height: 60px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #000;
+                    background-color: rgba(255, 255, 255, 0.95);
+                    padding: 16px;
+                    border-radius: 4px;
+                }
+
+                /* Buttons */
+                .error-btn {
+                    overflow: hidden;
+                    position: relative;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                    width: 100%;
+                    max-width: 100%;
+                    min-height: 50px;
+                    padding: 12px 24px;
+                    vertical-align: middle;
+                    line-height: 1;
+                    font-weight: 600;
+                    font-size: 1.4rem;
+                    text-decoration: none;
+                    text-align: center;
+                    color: #fff;
+                    cursor: pointer;
+                    transition: all .2s ease-in-out;
+                    border: none;
+                    border-radius: 4px;
+                }
+
+                .error-btn--primary {
+                    background-color: #e3001b;
+                    color: #fff;
+                }
+
+                .error-btn--primary:hover,
+                .error-btn--primary:focus {
+                    background-color: #970b13;
+                    color: #fff;
+                }
+
+                .error-btn--secondary {
+                    background-color: #075c68;
+                    color: #fff;
+                }
+
+                .error-btn--secondary:hover,
+                .error-btn--secondary:focus {
+                    background-color: #17363a;
+                    color: #fff;
+                }
+
+                /* Bottom Actions */
+                .error-actions {
+                    display: flex;
+                    justify-content: center;
+                    margin-bottom: 64px;
+                    padding: 0 24px;
+                }
+
+                .error-actions .error-btn {
+                    min-width: 200px;
+                    max-width: 400px;
+                }
+
+                /* Responsive Design */
+
+                @media (max-width: 1099px) {
+                    .error-hero {
+                        padding: 60px 40px;
+                        margin-bottom: 60px;
+                    }
+
+                    .error-hero__title {
+                        font-size: 6rem;
+                    }
+
+                    .error-hero__subtitle {
+                        font-size: 1.8rem;
+                    }
+
+                    .error-wrapper {
+                        padding-left: 40px;
+                        padding-right: 40px;
+                        margin-bottom: 60px;
+                    }
+
+                    .error-card {
+                        min-width: 45%;
+                        max-width: 400px;
+                    }
+
+                    .error-card__link {
+                        min-height: 450px;
+                    }
+
+                    .error-section-header__title {
+                        font-size: 2.2rem;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .error-hero {
+                        padding: 48px 24px;
+                        margin-bottom: 48px;
+                    }
+
+                    .error-hero__title {
+                        font-size: 4.5rem;
+                    }
+
+                    .error-wrapper {
+                        padding-left: 24px;
+                        padding-right: 24px;
+                        margin-bottom: 48px;
+                    }
+
+                    .error-card {
+                        min-width: 100%;
+                        max-width: 100%;
+                    }
+
+                    .error-card__link {
+                        min-height: 420px;
+                    }
+
+                    .error-card__title {
+                        font-size: 1.6rem;
+                        padding: 12px;
+                    }
+
+                    .error-btn {
+                        font-size: 1.3rem;
+                        min-height: 48px;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .error-hero {
+                        padding: 40px 20px;
+                        margin-bottom: 40px;
+                    }
+
+                    .error-hero__title {
+                        font-size: 3.5rem;
+                    }
+
+                    .error-hero__subtitle {
+                        font-size: 1.6rem;
+                    }
+
+                    .error-wrapper {
+                        padding-left: 20px;
+                        padding-right: 20px;
+                        margin-bottom: 40px;
+                    }
+
+                    .error-section-header {
+                        margin-bottom: 2rem;
+                    }
+
+                    .error-section-header__title {
+                        font-size: 1.8rem;
+                    }
+
+                    .error-section-header__subtitle {
+                        font-size: 1.6rem;
+                    }
+
+                    .error-card__link {
+                        min-height: 380px;
+                    }
+
+                    .error-card__content {
+                        padding: 20px;
+                        gap: 0.8rem;
+                    }
+
+                    .error-card__title {
+                        font-size: 1.5rem;
+                        min-height: 50px;
+                        padding: 10px;
+                    }
+
+                    .error-btn {
+                        font-size: 1.2rem;
+                        min-height: 46px;
+                        padding: 10px 20px;
+                    }
+
+                    .error-actions {
+                        margin-bottom: 40px;
+                    }
+
+                    .error-actions .error-btn {
+                        min-width: 100%;
+                        max-width: 100%;
+                    }
+                }
+
+                @media (max-width: 360px) {
+                    .error-hero__title {
+                        font-size: 3rem;
+                    }
+
+                    .error-card__link {
+                        min-height: 350px;
+                    }
+
+                    .error-card__title {
+                        font-size: 1.4rem;
+                    }
+                }
+            `}</style>
+            {/* FIN DU CSS INTÉGRÉ */}
+
+            <Header/>
+            {/* Hero Section 404 */}
+            <div className="error-hero">
+                <div className="error-hero__container">
+                    <div className="error-hero__content">
+                        <h1 className="error-hero__title">404</h1>
+                        <p className="error-hero__subtitle">Oups ! La page que vous cherchez semble introuvable.</p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Contenu Principal */}
+            <div className="error-wrapper">
+                <div className="error-container">
+
+                    <header className="error-section-header">
+                        <h2 className="error-section-header__title">Continuer votre parcours</h2>
+                        <p className="error-section-header__subtitle">Voici quelques liens utiles pour vous remettre sur le bon chemin :</p>
+                    </header>
+
+                    <ul className="error-cards">
+                        {/* CARTE 1 : DON */}
+                        <li className="error-card">
+                            <Link to="/faire-un-don/~mon-don" className="error-card__link">
+                                {/* Note : Vous pourrez ajouter ici un <div className="error-card__image"><img src="..." /></div> si vous souhaitez une image de fond comme dans le CSS */}
+                                <div className="error-card__content">
+                                    <span className="error-card__title">Je fais un don</span>
+                                    <span className="error-btn error-btn--primary">Soutenir</span>
+                                </div>
+                            </Link>
+                        </li>
+
+                        {/* CARTE 2 : BÉNÉVOLAT */}
+                        <li className="error-card">
+                            <Link to="/je-deviens-benevole" className="error-card__link">
+                                <div className="error-card__content">
+                                    <span className="error-card__title">Je deviens bénévole</span>
+                                    <span className="error-btn error-btn--primary">Agir</span>
+                                </div>
+                            </Link>
+                        </li>
+
+                        {/* CARTE 3 : FORMATIONS */}
+                        <li className="error-card">
+                            <Link to="/formations" className="error-card__link">
+                                <div className="error-card__content">
+                                    <span className="error-card__title">Je me forme</span>
+                                    <span className="error-btn error-btn--primary">Apprendre</span>
+                                </div>
+                            </Link>
+                        </li>
+                    </ul>
+
+                    <div className="error-actions">
+                        <Link to="/" className="error-btn error-btn--secondary">
+                            Retour à l'accueil
+                        </Link>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default PageIntrouvable;
