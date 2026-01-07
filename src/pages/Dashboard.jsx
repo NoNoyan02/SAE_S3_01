@@ -95,8 +95,8 @@ const Dashboard = () => {
         ...e,
         type: e.type_element,
         titre: e.nom_element,
-        dateDebut: e.date_debut,
-        dateFin: e.date_fin,
+        dateDebut: e.date_debut ? e.date_debut.split(' ')[0] : '',
+        dateFin: e.date_fin ? e.date_fin.split(' ')[0] : '',
         materiel: e.logistique_materiel,
         benevolesInscrits: e.benevoles_inscrits,
         documents: e.document_url,
@@ -769,7 +769,7 @@ const Dashboard = () => {
 
             {/* CONTENU DES INFOS */}
             <div className="info-grid">
-              <div className="info-item"><div className="info-label">Période</div><div className="info-value">Du {selectedItem.dateDebut} au {selectedItem.dateFin}</div></div>
+              <div className="info-item"><div className="info-label">Période</div><div className="info-value">Du {selectedItem.dateDebut ? new Date(selectedItem.dateDebut).toLocaleDateString('fr-FR') : 'N/A'} au {selectedItem.dateFin ? new Date(selectedItem.dateFin).toLocaleDateString('fr-FR') : 'N/A'}</div></div>
               <div className="info-item"><div className="info-label">Lieu</div><div className="info-value">{selectedItem.lieu}</div></div>
               <div className="info-item"><div className="info-label">Budget</div><div className="info-value">{selectedItem.budget ? `${selectedItem.budget} €` : "Non défini"}</div></div>
 
@@ -1262,7 +1262,7 @@ const Dashboard = () => {
                       >{ev.titre || "Sans titre"}
                       </span>
                     </td>
-                    <td>{ev.dateDebut}</td>
+                    <td>{ev.dateDebut ? new Date(ev.dateDebut).toLocaleDateString('fr-FR') : '-'}</td>
                     <td>{ev.lieu}</td>
                     <td>{ev.budget} €</td>
                     <td>
