@@ -1,38 +1,18 @@
 import React from "react";
-import {Helmet} from "react-helmet";
+import SEO from '@/components/SEO';
 
-// Composants
-import Header from "../components/Header/Header.jsx";
-import Main from "../components/Accueil/Main/Main.jsx";
-import Footer from "../components/Footer/Footer.jsx";
+import Main from "@/components/Accueil/Main/Main.jsx";
 
 
 export default function Accueil() {
     return (
         <>
-        <Helmet>
-            {/* Titre */}
-            <title>Croix-Rouge française : engagez vous à nos côtés</title>
-
-            {/* Description */}
-            <meta
-                name="description"
-                content="La Croix-Rouge française agit pour protéger et relever sans condition, les personnes en situation de vulnérabilité et construire avec elles leur résilience."
+            <SEO
+                title="Croix-Rouge française : engagez vous à nos côtés"
+                description="La Croix-Rouge française agit pour protéger et relever sans condition, les personnes en situation de vulnérabilité et construire avec elles leur résilience."
+                image="/crf_logo.png"
             />
-
-            {/* Open Graph */}
-            <meta
-                property="og:title"
-                content="Croix-Rouge française : engagez vous à nos côtés | Croix-Rouge française"
-            />
-            <meta
-                property="og:description"
-                content="La Croix-Rouge française agit pour protéger et relever sans condition, les personnes en situation de vulnérabilité et construire avec elles leur résilience."
-            />
-        </Helmet>
-            <Header/>
             <Main/>
-            <Footer/>
         </>
     );
 }

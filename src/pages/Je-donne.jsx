@@ -3,8 +3,6 @@ import { Helmet } from 'react-helmet';
 
 
 // Import des composants globaux
-import Header from "../components/Header/Header.jsx";
-import Footer from "../components/Footer/Footer.jsx";
 // Assurez-vous que le chemin est bon par rapport à votre structure
 import DonationFormHorizontal from "../components/Form/DonationFormHorizontal.jsx";
 import LC_20374 from "assets/images/je-donne/LC_20374.webp";
@@ -16,6 +14,7 @@ import Page_carrefour_Don_regulier from "assets/images/je-donne/Page_carrefour_D
 import Page_carrefour_Don_titres_restaurant from "assets/images/je-donne/Page_carrefour_Don_titres_restaurant.webp";
 import Page_carrefour_Don_vetements from "assets/images/je-donne/Page_carrefour_Don_vetements.webp";
 import Page_Carrefour_Je_donne from "assets/images/je-donne/Page_Carrefour_Je_donne.webp";
+import DonationFormVertical from "@/components/Form/DonationFormVertical.jsx";
 
 
 export default function JeDonne() {
@@ -470,8 +469,6 @@ export default function JeDonne() {
                 .fleche.ouverte { transform: rotate(180deg); }
             `}</style>
 
-            <Header />
-
             <main className="page-je-donne">
 
                 {/* 1. Hero Section */}
@@ -482,45 +479,7 @@ export default function JeDonne() {
                     <div className="section-hero">
                         <h1 className="hero-title">Grâce à vos dons nous<br/>pouvons agir</h1>
 
-                        {/* Formulaire Vertical (Hero) */}
-                        <div className="formulaire-don-vertical">
-                            <p className="texte1">Mobilisons-nous ensemble !</p>
-
-                            <div className="selecteur-choix">
-                                <div className={`choix-btn ${modePaiement === 'unefois' ? 'active' : ''}`} onClick={() => handleModeChange('unefois')}>
-                                    Je donne une fois
-                                </div>
-                                <div className={`choix-btn ${modePaiement === 'touslesmois' ? 'active' : ''}`} onClick={() => handleModeChange('touslesmois')}>
-                                    Je donne tous les mois
-                                </div>
-                            </div>
-
-                            <div className="selecteur-montant">
-                                {montants[modePaiement].map((montant) => (
-                                    <button
-                                        key={montant}
-                                        className={`montant-btn ${montantSelectionne === montant && !montantLibre ? 'active' : ''}`}
-                                        onClick={() => handleMontantClick(montant)}
-                                    >
-                                        {montant} €
-                                    </button>
-                                ))}
-                            </div>
-
-                            <div className="montant-libre-container">
-                                <input
-                                    type="number"
-                                    className="montant-libre"
-                                    placeholder="Montant libre"
-                                    value={montantLibre}
-                                    onChange={handleMontantLibreChange}
-                                />
-                                <span>€</span>
-                            </div>
-
-                            <p className="texte2">Soit <span className="fiscal">{coutReel} €</span> après déduction fiscale</p>
-                            <button className="bouton-donation">Je donne</button>
-                        </div>
+                        <DonationFormVertical/>
                     </div>
                 </div>
 
@@ -696,8 +655,6 @@ export default function JeDonne() {
                 <DonationFormHorizontal />
 
             </main>
-
-            <Footer />
         </>
     );
 }

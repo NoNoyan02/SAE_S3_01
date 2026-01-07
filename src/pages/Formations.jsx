@@ -1,35 +1,16 @@
 import React from "react";
 import {Helmet} from "react-helmet";
-
-// Composants
-import Header from "../components/Header/Header.jsx";
-import Footer from "../components/Footer/Footer.jsx";
+import SEO from "@/components/SEO.jsx";
 
 export default function Formations() {
     return (
         <>
-            <Helmet>
-                {/* Titre */}
-                <title>Je me forme aux premiers secours | Croix-Rouge française</title>
+            <SEO
+                title="Je me forme aux premiers secours"
+                description="Formez-vous aux premiers secours. N'hésitez plus, trouvez une session de formation près de chez vous et inscrivez-vous !"
+                image="/crf_logo.png"
+            />
 
-                {/* Description */}
-                <meta
-                    name="description"
-                    content="Formez-vous aux premiers secours. N'hésitez plus, trouvez une session de formation près de chez vous et inscrivez-vous !"
-                />
-
-                {/* Open Graph */}
-                <meta
-                    property="og:title"
-                    content="Je me forme aux premiers secours | Croix-Rouge française"
-                />
-                <meta
-                    property="og:description"
-                    content="Formez-vous aux premiers secours. N'hésitez plus, trouvez une session de formation près de chez vous et inscrivez-vous !"
-                />
-            </Helmet>
-
-            {/* DÉBUT DU CSS INTÉGRÉ */}
             <style>{`
                 .visually-hidden {
                     position: absolute;
@@ -880,9 +861,6 @@ export default function Formations() {
                     }
                 }
             `}</style>
-            {/* FIN DU CSS INTÉGRÉ */}
-
-            <Header/>
 
             <nav className="sousnavbar" aria-label="Fil d'Ariane">
                 <ol>
@@ -891,7 +869,6 @@ export default function Formations() {
                 </ol>
             </nav>
 
-            <main>
                 <section className="hero-formation">
                     <div className="hero-formation-image">
                         <div className="hero-formation-content">
@@ -1185,8 +1162,6 @@ export default function Formations() {
                         </article>
                     </section>
                 </section>
-            </main>
-            <Footer/>
         </>
     );
 }

@@ -34,6 +34,10 @@ export default function DonationFormHorizontal() {
 
     return (
         <>
+            <style>{`
+            
+            `}</style>
+
             <section className="donation-wrapper">
                 <div className="donation-container donation-container--large">
                     <div className="donation-card donation-card--row">

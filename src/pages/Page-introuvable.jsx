@@ -1,7 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
-import Header from "../components/Header/Header.jsx";
 
 const PageIntrouvable = () => {
     return (
@@ -10,7 +9,6 @@ const PageIntrouvable = () => {
                 <title>Page introuvable | Croix-Rouge française</title>
             </Helmet>
 
-            {/* DÉBUT DU CSS INTÉGRÉ */}
             <style>{`
                 .error-page *,
                 .error-page *:before,
@@ -428,10 +426,7 @@ const PageIntrouvable = () => {
                     }
                 }
             `}</style>
-            {/* FIN DU CSS INTÉGRÉ */}
 
-            <Header/>
-            {/* Hero Section 404 */}
             <div className="error-hero">
                 <div className="error-hero__container">
                     <div className="error-hero__content">
@@ -441,7 +436,6 @@ const PageIntrouvable = () => {
                 </div>
             </div>
 
-            {/* Contenu Principal */}
             <div className="error-wrapper">
                 <div className="error-container">
 
@@ -451,7 +445,6 @@ const PageIntrouvable = () => {
                     </header>
 
                     <ul className="error-cards">
-                        {/* CARTE 1 : DON */}
                         <li className="error-card">
                             <Link to="/faire-un-don/~mon-don" className="error-card__link">
                                 {/* Note : Vous pourrez ajouter ici un <div className="error-card__image"><img src="..." /></div> si vous souhaitez une image de fond comme dans le CSS */}
@@ -462,7 +455,6 @@ const PageIntrouvable = () => {
                             </Link>
                         </li>
 
-                        {/* CARTE 2 : BÉNÉVOLAT */}
                         <li className="error-card">
                             <Link to="/je-deviens-benevole" className="error-card__link">
                                 <div className="error-card__content">
@@ -472,7 +464,6 @@ const PageIntrouvable = () => {
                             </Link>
                         </li>
 
-                        {/* CARTE 3 : FORMATIONS */}
                         <li className="error-card">
                             <Link to="/formations" className="error-card__link">
                                 <div className="error-card__content">

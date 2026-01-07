@@ -12,7 +12,6 @@ const NewsletterSection = () => {
 
     return (
         <div className="newsletter-section-wrapper">
-            {/* DÉBUT DU CSS INTÉGRÉ */}
             <style>{`
                 .newsletter-section-wrapper {
                     width: 100%;

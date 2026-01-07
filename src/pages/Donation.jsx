@@ -1,15 +1,14 @@
 import React, {useEffect, useState, useRef} from "react";
-import {Helmet} from "react-helmet";
-import bouclier from "assets/images/donation/bouclier.svg";
+
 import cartedecredit from "assets/images/donation/carte-de-credit.svg";
 import ggpayapppay from "assets/images/donation/gg-pay-app-pay.svg";
 import lacroixrouge from "assets/images/donation/lacroix-rouge.webm";
 import logo from "assets/images/donation/Logo_Croix-Rouge_Française.svg";
 import paypal from "assets/images/donation/paypal.svg";
 import virementIcon from "assets/images/donation/paypal.svg";
+import SEO from "@/components/SEO.jsx";
 
 export default function Donation() {
-    // --- STATE ---
     const [activeTab, setActiveTab] = useState("once");
     const [selectedAmount, setSelectedAmount] = useState(null);
     const [customAmount, setCustomAmount] = useState("");
@@ -20,11 +19,9 @@ export default function Donation() {
     const [donorText, setDonorText] = useState("");
     const [openAccordion, setOpenAccordion] = useState(null);
 
-    // État pour le sélecteur de pays (téléphone)
     const [phoneCountry, setPhoneCountry] = useState("FR");
     const [showCountryMenu, setShowCountryMenu] = useState(false);
 
-    // --- LOGIC ---
     const calculerDeductionUnique = (montant) => {
         if (montant <= 1000) return montant * 0.75;
         const part75 = 1000 * 0.75;
@@ -38,7 +35,6 @@ export default function Donation() {
         return (annuel - deductionTotale) / 12;
     };
 
-    // --- TICKER LOGIC (ROULEAU VERTICAL) ---
     useEffect(() => {
         const names = ["Claude", "Sophie", "Amine", "Léa", "Marc", "Emma", "Julien", "Nora", "Antoine", "Maya"];
         const amounts = [5, 10, 15, 20, 25, 50, 75, 100, 150, 200, 500];
@@ -60,7 +56,6 @@ export default function Donation() {
         return () => clearInterval(interval);
     }, []);
 
-    // --- HANDLERS ---
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSelectedAmount(null);
@@ -164,10 +159,11 @@ export default function Donation() {
 
     return (
         <>
-            <Helmet>
-                <title>Soutenez la Croix-Rouge française</title>
-                <meta name="description" content="Soutenez notre association en effectuant un don"/>
-            </Helmet>
+            <SEO
+                title="Soutenez la Croix-Rouge française"
+                description="Soutenez notre association en effectuant un don"
+                image="/crf_logo.png"
+            />
 
             <style>{`
                 /* --- VARIABLES --- */
