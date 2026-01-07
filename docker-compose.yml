@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  # --- BACKEND (PHP) ---
+  backend_service:
+    image: pikuxel/sae-backend:latest
+    # Configuration pour le build local
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    # Nom du conteneur une fois lancé
+    container_name: sae-backend
+    # Redémarrage automatique en cas de crash
+    restart: always
+    # Pas de 'ports' ici : le backend est protégé, seul le frontend lui parle.
+
+  # --- FRONTEND (React + Nginx interne) ---
+  frontend_service:
+    # Nom de l'image sur le Docker Hub
+    image: pikuxel/sae-web:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sae-frontend
+    restart: always
+    # Mappe le port 8080 du serveur vers le 80 du conteneur
+    # INDISPENSABLE car le port 80 est déjà pris par ton Nginx AWS (SSL)
+    ports:
+      - "80:80"
+    # Attend que le backend soit prêt avant de se lancer
+    depends_on:
+      - backend_service

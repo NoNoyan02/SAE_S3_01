@@ -1,0 +1,17 @@
+### Dockerfile.backend
+FROM php:8.2-apache
+
+# Installation des extensions pour la base de données (si besoin plus tard)
+RUN docker-php-ext-install mysqli pdo pdo_mysql
+
+# Activation de l'URL rewriting (indispensable pour les frameworks ou routeurs PHP)
+RUN a2enmod rewrite
+
+# On se place dans le dossier public d'Apache
+WORKDIR /var/www/html
+
+# Copie du dossier backend de ton projet vers le conteneur
+COPY ./backend .
+
+# On ouvre le port 80 interne (celui d'Apache)
+EXPOSE 80
