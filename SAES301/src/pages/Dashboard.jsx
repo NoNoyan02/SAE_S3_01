@@ -45,6 +45,7 @@ const [donateursData, setDonateursData] = useState([
     viewType: 'donateur',
     donor_number: "CRF-2025-001",
     date_don: "07/01/2026 à 14:30",
+    civilite: "M.",
     prenom: "Jean",
     nom: "Dupont",
     email: "jean.dupont@mail.com",
@@ -92,6 +93,33 @@ const [subventions, setSubventions] = useState(() => {
     { id: 1, type: 'Subvention', nom: "Aide Mairie 2026", organisme: "Ville de Paris", montant: "5000", dateReception: "2026-01-05", status: "Reçue" }
   ];
 });
+
+// État pour le sens du tri (desc = plus gros dons en premier)
+const [sortOrder, setSortOrder] = useState('desc');
+
+// Fonction pour trier les données
+const sortedDonateurs = [...donateursData].sort((a, b) => {
+  return sortOrder === 'desc' ? b.montant - a.montant : a.montant - b.montant;
+});
+
+// Fonction pour l'export CSV
+const exportToCSV = () => {
+  const headers = ["ID_Donateur", "Civilite", "Prenom", "Nom", "Email", "Tel", "Montant", "Frequence", "Date_Don", "Ville"];
+  const rows = donateursData.map(d => [
+    d.donor_number, d.civilite, d.prenom, d.nom, d.email, d.telephone, d.montant, d.frequence, d.date_don, d.ville
+  ]);
+  
+  const csvContent = "data:text/csv;charset=utf-8," 
+    + headers.join(",") + "\n" 
+    + rows.map(e => e.join(",")).join("\n");
+
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "historique_donateurs_croix_rouge.csv");
+  document.body.appendChild(link);
+  link.click();
+};
 
   // SAUVEGARDE AUTOMATIQUE DANS LE NAVIGATEUR
   useEffect(() => {
@@ -799,10 +827,12 @@ const handleBenevoleSubmit = (e) => {
     ? 'Planning'
     : activeTab === 'evenements'
       ? 'Gestion des évènements & missions'
-      : activeTab.replace('-', ' ')
+      : activeTab === 'partenaires'
+        ? 'Partenaires & Donateurs'
+        : activeTab.replace('-', ' ')
   }
 </h2>
-    <p>Gestion interne de l'association</p>
+<p>Gestion interne de l'association</p>
   </div>
 
   {/* On cache les actions si Analyse OU Calendrier */}
@@ -1202,7 +1232,7 @@ const handleBenevoleSubmit = (e) => {
     <div className="card">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
         <h3 style={{ margin: 0, fontWeight: 900, display: 'flex', alignItems: 'center' }}>
-          <FileText size={20} color="#ED1B24" style={{ marginRight: 10 }} /> Subventions & Aides Publiques
+          <FileText size={20} color="#ED1B24" style={{ marginRight: 10 }} /> Subventions
         </h3>
         <div style={{ display: 'flex', gap: '15px' }}>
           {/* Barre de recherche locale pour les subventions */}
@@ -1363,7 +1393,7 @@ const handleBenevoleSubmit = (e) => {
       <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #EEE', paddingBottom: 15, marginBottom: 20 }}>
         <div>
           <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1A1C23', margin: 0 }}>
-            Fiche Donateur : {selectedItem.prenom} {selectedItem.nom}
+            Fiche Donateur : {selectedItem.civilite} {selectedItem.prenom} {selectedItem.nom}
           </h2>
           <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '5px' }}>
             <span style={{ 
@@ -1453,27 +1483,56 @@ const handleBenevoleSubmit = (e) => {
   </div>
 )}
 
-    {/* BLOC 3 : DONATEURS */}
 <div className="card">
-  <h3 style={{ margin: '0 0 20px 0', fontWeight: 900 }}>Historique des Donateurs</h3>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+    <h3 style={{ margin: 0, fontWeight: 900 }}>Historique des Donateurs</h3>
+    
+    <div style={{ display: 'flex', gap: '10px' }}>
+      {/* BOUTON EXPORT CSV */}
+      <button 
+        onClick={exportToCSV}
+        style={{ 
+          background: '#F4F7F9', border: '1px solid #E2E8F0', padding: '8px 15px', 
+          borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', gap: '8px' 
+        }}
+      >
+        <FileText size={14} /> EXPORTER CSV
+      </button>
+
+      {/* BOUTON FILTRE MONTANT */}
+      <button 
+        onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
+        style={{ 
+          background: '#ED1B24', color: 'white', border: 'none', padding: '8px 15px', 
+          borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', gap: '8px'
+        }}
+      >
+        <TrendingUp size={14} style={{ transform: sortOrder === 'asc' ? 'rotate(180deg)' : 'none' }} />
+        TRIER PAR MONTANT ({sortOrder === 'desc' ? 'MAX' : 'MIN'})
+      </button>
+    </div>
+  </div>
+
   <p style={{ fontSize: '12px', color: '#718096', marginBottom: '15px' }}>
     Suivi des contributions pour les bilans financiers et rapports à la mairie.
   </p>
-  
-  {/* Simulation d'un donateur provenant de donation.jsx */}
-  {donateursData.map((donateur, i) => (
-    <div key={i} className="activity-item">
+
+  {/* UTILISATION DES DONNÉES TRIÉES */}
+  {sortedDonateurs.map((donateur) => (
+    <div key={donateur.id} className="activity-item">
       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
         <div className="avatar" style={{ background: '#ED1B24' }}>D</div>
         <div>
           <span style={{ fontSize: 13, fontWeight: 'bold' }}>{donateur.prenom} {donateur.nom}</span>
-          <div style={{ fontSize: 11, color: '#718096' }}>Don de {donateur.montant}€</div>
+          <div style={{ fontSize: 11, color: '#718096' }}>Don de {donateur.montant}€ - {donateur.date_don}</div>
         </div>
       </div>
       <button 
         className="btn-details" 
+        onClick={() => openViewModal(donateur)}
         style={{ background: '#F4F7F9', border: 'none', padding: '5px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}
-        onClick={() => openViewModal({ ...donateur, type: 'donateur' })}
       >
         DÉTAILS
       </button>
