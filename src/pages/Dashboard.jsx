@@ -247,6 +247,37 @@ const handleBenevoleSubmit = (e) => {
     setIsEditing(false);
   };
 
+  // Constante pour l'article
+  const applyFormat = (tag) => {
+  const textarea = document.getElementById('article-content');
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const text = textarea.value;
+  const selectedText = text.substring(start, end);
+  
+  // Exemple simple : entoure le texte de balises (ex: **gras**)
+  const before = text.substring(0, start);
+  const after = text.substring(end);
+  
+  const newText = `${before}${tag}${selectedText}${tag}${after}`;
+  
+  // Mise à jour de l'état (assurez-vous d'avoir un état pour le contenu)
+  setFormArticle({ ...formArticle, contenu: newText });
+};
+
+const toolbarButtonStyle = {
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  padding: '5px 8px',
+  borderRadius: '4px',
+  color: '#4A5568',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  transition: 'background 0.2s'
+};
+
   const closeModals = () => {
     setShowBenevoleModal(false); setShowEventModal(false); setShowViewModal(false); setIsEditing(false);
     setFormBenevole({ nom: '', prenom: '', email: '', telephone: '', ville: '', dateNaissance: '', profession: '', regime: '', sante: '', infos: '', dispo: 'Semaine', cotisation: 'À jour' });
@@ -1580,6 +1611,76 @@ const handleBenevoleSubmit = (e) => {
     </div>
   ))}
 </div>
+  </div>
+)}
+{/* LIGNE 1584: FIN DU BLOC PRÉCÉDENT */}
+
+{activeTab === 'communication-articles' && (
+  <div className="card" style={{ marginTop: '-20px' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 25, borderBottom: '1px solid #EEE', paddingBottom: 15 }}>
+      <FileText color="#ED1B24" />
+      <h3 style={{ margin: 0, fontWeight: 900 }}>Créer un nouvel article</h3>
+    </div>
+
+    <form style={{ display: 'grid', gap: '20px' }}>
+      <div className="form-group">
+        <label style={{ fontWeight: 'bold' }}>Titre de l'article *</label>
+        <input type="text" placeholder="Entrez le titre de l'article..." required />
+        <span style={{ fontSize: '11px', color: '#718096' }}>Maximum 200 caractères</span>
+      </div>
+
+      <div className="form-group">
+        <label style={{ fontWeight: 'bold' }}>Image de l'article *</label>
+        <input type="file" accept="image/*" style={{ padding: '8px', fontSize: '12px' }} required />
+        <span style={{ fontSize: '11px', color: '#718096' }}>Sélectionnez un fichier (jpg, png, gif)</span>
+      </div>
+
+      <div className="form-group">
+        <label style={{ fontWeight: 'bold' }}>Contributeurs</label>
+        <input type="text" placeholder="Prénom1, Prénom2..." />
+        <span style={{ fontSize: '11px', color: '#718096' }}>Séparez les prénoms par des virgules.</span>
+      </div>
+
+      <div className="form-group">
+        <label style={{ fontWeight: 'bold' }}>Contenu de l'article *</label>
+        {/* Barre d'outils opérationnelle */}
+        <div style={{ background: '#F8FAFC', border: '1px solid #D1D5DB', borderBottom: 'none', padding: '10px', borderRadius: '6px 6px 0 0', display: 'flex', gap: '15px' }}>
+          <button type="button" onClick={() => applyFormat('**')} style={toolbarButtonStyle}><strong>B</strong></button>
+          <button type="button" onClick={() => applyFormat('*')} style={toolbarButtonStyle}><em>I</em></button>
+          <button type="button" onClick={() => applyFormat('__')} style={toolbarButtonStyle}><u>U</u></button>
+          <div style={{ width: '1px', background: '#D1D5DB' }}></div>
+          <button type="button" style={toolbarButtonStyle}><Plus size={16} /></button>
+        </div>
+        <textarea 
+          id="article-content"
+          placeholder="Rédigez le contenu de votre article..." 
+          style={{ height: '300px', borderRadius: '0 0 6px 6px', borderTop: 'none', padding: '15px' }}
+          required
+        ></textarea>
+      </div>
+
+      {/* BOUTONS D'ACTION (DA SCREEN 16.59.17) */}
+      <div style={{ display: 'flex', gap: '15px', marginTop: '20px' }}>
+        <button type="submit" className="btn-save" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <Package size={18} /> Publier l'article
+        </button>
+        
+        <button 
+          type="button" 
+          onClick={() => window.open('/preview-article', '_blank')}
+          style={{ background: '#6366F1', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
+        >
+          <Eye size={18} /> Prévisualiser
+        </button>
+
+        <button 
+          type="reset"
+          style={{ background: '#FDBA74', color: '#92400E', border: 'none', padding: '12px 25px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
+        >
+          <Trash2 size={18} /> Réinitialiser
+        </button>
+      </div>
+    </form>
   </div>
 )}
       </main>
