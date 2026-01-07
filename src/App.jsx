@@ -12,7 +12,7 @@ import JeDeviens from './pages/Je-deviens.jsx';
 import Formations from './pages/Formations.jsx';
 import Donation from './pages/Donation.jsx';
 import PageIntrouvable from './pages/Page-introuvable.jsx';
-import Dashboard from "../SAES301/src/pages/Dashboard.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 
 const MainLayout = () => {
     return (

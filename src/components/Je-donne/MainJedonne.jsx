@@ -1455,7 +1455,7 @@ export default function MainJedonne() {
 
             <div className="bloc-don">
                 <img
-                    src="/SAES301/src/assets/images/je-donne/Page_Carrefour_Je_donne.webp"
+                    src="/Prototype/src/assets/images/je-donne/Page_Carrefour_Je_donne.webp"
                     alt="Je donne"
                     className="bloc-don-image"
                 />

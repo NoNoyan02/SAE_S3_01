@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Menu, Search, User, X, ShieldCheck } from 'lucide-react';
 import styles from './Header.module.css';
 
-const API_URL = import.meta.env?.VITE_API_URL || "http://localhost:8000/api";
+const API_BASE = '/api';
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -89,7 +89,7 @@ export default function Header() {
         setErrorMessage("");
         const endpoint = isLoginMode ? "login.php" : "register.php";
         try {
-            const response = await fetch(`${API_URL}/${endpoint}`, {
+            const response = await fetch(`${API_BASE}/${endpoint}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)

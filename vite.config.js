@@ -19,14 +19,13 @@ export default defineConfig({
         port: 3000,
         open: true,
 
-        // pour le back-end
-        // proxy: {
-        //     '/api': {
-        //         target: 'http://localhost:8000', // L'adresse de ton backend
-        //         changeOrigin: true,
-        //         rewrite: (path) => path.replace(/^\/api/, ''),
-        //     },
-        // },
+        proxy: {
+            '/api': {
+                target: 'http://localhost:8000',
+                changeOrigin: true,
+                rewrite: (path) => path,
+            },
+        },
     },
     build: {
         outDir: 'dist',
