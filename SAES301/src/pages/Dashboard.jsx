@@ -507,9 +507,18 @@ const handleBenevoleSubmit = (e) => {
             <div className="info-item"><div className="info-label">Santé</div><div className="info-value">{selectedItem.sante || "RAS"}</div></div>
             <div className="info-item full-width"><div className="info-label">Notes / Infos Complémentaires</div><div className="info-value" style={{fontWeight:400}}>{selectedItem.infos || "Aucune note particulière."}</div></div>
           </div>
-          <div className="btn-container">
-            <button className="btn-save" onClick={closeModals}>Fermer la fiche</button>
-          </div>
+          <div style={{ marginTop: 30, paddingTop: 20, borderTop: '1px solid #E2E8F0', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+            {/* BOUTON MODIFIER ADAPTÉ AUX BÉNÉVOLES */}
+            <button className="btn-secondary" onClick={() => {
+              setShowViewModal(false); // On ferme la vue lecture
+              setFormBenevole(selectedItem); // On pré-remplit le formulaire avec les infos de la fiche
+              setIsEditing(true); // On passe en mode édition
+              setCurrentId(selectedItem.id); // On garde l'ID pour la mise à jour
+              setShowBenevoleModal(true); // On ouvre le formulaire de saisie des bénévoles
+            }}>
+    <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER LA FICHE
+  </button>
+</div>
         </div>
       </div>
     )}
@@ -1250,6 +1259,82 @@ const handleBenevoleSubmit = (e) => {
     </div>
   </div>
 )}
+
+      {/* FICHE DÉTAILLÉE ENTREPRISE ET SUBVENTION */}
+
+            {showViewModal && selectedItem && (
+        <div className="modal-overlay">
+          <div className="modal-card view-modal">
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 25 }}>
+              <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+                {selectedItem.viewType === 'entreprise' ? <Handshake color="#ED1B24" /> : <FileText color="#ED1B24" />}
+                Fiche de Renseignements
+              </h2>
+              <X onClick={() => setShowViewModal(false)} style={{ cursor: 'pointer' }} />
+            </div>
+
+            <div className="view-content" style={{ display: 'grid', gap: '20px' }}>
+              <div style={{ background: '#F8FAFC', padding: '15px', borderRadius: '8px', borderLeft: '4px solid #ED1B24' }}>
+                <label style={{ fontSize: '11px', color: '#718096', textTransform: 'uppercase' }}>Dénomination</label>
+                <div style={{ fontSize: '20px', fontWeight: '800' }}>{selectedItem.nom}</div>
+              </div>
+
+              {selectedItem.viewType === 'entreprise' ? (
+                /* AFFICHAGE SPÉCIFIQUE ENTREPRISE */
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                  <div className="info-box">
+                    <label>Contact Principal</label>
+                    <p>{selectedItem.contact || 'Non renseigné'}</p>
+                  </div>
+                  <div className="info-box">
+                    <label>Téléphone</label>
+                    <p>{selectedItem.telephone || 'Non renseigné'}</p>
+                  </div>
+                  <div className="info-box" style={{ gridColumn: 'span 2' }}>
+                    <label>Email Professionnel</label>
+                    <p>{selectedItem.email || 'Non renseigné'}</p>
+                  </div>
+                </div>
+              ) : (
+                /* AFFICHAGE SPÉCIFIQUE SUBVENTION */
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                  <div className="info-box">
+                    <label>Organisme Émetteur</label>
+                    <p>{selectedItem.organisme || 'Non renseigné'}</p>
+                  </div>
+                  <div className="info-box">
+                    <label>Montant Alloué</label>
+                    <p style={{ color: '#2F855A', fontWeight: 'bold', fontSize: '18px' }}>{selectedItem.montant} €</p>
+                  </div>
+                  <div className="info-box">
+                    <label>Statut du dossier</label>
+                    <p><span className="badge-status">{selectedItem.status || 'Reçue'}</span></p>
+                  </div>
+                </div>
+              )}
+              
+              <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
+                <button className="btn-secondary" onClick={() => {
+                  setShowViewModal(false);
+                  if (selectedItem.viewType === 'entreprise') {
+                    setFormEntreprise(selectedItem);
+                    setIsEditing(true);
+                    setCurrentId(selectedItem.id);
+                    setShowEntrepriseModal(true);
+                  } else {
+                    setFormSubvention(selectedItem);
+                    setIsEditing(true);
+                    setCurrentId(selectedItem.id);
+                    setShowSubventionModal(true);
+                  }
+                }}>
+                  <Edit size={14} /> MODIFIER LA FICHE
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
     {/* BLOC 3 : DONATEURS (Comme demandé dans le sujet) */}
     <div className="card">
