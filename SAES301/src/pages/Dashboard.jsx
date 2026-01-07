@@ -624,46 +624,60 @@ const handleBenevoleSubmit = (e) => {
       </div>
     )}
 
-    {/* MODALE : FICHE DÉTAILLÉE LORS DU CLIQUE SUR LE NOM POUR LES ÉVÈNEMENTS */}
-
+        {/* MODALE : FICHE DÉTAILLÉE POUR LES ÉVÈNEMENTS */}
     {showViewModal && selectedItem && activeTab === 'evenements' && (
-  <div className="modal-overlay">
-    <div className="modal-card">
-      <div style={{
-        display:'flex', 
-        justifyContent:'space-between', 
-        borderBottom: `4px solid ${selectedItem.type === 'Mission' ? '#2B6CB0' : '#D97706'}`, 
-        paddingBottom:15, 
-        marginBottom:10
-      }}>
-        <h2 style={{fontSize: 22, fontWeight: 800, color:'#1A1C23'}}>[{selectedItem.type === 'Mission' ? 'MISSION' : 'ÉVÉNEMENT'}] {selectedItem.titre}</h2>
-        <X onClick={closeModals} style={{cursor:'pointer', color:'#6B7280'}}/>
-      </div>
-      <div className="info-grid">
-        <div className="info-item"><div className="info-label">Période</div><div className="info-value">Du {selectedItem.dateDebut} au {selectedItem.dateFin}</div></div>
-        <div className="info-item"><div className="info-label">Lieu</div><div className="info-value">{selectedItem.lieu}</div></div>
-        <div className="info-item"><div className="info-label">Budget</div><div className="info-value">{selectedItem.budget ? `${selectedItem.budget} €` : "Non défini"}</div></div>
-        <div className="info-item full-width">
-          <div className="info-label">Documents joints</div>
-          <div className="info-value" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <FileText size={18} color="#2563EB" />
-            {selectedItem.documents ? (
-              <span style={{ color: '#2563EB', fontWeight: 'bold' }}>{selectedItem.documents}</span>
-            ) : (
-              <span style={{ color: '#718096' }}>Aucun document PDF associé.</span>
-            )}
+      <div className="modal-overlay">
+        <div className="modal-card">
+          {/* HEADER DE LA MODALE */}
+          <div style={{
+            display:'flex', 
+            justifyContent:'space-between', 
+            borderBottom: `4px solid ${selectedItem.type === 'Mission' ? '#2B6CB0' : '#D97706'}`, 
+            paddingBottom:15, 
+            marginBottom:10
+          }}>
+            <h2 style={{fontSize: 22, fontWeight: 800, color:'#1A1C23'}}>
+              [{selectedItem.type === 'Mission' ? 'MISSION' : 'ÉVÉNEMENT'}] {selectedItem.titre}
+            </h2>
+            <X onClick={closeModals} style={{cursor:'pointer', color:'#6B7280'}}/>
+          </div>
+
+          {/* CONTENU DES INFOS */}
+          <div className="info-grid">
+            <div className="info-item"><div className="info-label">Période</div><div className="info-value">Du {selectedItem.dateDebut} au {selectedItem.dateFin}</div></div>
+            <div className="info-item"><div className="info-label">Lieu</div><div className="info-value">{selectedItem.lieu}</div></div>
+            <div className="info-item"><div className="info-label">Budget</div><div className="info-value">{selectedItem.budget ? `${selectedItem.budget} €` : "Non défini"}</div></div>
+            
+            <div className="info-item full-width">
+              <div className="info-label">Documents joints</div>
+              <div className="info-value" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <FileText size={18} color="#2563EB" />
+                <span style={{ color: selectedItem.documents ? '#2563EB' : '#718096', fontWeight: 'bold' }}>
+                  {selectedItem.documents || "Aucun document PDF associé."}
+                </span>
+              </div>  
+            </div>
+            
+            <div className="info-item full-width"><div className="info-label">Logistique & Matériel</div><div className="info-value">{selectedItem.materiel || "Rien à prévoir."}</div></div>
+            <div className="info-item full-width"><div className="info-label">Bénévoles Mobilisés</div><div className="info-value">{selectedItem.benevolesInscrits || "Aucun bénévole inscrit."}</div></div>
+            <div className="info-item full-width"><div className="info-label">Notes de mission</div><div className="info-value">{selectedItem.infos || "Aucune note particulière."}</div></div>
+          </div>
+
+          {/* FOOTER : BOUTON MODIFIER */}
+          <div style={{ marginTop: 30, paddingTop: 20, borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'flex-end' }}>
+            <button className="btn-secondary" onClick={() => {
+              setShowViewModal(false);
+              setFormEvent(selectedItem);
+              setIsEditing(true);
+              setCurrentId(selectedItem.id);
+              setShowEventModal(true);
+            }}>
+              <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER LA FICHE
+            </button>
           </div>
         </div>
       </div>
-        
-        <div className="info-item full-width"><div className="info-label">Logistique & Matériel</div><div className="info-value" style={{fontWeight:400}}>{selectedItem.materiel || "Rien à prévoir."}</div></div>
-        
-        <div className="info-item full-width"><div className="info-label">Bénévoles Mobilisés</div><div className="info-value">{selectedItem.benevolesInscrits || "Aucun bénévole inscrit."}</div></div>
-        
-        <div className="info-item full-width"><div className="info-label">Notes de mission</div><div className="info-value" style={{fontWeight:400}}>{selectedItem.infos || "Aucune note particulière."}</div></div>
-      </div>
-    </div>
-)}
+    )}
 
       {/* SIDEBAR */}
       <aside className="sidebar">
