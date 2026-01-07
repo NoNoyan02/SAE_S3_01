@@ -170,25 +170,27 @@ const handleBenevoleSubmit = (e) => {
     closeModals();
   };
 
-  // Gestion des Entreprises
+  // Gestion des Entreprises - CORRIGÉ
   const handleEntrepriseSubmit = (e) => {
     e.preventDefault();
+    const data = { ...formEntreprise, id: isEditing ? currentId : Date.now(), viewType: 'entreprise' };
     if (isEditing) {
-      setPartenaires(partenaires.map(p => p.id === currentId ? { ...formEntreprise, id: currentId } : p));
+      setPartenaires(partenaires.map(p => p.id === currentId ? data : p));
     } else {
-      setPartenaires([...partenaires, { ...formEntreprise, id: Date.now() }]);
+      setPartenaires([...partenaires, data]);
     }
     setShowEntrepriseModal(false);
     setIsEditing(false);
   };
 
-  // Gestion des Subventions
+  // Gestion des Subventions - CORRIGÉ
   const handleSubventionSubmit = (e) => {
     e.preventDefault();
+    const data = { ...formSubvention, id: isEditing ? currentId : Date.now(), viewType: 'subvention' };
     if (isEditing) {
-      setSubventions(subventions.map(s => s.id === currentId ? { ...formSubvention, id: currentId } : s));
+      setSubventions(subventions.map(s => s.id === currentId ? data : s));
     } else {
-      setSubventions([...subventions, { ...formSubvention, id: Date.now() }]);
+      setSubventions([...subventions, data]);
     }
     setShowSubventionModal(false);
     setIsEditing(false);
@@ -1157,7 +1159,7 @@ const handleBenevoleSubmit = (e) => {
           <tbody>
             {partenaires.filter(p => p.nom.toLowerCase().includes(searchQuery.toLowerCase())).map(p => (
               <tr key={p.id}>
-                <td className="clickable-name" onClick={() => openViewModal(p)}>{p.nom}</td>
+              <td className="clickable-name" onClick={() => openViewModal({...p, viewType: 'entreprise'})}>{p.nom}</td>
                 <td>{p.contact}</td>
                 <td><div style={{fontSize:'12px'}}>{p.email}</div><div style={{fontSize:'10px', color:'#718096'}}>{p.telephone}</div></td>
                 <td>
@@ -1211,7 +1213,7 @@ const handleBenevoleSubmit = (e) => {
           <tbody>
             {subventions.filter(s => s.nom.toLowerCase().includes(searchQuery.toLowerCase())).map(s => (
               <tr key={s.id}>
-                <td className="clickable-name" onClick={() => openViewModal(s)}>{s.nom}</td>
+                <td className="clickable-name" onClick={() => openViewModal({...s, viewType: 'subvention'})}>{s.nom}</td>
                 <td>{s.organisme}</td>
                 <td style={{ fontWeight: 'bold', color: '#03543F' }}>{s.montant} €</td>
                 <td>
@@ -1274,81 +1276,84 @@ const handleBenevoleSubmit = (e) => {
   </div>
 )}
 
-      {/* FICHE DÉTAILLÉE ENTREPRISE ET SUBVENTION */}
+{/* MODALE DE CONSULTATION DÉDIÉE (ENTREPRISE VS SUBVENTION) */}
+{showViewModal && selectedItem && (
+  <div className="modal-overlay">
+    <div className="modal-card view-modal">
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 25 }}>
+        <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+          {selectedItem.viewType === 'entreprise' ? (
+            <><Handshake color="#ED1B24" /> Fiche Entreprise</>
+          ) : (
+            <><FileText color="#ED1B24" /> Détails Subvention</>
+          )}
+        </h2>
+        <X onClick={() => setShowViewModal(false)} style={{ cursor: 'pointer' }} />
+      </div>
 
-            {showViewModal && selectedItem && (
-        <div className="modal-overlay">
-          <div className="modal-card view-modal">
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 25 }}>
-              <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
-                {selectedItem.viewType === 'entreprise' ? <Handshake color="#ED1B24" /> : <FileText color="#ED1B24" />}
-                Fiche de Renseignements
-              </h2>
-              <X onClick={() => setShowViewModal(false)} style={{ cursor: 'pointer' }} />
+      <div className="view-content" style={{ display: 'grid', gap: '20px' }}>
+        {/* EN-TÊTE COMMUN MAIS ADAPTÉ */}
+        <div style={{ background: '#F8FAFC', padding: '15px', borderRadius: '8px', borderLeft: '4px solid #ED1B24' }}>
+          <label style={{ fontSize: '11px', color: '#718096', textTransform: 'uppercase' }}>
+            {selectedItem.viewType === 'entreprise' ? "Nom Entreprise" : "Nom de l'aide"}
+          </label>
+          <div style={{ fontSize: '20px', fontWeight: '800' }}>{selectedItem.nom}</div>
+        </div>
+
+        {/* AFFICHAGE CONDITIONNEL SELON TES SCREENS */}
+        {selectedItem.viewType === 'entreprise' ? (
+          /* CONTENU SCREEN 1 : ENTREPRISE */
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+            <div className="info-box" style={{ gridColumn: 'span 2' }}>
+              <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Contact (Nom & Prénom)</label>
+              <p style={{ margin: '5px 0 0 0', fontWeight: '600' }}>{selectedItem.contact || 'Non renseigné'}</p>
             </div>
-
-            <div className="view-content" style={{ display: 'grid', gap: '20px' }}>
-              <div style={{ background: '#F8FAFC', padding: '15px', borderRadius: '8px', borderLeft: '4px solid #ED1B24' }}>
-                <label style={{ fontSize: '11px', color: '#718096', textTransform: 'uppercase' }}>Dénomination</label>
-                <div style={{ fontSize: '20px', fontWeight: '800' }}>{selectedItem.nom}</div>
-              </div>
-
-              {selectedItem.viewType === 'entreprise' ? (
-                /* AFFICHAGE SPÉCIFIQUE ENTREPRISE */
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                  <div className="info-box">
-                    <label>Contact Principal</label>
-                    <p>{selectedItem.contact || 'Non renseigné'}</p>
-                  </div>
-                  <div className="info-box">
-                    <label>Téléphone</label>
-                    <p>{selectedItem.telephone || 'Non renseigné'}</p>
-                  </div>
-                  <div className="info-box" style={{ gridColumn: 'span 2' }}>
-                    <label>Email Professionnel</label>
-                    <p>{selectedItem.email || 'Non renseigné'}</p>
-                  </div>
-                </div>
-              ) : (
-                /* AFFICHAGE SPÉCIFIQUE SUBVENTION */
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-                  <div className="info-box">
-                    <label>Organisme Émetteur</label>
-                    <p>{selectedItem.organisme || 'Non renseigné'}</p>
-                  </div>
-                  <div className="info-box">
-                    <label>Montant Alloué</label>
-                    <p style={{ color: '#2F855A', fontWeight: 'bold', fontSize: '18px' }}>{selectedItem.montant} €</p>
-                  </div>
-                  <div className="info-box">
-                    <label>Statut du dossier</label>
-                    <p><span className="badge-status">{selectedItem.status || 'Reçue'}</span></p>
-                  </div>
-                </div>
-              )}
-              
-              <div style={{ marginTop: '10px', display: 'flex', gap: '10px' }}>
-                <button className="btn-secondary" onClick={() => {
-                  setShowViewModal(false);
-                  if (selectedItem.viewType === 'entreprise') {
-                    setFormEntreprise(selectedItem);
-                    setIsEditing(true);
-                    setCurrentId(selectedItem.id);
-                    setShowEntrepriseModal(true);
-                  } else {
-                    setFormSubvention(selectedItem);
-                    setIsEditing(true);
-                    setCurrentId(selectedItem.id);
-                    setShowSubventionModal(true);
-                  }
-                }}>
-                  <Edit size={14} /> MODIFIER LA FICHE
-                </button>
-              </div>
+            <div className="info-box">
+              <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Email</label>
+              <p style={{ margin: '5px 0 0 0', fontWeight: '600' }}>{selectedItem.email || 'Non renseigné'}</p>
+            </div>
+            <div className="info-box">
+              <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Tel</label>
+              <p style={{ margin: '5px 0 0 0', fontWeight: '600' }}>{selectedItem.telephone || 'Non renseigné'}</p>
             </div>
           </div>
+        ) : (
+          /* CONTENU SCREEN 2 : SUBVENTION */
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+            <div className="info-box">
+              <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Organisme</label>
+              <p style={{ margin: '5px 0 0 0', fontWeight: '600' }}>{selectedItem.organisme || 'Non renseigné'}</p>
+            </div>
+            <div className="info-box">
+              <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Montant (€)</label>
+              <p style={{ margin: '5px 0 0 0', color: '#2F855A', fontWeight: '800', fontSize: '18px' }}>
+                {selectedItem.montant} €
+              </p>
+            </div>
+          </div>
+        )}
+        
+        {/* BOUTON MODIFIER EN BAS À DROITE */}
+        <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'flex-end' }}>
+          <button className="btn-secondary" onClick={() => {
+            setShowViewModal(false);
+            if (selectedItem.viewType === 'entreprise') {
+              setFormEntreprise(selectedItem);
+              setShowEntrepriseModal(true);
+            } else {
+              setFormSubvention(selectedItem);
+              setShowSubventionModal(true);
+            }
+            setIsEditing(true);
+            setCurrentId(selectedItem.id);
+          }}>
+            <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER LA FICHE
+          </button>
         </div>
-      )}
+      </div>
+    </div>
+  </div>
+)}
 
     {/* BLOC 3 : DONATEURS (Comme demandé dans le sujet) */}
     <div className="card">
