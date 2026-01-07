@@ -82,10 +82,37 @@ const Dashboard = () => {
         fetch('http://localhost:8000/api/entreprises.php').then(r => r.json()),
         fetch('http://localhost:8000/api/subventions.php').then(r => r.json())
       ]);
-      setBenevoles(Array.isArray(resBen) ? resBen : []);
-      setEvents(Array.isArray(resEvt) ? resEvt : []);
-      setPartenaires(Array.isArray(resEnt) ? resEnt : []);
-      setSubventions(Array.isArray(resSub) ? resSub : []);
+      setBenevoles((Array.isArray(resBen) ? resBen : []).map(b => ({
+        ...b,
+        dateNaissance: b.date_naissance,
+        dispo: b.disponibilite,
+        regime: b.regime_alimentaire,
+        sante: b.restrictions_sante,
+        infos: b.champs_complementaires
+      })));
+
+      setEvents((Array.isArray(resEvt) ? resEvt : []).map(e => ({
+        ...e,
+        type: e.type_element,
+        titre: e.nom_element,
+        dateDebut: e.date_debut,
+        dateFin: e.date_fin,
+        materiel: e.logistique_materiel,
+        benevolesInscrits: e.benevoles_inscrits,
+        documents: e.document_url,
+        infos: e.notes
+      })));
+
+      setPartenaires((Array.isArray(resEnt) ? resEnt : []).map(p => ({
+        ...p,
+        nom: p.nom_entreprise,
+        contact: p.contact_nom_prenom
+      })));
+
+      setSubventions((Array.isArray(resSub) ? resSub : []).map(s => ({
+        ...s,
+        nom: s.nom_aide
+      })));
     } catch (error) {
       console.error("Erreur chargement API:", error);
     }
