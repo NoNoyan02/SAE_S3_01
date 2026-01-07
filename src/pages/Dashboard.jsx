@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  LayoutDashboard, Users, Handshake, Calendar, 
-  BarChart3, LogOut, Plus, Search, 
+import {
+  LayoutDashboard, Users, Handshake, Calendar,
+  BarChart3, LogOut, Plus, Search,
   TrendingUp, Wallet, UserCheck, ShieldCheck, FileText, Edit, Trash2, X, Eye, Package, MapPin
 } from 'lucide-react';
 
 const Dashboard = () => {
   // 1. ÉTATS GÉNÉRALS
   const [activeTab, setActiveTab] = useState('analyse');
-  const [searchQuery, setSearchQuery] = useState(""); 
-  const [showBenevoleModal, setShowBenevoleModal] = useState(false); 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showBenevoleModal, setShowBenevoleModal] = useState(false);
   const [showEventModal, setShowEventModal] = useState(false);
-  const [showViewModal, setShowViewModal] = useState(false); 
+  const [showViewModal, setShowViewModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
 
@@ -25,129 +25,130 @@ const Dashboard = () => {
 
   // ÉTATS POUR LES PARTENAIRES (ENTREPRISES)
   const [showEntrepriseModal, setShowEntrepriseModal] = useState(false);
-  const [formEntreprise, setFormEntreprise] = useState({ 
-    nom: '', contact: '', email: '', telephone: '' 
+  const [formEntreprise, setFormEntreprise] = useState({
+    nom: '', contact: '', email: '', telephone: ''
   });
   const [searchEnt, setSearchEnt] = useState(""); // Recherche locale Entreprises
 
   // ÉTATS POUR LES SUBVENTIONS
   const [showSubventionModal, setShowSubventionModal] = useState(false);
-  const [formSubvention, setFormSubvention] = useState({ 
-    nom: '', organisme: '', montant: '', status: 'Reçue' 
+  const [formSubvention, setFormSubvention] = useState({
+    nom: '', organisme: '', montant: '', status: 'Reçue'
   });
   const [searchSub, setSearchSub] = useState(""); // Recherche locale Subventions
 
   // ÉTATS POUR LES DONATEURS DE PARTENAIRES ET SUBVENTIONS
   // Données simulées basées sur le payload de Donation.jsx
-const [donateursData, setDonateursData] = useState([
-  {
-    id: 1,
-    viewType: 'donateur',
-    donor_number: "CRF-2025-001",
-    date_don: "07/01/2026 à 14:30",
-    civilite: "M.",
-    prenom: "Jean",
-    nom: "Dupont",
-    email: "jean.dupont@mail.com",
-    telephone: "0612345678",
-    montant: 200,
-    frequence: "once",
-    moyen_paiement: "card",
-    adresse: "15 Rue de la Paix",
-    code_postal: "75002",
-    ville: "Paris",
-    pays: "FRANCE",
-    date_naissance: "12/05/1985"
-  }
-]);
-
-// 2. DONNÉES DES BÉNÉVOLES (LOCAL STORAGE)
-  const [benevoles, setBenevoles] = useState(() => {
-    const saved = localStorage.getItem('benevoles_data'); 
-    return saved ? JSON.parse(saved) : [
-      { id: 1, nom: "Davud", prenom: "Dupont", email: "david.dupontg@gmail.com", telephone: "0102030405", ville: "Paris", status: "actif", cotisation: "À jour", dispo: "Semaine" },
-    ];
-  });
-
-  // 3. DONNÉES DES ÉVÉNEMENTS (LOCAL STORAGE) 
-  const [events, setEvents] = useState(() => {
-    const saved = localStorage.getItem('evenements_data'); 
-    return saved ? JSON.parse(saved) : [
-      { id: 1, type: "Mission", titre: "Collecte Alimentaire", date: "2024-05-20", lieu: "Super U Centre", budget: "200", status: "Planifié" },
-      { id: 2, type: "Événement", titre: "Gala de charité", date: "2024-12-15", lieu: "Mairie", budget: "1500", status: "En préparation" }
-    ];
-  });
-
-  // 4. DONNÉES DES PARTENAIRES (LOCAL STORAGE)
-  const [partenaires, setPartenaires] = useState(() => {
-  const saved = localStorage.getItem('partenaires_data');
-  return saved ? JSON.parse(saved) : [
-    { id: 1, type: 'Entreprise', nom: "Boulangerie Soleil", contact: "Jean Pain", email: "contact@soleil.fr", telephone: "0145223344", status: "Actif" }
-  ];
-});
-
-// 4. DONNÉES DES SUBVENTIONS (LOCAL STORAGE)
-const [subventions, setSubventions] = useState(() => {
-  const saved = localStorage.getItem('subventions_data');
-  return saved ? JSON.parse(saved) : [
-    { id: 1, type: 'Subvention', nom: "Aide Mairie 2026", organisme: "Ville de Paris", montant: "5000", dateReception: "2026-01-05", status: "Reçue" }
-  ];
-});
-
-// État pour le sens du tri (desc = plus gros dons en premier)
-const [sortOrder, setSortOrder] = useState('desc');
-
-// Fonction pour trier les données
-const sortedDonateurs = [...donateursData].sort((a, b) => {
-  return sortOrder === 'desc' ? b.montant - a.montant : a.montant - b.montant;
-});
-
-// Fonction pour l'export CSV
-const exportToCSV = () => {
-  const headers = ["ID_Donateur", "Civilite", "Prenom", "Nom", "Email", "Tel", "Montant", "Frequence", "Date_Don", "Ville"];
-  const rows = donateursData.map(d => [
-    d.donor_number, d.civilite, d.prenom, d.nom, d.email, d.telephone, d.montant, d.frequence, d.date_don, d.ville
+  const [donateursData, setDonateursData] = useState([
+    {
+      id: 1,
+      viewType: 'donateur',
+      donor_number: "CRF-2025-001",
+      date_don: "07/01/2026 à 14:30",
+      civilite: "M.",
+      prenom: "Jean",
+      nom: "Dupont",
+      email: "jean.dupont@mail.com",
+      telephone: "0612345678",
+      montant: 200,
+      frequence: "once",
+      moyen_paiement: "card",
+      adresse: "15 Rue de la Paix",
+      code_postal: "75002",
+      ville: "Paris",
+      pays: "FRANCE",
+      date_naissance: "12/05/1985"
+    }
   ]);
-  
-  const csvContent = "data:text/csv;charset=utf-8," 
-    + headers.join(",") + "\n" 
-    + rows.map(e => e.join(",")).join("\n");
 
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", "historique_donateurs_croix_rouge.csv");
-  document.body.appendChild(link);
-  link.click();
-};
+  // 2. DONNÉES DES BÉNÉVOLES (VIA API)
+  const [benevoles, setBenevoles] = useState([]);
 
-  // SAUVEGARDE AUTOMATIQUE DANS LE NAVIGATEUR
+  // 3. DONNÉES DES ÉVÉNEMENTS (VIA API) 
+  const [events, setEvents] = useState([]);
+
+  // 4. DONNÉES DES PARTENAIRES (VIA API)
+  const [partenaires, setPartenaires] = useState([]);
+
+  // 4. DONNÉES DES SUBVENTIONS (VIA API)
+  const [subventions, setSubventions] = useState([]);
+
+  // CHARGEMENT DES DONNÉES DEPUIS L'API
+  const fetchData = async () => {
+    try {
+      const [resBen, resEvt, resEnt, resSub] = await Promise.all([
+        fetch('http://localhost:8000/api/benevoles.php').then(r => r.json()),
+        fetch('http://localhost:8000/api/evenements.php').then(r => r.json()),
+        fetch('http://localhost:8000/api/entreprises.php').then(r => r.json()),
+        fetch('http://localhost:8000/api/subventions.php').then(r => r.json())
+      ]);
+      setBenevoles(Array.isArray(resBen) ? resBen : []);
+      setEvents(Array.isArray(resEvt) ? resEvt : []);
+      setPartenaires(Array.isArray(resEnt) ? resEnt : []);
+      setSubventions(Array.isArray(resSub) ? resSub : []);
+    } catch (error) {
+      console.error("Erreur chargement API:", error);
+    }
+  };
+
   useEffect(() => {
-    localStorage.setItem('benevoles_data', JSON.stringify(benevoles)); 
-    localStorage.setItem('evenements_data', JSON.stringify(events));
-    localStorage.setItem('partenaires_data', JSON.stringify(partenaires));
-    localStorage.setItem('subventions_data', JSON.stringify(subventions));
-  }, [benevoles, events, partenaires, subventions])
+    fetchData();
+  }, []);
+
+  // État pour le sens du tri (desc = plus gros dons en premier)
+  const [sortOrder, setSortOrder] = useState('desc');
+
+  // Fonction pour trier les données
+  const sortedDonateurs = [...donateursData].sort((a, b) => {
+    return sortOrder === 'desc' ? b.montant - a.montant : a.montant - b.montant;
+  });
+
+  // Fonction pour l'export CSV
+  const exportToCSV = () => {
+    const headers = ["ID_Donateur", "Civilite", "Prenom", "Nom", "Email", "Tel", "Montant", "Frequence", "Date_Don", "Ville"];
+    const rows = donateursData.map(d => [
+      d.donor_number, d.civilite, d.prenom, d.nom, d.email, d.telephone, d.montant, d.frequence, d.date_don, d.ville
+    ]);
+
+    const csvContent = "data:text/csv;charset=utf-8,"
+      + headers.join(",") + "\n"
+      + rows.map(e => e.join(",")).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "historique_donateurs_croix_rouge.csv");
+    document.body.appendChild(link);
+    link.click();
+  };
+
+  // SAUVEGARDE AUTOMATIQUE DANS LE NAVIGATEUR (DÉSACTIVÉ POUR API)
+  // useEffect(() => {
+  //   localStorage.setItem('benevoles_data', JSON.stringify(benevoles)); 
+  //   localStorage.setItem('evenements_data', JSON.stringify(events));
+  //   localStorage.setItem('partenaires_data', JSON.stringify(partenaires));
+  //   localStorage.setItem('subventions_data', JSON.stringify(subventions));
+  // }, [benevoles, events, partenaires, subventions])
 
   // 3. LOGIQUE DE FILTRAGE (SÉCURISÉE)
   const getFilteredData = () => {
     const q = searchQuery.toLowerCase();
     if (activeTab === 'benevoles') {
-    return benevoles.filter(b => {
-      // Recherche textuelle (Nom, Prénom, Ville)
-      const matchesSearch = 
-        (b.nom || "").toLowerCase().includes(q) || 
-        (b.prenom || "").toLowerCase().includes(q) || 
-        (b.ville || "").toLowerCase().includes(q);
+      return benevoles.filter(b => {
+        // Recherche textuelle (Nom, Prénom, Ville)
+        const matchesSearch =
+          (b.nom || "").toLowerCase().includes(q) ||
+          (b.prenom || "").toLowerCase().includes(q) ||
+          (b.ville || "").toLowerCase().includes(q);
 
-      // Filtres par menus déroulants
-      const matchesVille = filterVille === "" || b.ville === filterVille;
-      const matchesProfession = filterProfession === "" || b.profession === filterProfession;
-      const matchesDispo = filterDispo === "" || b.dispo === filterDispo;
+        // Filtres par menus déroulants
+        const matchesVille = filterVille === "" || b.ville === filterVille;
+        const matchesProfession = filterProfession === "" || b.profession === filterProfession;
+        const matchesDispo = filterDispo === "" || b.dispo === filterDispo;
 
-      return matchesSearch && matchesVille && matchesProfession && matchesDispo;
-    });
-  }
+        return matchesSearch && matchesVille && matchesProfession && matchesDispo;
+      });
+    }
     if (activeTab === 'evenements') {
       // MODIFICATION : Filtre spécifique pour l'onglet événements (Titre ou Lieu)
       return events.filter(e => (e.titre || "").toLowerCase().includes(q) || (e.lieu || "").toLowerCase().includes(q));
@@ -155,7 +156,7 @@ const exportToCSV = () => {
     return [];
   };
 
-  const filteredData = getFilteredData(); 
+  const filteredData = getFilteredData();
 
   // 4. ÉTAT POUR LE FORMULAIRE
   const [selectedItem, setSelectedItem] = useState(null);
@@ -168,31 +169,41 @@ const exportToCSV = () => {
   });
 
   // Pour les événements / missions
-  const [formEvent, setFormEvent] = useState({ 
-  type: 'Événement', 
-  titre: '', 
-  dateDebut: '', 
-  dateFin: '', 
-  lieu: '', 
-  budget: '', 
-  materiel: '', 
-  benevolesInscrits: '', 
-  documents: '', 
-  infos: '' 
-});
+  const [formEvent, setFormEvent] = useState({
+    type: 'Événement',
+    titre: '',
+    dateDebut: '',
+    dateFin: '',
+    lieu: '',
+    budget: '',
+    materiel: '',
+    benevolesInscrits: '',
+    documents: '',
+    infos: ''
+  });
 
   // 5. FONCTIONS DE GESTION
-  const handleDelete = (id) => {
-    if(!window.confirm("Supprimer cet élément ?")) return;
-    if (activeTab === 'benevoles') setBenevoles(benevoles.filter(b => b.id !== id)); 
-    if (activeTab === 'evenements') setEvents(events.filter(e => e.id !== id)); 
+  // 5. FONCTIONS DE GESTION
+  const handleDelete = async (id, type) => {
+    if (!window.confirm("Supprimer cet élément ?")) return;
+
+    let url = "";
+    if (type === 'benevoles') url = `http://localhost:8000/api/benevoles.php?id=${id}`;
+    if (type === 'evenements') url = `http://localhost:8000/api/evenements.php?id=${id}`;
+    if (type === 'entreprises') url = `http://localhost:8000/api/entreprises.php?id=${id}`;
+    if (type === 'subventions') url = `http://localhost:8000/api/subventions.php?id=${id}`;
+
+    if (url) {
+      await fetch(url, { method: 'DELETE' });
+      fetchData(); // Rafraichir
+    }
   };
 
   const openEdit = (item) => {
     setIsEditing(true);
     setCurrentId(item.id);
-    if (activeTab === 'benevoles') { setFormBenevole({...item}); setShowBenevoleModal(true); } 
-    if (activeTab === 'evenements') { setFormEvent({...item}); setShowEventModal(true); }
+    if (activeTab === 'benevoles') { setFormBenevole({ ...item }); setShowBenevoleModal(true); }
+    if (activeTab === 'evenements') { setFormEvent({ ...item }); setShowEventModal(true); }
   };
 
   const openViewModal = (item) => {
@@ -200,83 +211,85 @@ const exportToCSV = () => {
     setShowViewModal(true);
   };
 
-const handleBenevoleSubmit = (e) => {
+  const handleBenevoleSubmit = async (e) => {
     e.preventDefault();
-    if (isEditing) {
-      setBenevoles(benevoles.map(b => b.id === currentId ? { ...formBenevole, id: currentId, status: formBenevole.cotisation === 'À jour' ? 'actif' : 'retard' } : b));
-    } else {
-      setBenevoles([...benevoles, { ...formBenevole, id: Date.now(), status: formBenevole.cotisation === 'À jour' ? 'actif' : 'retard' }]);
-    }
+    await fetch('http://localhost:8000/api/benevoles.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formBenevole)
+    });
+    fetchData();
     closeModals();
   };
 
   // MODIF : Nouvelle fonction pour enregistrer une mission
-  const handleEventSubmit = (e) => {
+  const handleEventSubmit = async (e) => {
     e.preventDefault();
-    if (isEditing) {
-      setEvents(events.map(ev => ev.id === currentId ? { ...formEvent, id: currentId } : ev));
-    } else {
-      setEvents([...events, { ...formEvent, id: Date.now() }]);
-    }
+    await fetch('http://localhost:8000/api/evenements.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formEvent)
+    });
+    fetchData();
     closeModals();
   };
 
   // Gestion des Entreprises - CORRIGÉ
-  const handleEntrepriseSubmit = (e) => {
+  const handleEntrepriseSubmit = async (e) => {
     e.preventDefault();
-    const data = { ...formEntreprise, id: isEditing ? currentId : Date.now(), viewType: 'entreprise' };
-    if (isEditing) {
-      setPartenaires(partenaires.map(p => p.id === currentId ? data : p));
-    } else {
-      setPartenaires([...partenaires, data]);
-    }
+    await fetch('http://localhost:8000/api/entreprises.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formEntreprise)
+    });
+    fetchData(); // Reload API
     setShowEntrepriseModal(false);
     setIsEditing(false);
   };
 
   // Gestion des Subventions - CORRIGÉ
-  const handleSubventionSubmit = (e) => {
+  const handleSubventionSubmit = async (e) => {
     e.preventDefault();
-    const data = { ...formSubvention, id: isEditing ? currentId : Date.now(), viewType: 'subvention' };
-    if (isEditing) {
-      setSubventions(subventions.map(s => s.id === currentId ? data : s));
-    } else {
-      setSubventions([...subventions, data]);
-    }
+    await fetch('http://localhost:8000/api/subventions.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formSubvention)
+    });
+    fetchData();
     setShowSubventionModal(false);
     setIsEditing(false);
   };
 
   // Constante pour l'article
   const applyFormat = (tag) => {
-  const textarea = document.getElementById('article-content');
-  const start = textarea.selectionStart;
-  const end = textarea.selectionEnd;
-  const text = textarea.value;
-  const selectedText = text.substring(start, end);
-  
-  // Exemple simple : entoure le texte de balises (ex: **gras**)
-  const before = text.substring(0, start);
-  const after = text.substring(end);
-  
-  const newText = `${before}${tag}${selectedText}${tag}${after}`;
-  
-  // Mise à jour de l'état (assurez-vous d'avoir un état pour le contenu)
-  setFormArticle({ ...formArticle, contenu: newText });
-};
+    const textarea = document.getElementById('article-content');
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const selectedText = text.substring(start, end);
 
-const toolbarButtonStyle = {
-  background: 'none',
-  border: 'none',
-  cursor: 'pointer',
-  padding: '5px 8px',
-  borderRadius: '4px',
-  color: '#4A5568',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  transition: 'background 0.2s'
-};
+    // Exemple simple : entoure le texte de balises (ex: **gras**)
+    const before = text.substring(0, start);
+    const after = text.substring(end);
+
+    const newText = `${before}${tag}${selectedText}${tag}${after}`;
+
+    // Mise à jour de l'état (assurez-vous d'avoir un état pour le contenu)
+    setFormArticle({ ...formArticle, contenu: newText });
+  };
+
+  const toolbarButtonStyle = {
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '5px 8px',
+    borderRadius: '4px',
+    color: '#4A5568',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'background 0.2s'
+  };
 
   const closeModals = () => {
     setShowBenevoleModal(false); setShowEventModal(false); setShowViewModal(false); setIsEditing(false);
@@ -521,372 +534,372 @@ const toolbarButtonStyle = {
 
       {/* MODALE : FORMULAIRE DYNAMIQUE POUR LES BÉNÉVOLES */}
       {showBenevoleModal && (
-      <div className="modal-overlay">
-        <div className="modal-card">
-          <div style={{display:'flex', justifyContent:'space-between', marginBottom:20}}>
-            <h2 style={{fontSize: 24, fontWeight: 700, margin:0}}>{isEditing ? "Modifier le membre" : "Ajouter un Bénévole"}</h2>
-            <X onClick={closeModals} style={{cursor:'pointer', color:'#6B7280'}}/>
+        <div className="modal-overlay">
+          <div className="modal-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+              <h2 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>{isEditing ? "Modifier le membre" : "Ajouter un Bénévole"}</h2>
+              <X onClick={closeModals} style={{ cursor: 'pointer', color: '#6B7280' }} />
+            </div>
+
+            <form onSubmit={handleBenevoleSubmit}>
+              <div className="form-row">
+                <div className="form-group"><label>Nom <span>*</span></label><input type="text" required value={formBenevole.nom} onChange={e => setFormBenevole({ ...formBenevole, nom: e.target.value })} placeholder="Nom" /></div>
+                <div className="form-group"><label>Prénom <span>*</span></label><input type="text" required value={formBenevole.prenom} onChange={e => setFormBenevole({ ...formBenevole, prenom: e.target.value })} placeholder="Prénom" /></div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group"><label>Email <span>*</span></label><input type="email" required value={formBenevole.email} onChange={e => setFormBenevole({ ...formBenevole, email: e.target.value })} placeholder="exemple@mail.com" /></div>
+                <div className="form-group"><label>Téléphone</label><input type="text" value={formBenevole.telephone} onChange={e => setFormBenevole({ ...formBenevole, telephone: e.target.value })} /></div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group"><label>Ville</label><input type="text" value={formBenevole.ville} onChange={e => setFormBenevole({ ...formBenevole, ville: e.target.value })} /></div>
+                <div className="form-group"><label>Date de naissance</label><input type="date" value={formBenevole.dateNaissance} onChange={e => setFormBenevole({ ...formBenevole, dateNaissance: e.target.value })} /></div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group"><label>Profession</label><input type="text" value={formBenevole.profession} onChange={e => setFormBenevole({ ...formBenevole, profession: e.target.value })} /></div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group"><label>Régime Alimentaire</label><input type="text" value={formBenevole.regime} onChange={e => setFormBenevole({ ...formBenevole, regime: e.target.value })} placeholder="Ex: Végétarien" /></div>
+                <div className="form-group"><label>Restrictions Santé</label><input type="text" value={formBenevole.sante} onChange={e => setFormBenevole({ ...formBenevole, sante: e.target.value })} placeholder="Ex: Mal de dos" /></div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group"><label>Champs Complémentaires</label><textarea value={formBenevole.infos} onChange={e => setFormBenevole({ ...formBenevole, infos: e.target.value })} placeholder="Saisissez ici des informations supplémentaires"></textarea></div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group"><label>Cotisation <span>*</span></label><select value={formBenevole.cotisation} onChange={e => setFormBenevole({ ...formBenevole, cotisation: e.target.value })}><option>À jour</option><option>Échue</option></select></div>
+                <div className="form-group"><label>Disponibilité <span>*</span></label><select value={formBenevole.dispo} onChange={e => setFormBenevole({ ...formBenevole, dispo: e.target.value })}><option>Semaine</option><option>Weekend</option><option>Libre</option></select></div>
+              </div>
+
+              <div className="btn-container">
+                <button type="submit" className="btn-save">Enregistrer</button>
+              </div>
+            </form>
           </div>
-          
-          <form onSubmit={handleBenevoleSubmit}>
-            <div className="form-row">
-              <div className="form-group"><label>Nom <span>*</span></label><input type="text" required value={formBenevole.nom} onChange={e => setFormBenevole({...formBenevole, nom: e.target.value})} placeholder="Nom" /></div>
-              <div className="form-group"><label>Prénom <span>*</span></label><input type="text" required value={formBenevole.prenom} onChange={e => setFormBenevole({...formBenevole, prenom: e.target.value})} placeholder="Prénom" /></div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group"><label>Email <span>*</span></label><input type="email" required value={formBenevole.email} onChange={e => setFormBenevole({...formBenevole, email: e.target.value})} placeholder="exemple@mail.com" /></div>
-              <div className="form-group"><label>Téléphone</label><input type="text" value={formBenevole.telephone} onChange={e => setFormBenevole({...formBenevole, telephone: e.target.value})} /></div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group"><label>Ville</label><input type="text" value={formBenevole.ville} onChange={e => setFormBenevole({...formBenevole, ville: e.target.value})} /></div>
-              <div className="form-group"><label>Date de naissance</label><input type="date" value={formBenevole.dateNaissance} onChange={e => setFormBenevole({...formBenevole, dateNaissance: e.target.value})} /></div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group"><label>Profession</label><input type="text" value={formBenevole.profession} onChange={e => setFormBenevole({...formBenevole, profession: e.target.value})} /></div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group"><label>Régime Alimentaire</label><input type="text" value={formBenevole.regime} onChange={e => setFormBenevole({...formBenevole, regime: e.target.value})} placeholder="Ex: Végétarien" /></div>
-              <div className="form-group"><label>Restrictions Santé</label><input type="text" value={formBenevole.sante} onChange={e => setFormBenevole({...formBenevole, sante: e.target.value})} placeholder="Ex: Mal de dos" /></div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group"><label>Champs Complémentaires</label><textarea value={formBenevole.infos} onChange={e => setFormBenevole({...formBenevole, infos: e.target.value})} placeholder="Saisissez ici des informations supplémentaires"></textarea></div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group"><label>Cotisation <span>*</span></label><select value={formBenevole.cotisation} onChange={e => setFormBenevole({...formBenevole, cotisation: e.target.value})}><option>À jour</option><option>Échue</option></select></div>
-              <div className="form-group"><label>Disponibilité <span>*</span></label><select value={formBenevole.dispo} onChange={e => setFormBenevole({...formBenevole, dispo: e.target.value})}><option>Semaine</option><option>Weekend</option><option>Libre</option></select></div>
-            </div>
-
-            <div className="btn-container">
-              <button type="submit" className="btn-save">Enregistrer</button>
-            </div>
-          </form>
         </div>
-      </div>
-    )}
+      )}
 
       {/* MODALE : FICHE DÉTAILLÉE LORS DU CLIQUE SUR LE NOM POUR LES BÉNÉVOLES */}
       {showViewModal && selectedItem && activeTab === 'benevoles' && (
-      <div className="modal-overlay">
-        <div className="modal-card">
-          <div style={{display:'flex', justifyContent:'space-between', borderBottom:'1px solid #EEE', paddingBottom:15, marginBottom:10}}>
-            <h2 style={{fontSize: 22, fontWeight: 800, color:'#1A1C23'}}>Fiche de membre : {selectedItem.prenom} {selectedItem.nom}</h2>
-            <X onClick={closeModals} style={{cursor:'pointer', color:'#6B7280'}}/>
+        <div className="modal-overlay">
+          <div className="modal-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #EEE', paddingBottom: 15, marginBottom: 10 }}>
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1A1C23' }}>Fiche de membre : {selectedItem.prenom} {selectedItem.nom}</h2>
+              <X onClick={closeModals} style={{ cursor: 'pointer', color: '#6B7280' }} />
+            </div>
+            <div className="info-grid">
+              <div className="info-item"><div className="info-label">Email</div><div className="info-value">{selectedItem.email}</div></div>
+              <div className="info-item"><div className="info-label">Téléphone</div><div className="info-value">{selectedItem.telephone || "N/A"}</div></div>
+              <div className="info-item"><div className="info-label">Ville</div><div className="info-value">{selectedItem.ville}</div></div>
+              <div className="info-item"><div className="info-label">Date de Naissance</div><div className="info-value">{selectedItem.dateNaissance || "N/A"}</div></div>
+              <div className="info-item"><div className="info-label">Profession</div><div className="info-value">{selectedItem.profession || "N/A"}</div></div>
+
+              <div className="info-item"><div className="info-label">Disponibilité</div><div className="info-value">{selectedItem.dispo}</div></div>
+              <div className="info-item"><div className="info-label">Statut Cotisation</div><div className={`status-badge status-${selectedItem.status}`} style={{ display: 'inline-block', marginTop: '5px' }}>{selectedItem.cotisation}</div></div>
+
+              <div className="info-item"><div className="info-label">Régime Alimentaire</div><div className="info-value">{selectedItem.regime || "Aucun"}</div></div>
+              <div className="info-item"><div className="info-label">Santé</div><div className="info-value">{selectedItem.sante || "RAS"}</div></div>
+              <div className="info-item full-width"><div className="info-label">Notes / Infos Complémentaires</div><div className="info-value" style={{ fontWeight: 400 }}>{selectedItem.infos || "Aucune note particulière."}</div></div>
+            </div>
+            <div style={{ marginTop: 30, paddingTop: 20, borderTop: '1px solid #E2E8F0', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+              {/* BOUTON MODIFIER ADAPTÉ AUX BÉNÉVOLES */}
+              <button className="btn-secondary" onClick={() => {
+                setShowViewModal(false); // On ferme la vue lecture
+                setFormBenevole(selectedItem); // On pré-remplit le formulaire avec les infos de la fiche
+                setIsEditing(true); // On passe en mode édition
+                setCurrentId(selectedItem.id); // On garde l'ID pour la mise à jour
+                setShowBenevoleModal(true); // On ouvre le formulaire de saisie des bénévoles
+              }}>
+                <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER LA FICHE
+              </button>
+            </div>
           </div>
-          <div className="info-grid">
-            <div className="info-item"><div className="info-label">Email</div><div className="info-value">{selectedItem.email}</div></div>
-            <div className="info-item"><div className="info-label">Téléphone</div><div className="info-value">{selectedItem.telephone || "N/A"}</div></div>
-            <div className="info-item"><div className="info-label">Ville</div><div className="info-value">{selectedItem.ville}</div></div>
-            <div className="info-item"><div className="info-label">Date de Naissance</div><div className="info-value">{selectedItem.dateNaissance || "N/A"}</div></div>
-            <div className="info-item"><div className="info-label">Profession</div><div className="info-value">{selectedItem.profession || "N/A"}</div></div>
-            
-            <div className="info-item"><div className="info-label">Disponibilité</div><div className="info-value">{selectedItem.dispo}</div></div>
-            <div className="info-item"><div className="info-label">Statut Cotisation</div><div className={`status-badge status-${selectedItem.status}`} style={{display:'inline-block', marginTop:'5px'}}>{selectedItem.cotisation}</div></div>
-            
-            <div className="info-item"><div className="info-label">Régime Alimentaire</div><div className="info-value">{selectedItem.regime || "Aucun"}</div></div>
-            <div className="info-item"><div className="info-label">Santé</div><div className="info-value">{selectedItem.sante || "RAS"}</div></div>
-            <div className="info-item full-width"><div className="info-label">Notes / Infos Complémentaires</div><div className="info-value" style={{fontWeight:400}}>{selectedItem.infos || "Aucune note particulière."}</div></div>
-          </div>
-          <div style={{ marginTop: 30, paddingTop: 20, borderTop: '1px solid #E2E8F0', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-            {/* BOUTON MODIFIER ADAPTÉ AUX BÉNÉVOLES */}
-            <button className="btn-secondary" onClick={() => {
-              setShowViewModal(false); // On ferme la vue lecture
-              setFormBenevole(selectedItem); // On pré-remplit le formulaire avec les infos de la fiche
-              setIsEditing(true); // On passe en mode édition
-              setCurrentId(selectedItem.id); // On garde l'ID pour la mise à jour
-              setShowBenevoleModal(true); // On ouvre le formulaire de saisie des bénévoles
-            }}>
-    <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER LA FICHE
-  </button>
-</div>
         </div>
-      </div>
-    )}
+      )}
 
-    {/* MODALE : FORMULAIRE DYNAMIQUE POUR LES ÉVÈNEMENTS */}
-    {showEventModal && (
-      <div className="modal-overlay">
-        <div className="modal-card">
-          <div style={{display:'flex', justifyContent:'space-between', marginBottom:20}}>
-            <h2 style={{fontSize: 24, fontWeight: 700, margin:0}}>
-              {isEditing ? "Modifier" : "Créer un nouvel élément"}
-            </h2>
-            <X onClick={closeModals} style={{cursor:'pointer', color:'#6B7280'}}/>
-          </div>
-          
-          <form onSubmit={handleEventSubmit}>
-            {/* MODIF : Choix entre Mission et Événement */}
-            <div className="form-group" style={{marginBottom: 15}}>
-              <label>Type d'élément <span>*</span></label>
-              <select 
-                value={formEvent.type || "Événement"} 
-                onChange={e => setFormEvent({...formEvent, type: e.target.value})}
-                style={{padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB'}}
-              >
-                <option value="Événement">Événement (Gala, fête, etc.)</option>
-                <option value="Mission">Mission de terrain (Maraude, collecte...)</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Nom de l'élément <span>*</span></label>
-              <input 
-                type="text" 
-                required 
-                value={formEvent.titre} 
-                onChange={e => setFormEvent({...formEvent, titre: e.target.value})} 
-                placeholder="Ex: Collecte Hivernale" 
-              />
+      {/* MODALE : FORMULAIRE DYNAMIQUE POUR LES ÉVÈNEMENTS */}
+      {showEventModal && (
+        <div className="modal-overlay">
+          <div className="modal-card">
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+              <h2 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>
+                {isEditing ? "Modifier" : "Créer un nouvel élément"}
+              </h2>
+              <X onClick={closeModals} style={{ cursor: 'pointer', color: '#6B7280' }} />
             </div>
 
-            {/* DATES DÉBUT ET FIN */}
-            <div className="form-row">
-              <div className="form-group">
-                <label>Date de début <span>*</span></label>
-                <input 
-                  type="date" 
-                  required 
-                  value={formEvent.dateDebut} 
-                  onChange={e => setFormEvent({...formEvent, dateDebut: e.target.value})} 
-                />
+            <form onSubmit={handleEventSubmit}>
+              {/* MODIF : Choix entre Mission et Événement */}
+              <div className="form-group" style={{ marginBottom: 15 }}>
+                <label>Type d'élément <span>*</span></label>
+                <select
+                  value={formEvent.type || "Événement"}
+                  onChange={e => setFormEvent({ ...formEvent, type: e.target.value })}
+                  style={{ padding: '10px', borderRadius: '6px', border: '1px solid #D1D5DB' }}
+                >
+                  <option value="Événement">Événement (Gala, fête, etc.)</option>
+                  <option value="Mission">Mission de terrain (Maraude, collecte...)</option>
+                </select>
               </div>
               <div className="form-group">
-                <label>Date de fin <span>*</span></label>
-                <input 
-                  type="date" 
-                  required 
-                  value={formEvent.dateFin} 
-                  onChange={e => setFormEvent({...formEvent, dateFin: e.target.value})} 
+                <label>Nom de l'élément <span>*</span></label>
+                <input
+                  type="text"
+                  required
+                  value={formEvent.titre}
+                  onChange={e => setFormEvent({ ...formEvent, titre: e.target.value })}
+                  placeholder="Ex: Collecte Hivernale"
                 />
               </div>
-            </div>
 
-            <div className="form-row">
-              <div className="form-group"><label>Lieu <span>*</span></label><input type="text" required value={formEvent.lieu} onChange={e => setFormEvent({...formEvent, lieu: e.target.value})} placeholder="Ex: Super U Centre" /></div>
-              <div className="form-group"><label>Budget Prévisionnel (€)</label><input type="number" value={formEvent.budget} onChange={e => setFormEvent({...formEvent, budget: e.target.value})} placeholder="0" /></div>
-            </div>
+              {/* DATES DÉBUT ET FIN */}
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Date de début <span>*</span></label>
+                  <input
+                    type="date"
+                    required
+                    value={formEvent.dateDebut}
+                    onChange={e => setFormEvent({ ...formEvent, dateDebut: e.target.value })}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Date de fin <span>*</span></label>
+                  <input
+                    type="date"
+                    required
+                    value={formEvent.dateFin}
+                    onChange={e => setFormEvent({ ...formEvent, dateFin: e.target.value })}
+                  />
+                </div>
+              </div>
 
-            <div className="form-row">
-              <div className="form-group"><label>Logistique & Matériel</label><textarea value={formEvent.materiel} onChange={e => setFormEvent({...formEvent, materiel: e.target.value})} placeholder="Ex: Barnum, 2 tables, sonos..."></textarea></div>
-            </div>
+              <div className="form-row">
+                <div className="form-group"><label>Lieu <span>*</span></label><input type="text" required value={formEvent.lieu} onChange={e => setFormEvent({ ...formEvent, lieu: e.target.value })} placeholder="Ex: Super U Centre" /></div>
+                <div className="form-group"><label>Budget Prévisionnel (€)</label><input type="number" value={formEvent.budget} onChange={e => setFormEvent({ ...formEvent, budget: e.target.value })} placeholder="0" /></div>
+              </div>
 
-            <div className="form-row">
-              <div className="form-group"><label>Bénévoles Inscrits</label><input type="text" value={formEvent.benevolesInscrits} onChange={e => setFormEvent({...formEvent, benevolesInscrits: e.target.value})} placeholder="Ex: Nadia, Thomas, Julie..." /></div>
-              <div className="form-group">
-            <label>Documents (Affiches, CR) <span>*PDF uniquement</span></label>
-            <input 
-              type="file" 
-              accept=".pdf"
-              style={{ padding: '8px', fontSize: '12px' }}
-              onChange={(e) => {
-                const file = e.target.files[0];
-                if (file) {
-                  setFormEvent({...formEvent, documents: file.name}); // On stocke le nom du fichier
-                }
-              }} 
-            />
-            {formEvent.documents && (
-              <span style={{ fontSize: '11px', color: '#2563EB', marginTop: '5px' }}>
-                Fichier sélectionné : {formEvent.documents}
-              </span>
-            )}
+              <div className="form-row">
+                <div className="form-group"><label>Logistique & Matériel</label><textarea value={formEvent.materiel} onChange={e => setFormEvent({ ...formEvent, materiel: e.target.value })} placeholder="Ex: Barnum, 2 tables, sonos..."></textarea></div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group"><label>Bénévoles Inscrits</label><input type="text" value={formEvent.benevolesInscrits} onChange={e => setFormEvent({ ...formEvent, benevolesInscrits: e.target.value })} placeholder="Ex: Nadia, Thomas, Julie..." /></div>
+                <div className="form-group">
+                  <label>Documents (Affiches, CR) <span>*PDF uniquement</span></label>
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    style={{ padding: '8px', fontSize: '12px' }}
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setFormEvent({ ...formEvent, documents: file.name }); // On stocke le nom du fichier
+                      }
+                    }}
+                  />
+                  {formEvent.documents && (
+                    <span style={{ fontSize: '11px', color: '#2563EB', marginTop: '5px' }}>
+                      Fichier sélectionné : {formEvent.documents}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group"><label>Notes / Informations supplémentaires</label><textarea value={formEvent.infos} onChange={e => setFormEvent({ ...formEvent, infos: e.target.value })} placeholder="Précisions sur la mission..."></textarea></div>
+              </div>
+
+              <div className="btn-container">
+                <button type="submit" className="btn-save">Enregistrer la mission</button>
+              </div>
+            </form>
           </div>
-            </div>
-
-            <div className="form-row">
-              <div className="form-group"><label>Notes / Informations supplémentaires</label><textarea value={formEvent.infos} onChange={e => setFormEvent({...formEvent, infos: e.target.value})} placeholder="Précisions sur la mission..."></textarea></div>
-            </div>
-
-            <div className="btn-container">
-              <button type="submit" className="btn-save">Enregistrer la mission</button>
-            </div>
-          </form>
         </div>
-      </div>
-    )}
+      )}
 
-        {/* MODALE : FICHE DÉTAILLÉE POUR LES ÉVÈNEMENTS */}
-    {showViewModal && selectedItem && activeTab === 'evenements' && (
-      <div className="modal-overlay">
-        <div className="modal-card">
-          {/* HEADER DE LA MODALE */}
-          <div style={{
-            display:'flex', 
-            justifyContent:'space-between', 
-            borderBottom: `4px solid ${selectedItem.type === 'Mission' ? '#2B6CB0' : '#D97706'}`, 
-            paddingBottom:15, 
-            marginBottom:10
-          }}>
-            <h2 style={{fontSize: 22, fontWeight: 800, color:'#1A1C23'}}>
-              [{selectedItem.type === 'Mission' ? 'MISSION' : 'ÉVÉNEMENT'}] {selectedItem.titre}
-            </h2>
-            <X onClick={closeModals} style={{cursor:'pointer', color:'#6B7280'}}/>
-          </div>
-
-          {/* CONTENU DES INFOS */}
-          <div className="info-grid">
-            <div className="info-item"><div className="info-label">Période</div><div className="info-value">Du {selectedItem.dateDebut} au {selectedItem.dateFin}</div></div>
-            <div className="info-item"><div className="info-label">Lieu</div><div className="info-value">{selectedItem.lieu}</div></div>
-            <div className="info-item"><div className="info-label">Budget</div><div className="info-value">{selectedItem.budget ? `${selectedItem.budget} €` : "Non défini"}</div></div>
-            
-            <div className="info-item full-width">
-              <div className="info-label">Documents joints</div>
-              <div className="info-value" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <FileText size={18} color="#2563EB" />
-                <span style={{ color: selectedItem.documents ? '#2563EB' : '#718096', fontWeight: 'bold' }}>
-                  {selectedItem.documents || "Aucun document PDF associé."}
-                </span>
-              </div>  
-            </div>
-            
-            <div className="info-item full-width"><div className="info-label">Logistique & Matériel</div><div className="info-value">{selectedItem.materiel || "Rien à prévoir."}</div></div>
-            <div className="info-item full-width"><div className="info-label">Bénévoles Mobilisés</div><div className="info-value">{selectedItem.benevolesInscrits || "Aucun bénévole inscrit."}</div></div>
-            <div className="info-item full-width"><div className="info-label">Notes de mission</div><div className="info-value">{selectedItem.infos || "Aucune note particulière."}</div></div>
-          </div>
-
-          {/* FOOTER : BOUTON MODIFIER */}
-          <div style={{ marginTop: 30, paddingTop: 20, borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'flex-end' }}>
-            <button className="btn-secondary" onClick={() => {
-              setShowViewModal(false);
-              setFormEvent(selectedItem);
-              setIsEditing(true);
-              setCurrentId(selectedItem.id);
-              setShowEventModal(true);
+      {/* MODALE : FICHE DÉTAILLÉE POUR LES ÉVÈNEMENTS */}
+      {showViewModal && selectedItem && activeTab === 'evenements' && (
+        <div className="modal-overlay">
+          <div className="modal-card">
+            {/* HEADER DE LA MODALE */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              borderBottom: `4px solid ${selectedItem.type === 'Mission' ? '#2B6CB0' : '#D97706'}`,
+              paddingBottom: 15,
+              marginBottom: 10
             }}>
-              <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER LA FICHE
-            </button>
+              <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1A1C23' }}>
+                [{selectedItem.type === 'Mission' ? 'MISSION' : 'ÉVÉNEMENT'}] {selectedItem.titre}
+              </h2>
+              <X onClick={closeModals} style={{ cursor: 'pointer', color: '#6B7280' }} />
+            </div>
+
+            {/* CONTENU DES INFOS */}
+            <div className="info-grid">
+              <div className="info-item"><div className="info-label">Période</div><div className="info-value">Du {selectedItem.dateDebut} au {selectedItem.dateFin}</div></div>
+              <div className="info-item"><div className="info-label">Lieu</div><div className="info-value">{selectedItem.lieu}</div></div>
+              <div className="info-item"><div className="info-label">Budget</div><div className="info-value">{selectedItem.budget ? `${selectedItem.budget} €` : "Non défini"}</div></div>
+
+              <div className="info-item full-width">
+                <div className="info-label">Documents joints</div>
+                <div className="info-value" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <FileText size={18} color="#2563EB" />
+                  <span style={{ color: selectedItem.documents ? '#2563EB' : '#718096', fontWeight: 'bold' }}>
+                    {selectedItem.documents || "Aucun document PDF associé."}
+                  </span>
+                </div>
+              </div>
+
+              <div className="info-item full-width"><div className="info-label">Logistique & Matériel</div><div className="info-value">{selectedItem.materiel || "Rien à prévoir."}</div></div>
+              <div className="info-item full-width"><div className="info-label">Bénévoles Mobilisés</div><div className="info-value">{selectedItem.benevolesInscrits || "Aucun bénévole inscrit."}</div></div>
+              <div className="info-item full-width"><div className="info-label">Notes de mission</div><div className="info-value">{selectedItem.infos || "Aucune note particulière."}</div></div>
+            </div>
+
+            {/* FOOTER : BOUTON MODIFIER */}
+            <div style={{ marginTop: 30, paddingTop: 20, borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'flex-end' }}>
+              <button className="btn-secondary" onClick={() => {
+                setShowViewModal(false);
+                setFormEvent(selectedItem);
+                setIsEditing(true);
+                setCurrentId(selectedItem.id);
+                setShowEventModal(true);
+              }}>
+                <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER LA FICHE
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    )}
+      )}
 
-{/* SIDEBAR */}
+      {/* SIDEBAR */}
       <aside className="sidebar">
         <div className="logo-section">
-          <span className="logo-red">LA CROIX ROUGE</span><br/>
-          <span style={{fontSize: '14px', opacity: 0.7}}>ADMINISTRATION</span>
+          <span className="logo-red">LA CROIX ROUGE</span><br />
+          <span style={{ fontSize: '14px', opacity: 0.7 }}>ADMINISTRATION</span>
         </div>
         <nav className="nav-menu">
           {menuItems.map((item) => (
             <div key={item.id}>
               <button
                 className={`nav-item ${(activeTab === item.id || (item.id === 'evenements' && activeTab === 'calendrier') || (item.id === 'communication' && activeTab.startsWith('communication-'))) ? 'active' : ''}`}
-                onClick={() => { 
-                  setActiveTab(item.id); 
-                  setSearchQuery(""); 
+                onClick={() => {
+                  setActiveTab(item.id);
+                  setSearchQuery("");
                 }}
               >
-          {item.icon}
-          <span>{item.label}</span>
-        </button>
+                {item.icon}
+                <span>{item.label}</span>
+              </button>
 
-      {/* SOUS-MENU COMMUNICATION */}
-      {item.id === 'communication' && (activeTab === 'communication' || activeTab.startsWith('communication-')) && (
-        <div style={{ 
-          paddingLeft: '54px', 
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: '4px', 
-          marginTop: '4px', 
-          marginBottom: '10px'
-        }}>
-          <button 
-            onClick={() => setActiveTab('communication-articles')}
-            style={{ 
-              background: 'none', border: 'none', 
-              color: activeTab === 'communication-articles' ? 'white' : '#A0AEC0', 
-              fontSize: '13px', cursor: 'pointer', textAlign: 'left', padding: '6px 0',
-              fontWeight: activeTab === 'communication-articles' ? '700' : '500',
-              display: 'flex', alignItems: 'center', gap: '8px', transition: '0.2s'
-            }}
-          >
-            <span style={{ color: activeTab === 'communication-articles' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
-            Articles
-          </button>
-          <button 
-            onClick={() => setActiveTab('communication-newsletters')}
-            style={{ 
-              background: 'none', border: 'none', 
-              color: activeTab === 'communication-newsletters' ? 'white' : '#A0AEC0', 
-              fontSize: '13px', cursor: 'pointer', textAlign: 'left', padding: '6px 0',
-              fontWeight: activeTab === 'communication-newsletters' ? '700' : '500',
-              display: 'flex', alignItems: 'center', gap: '8px', transition: '0.2s'
-            }}
-          >
-            <span style={{ color: activeTab === 'communication-newsletters' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
-            Newsletters
-          </button>
-        </div>
-      )}
-        
-      {/* SOUS-MENU ÉVÉNEMENTS */}
-      {item.id === 'evenements' && (activeTab === 'evenements' || activeTab === 'calendrier') && (
-        <div style={{ 
-          paddingLeft: '54px', // Aligné sur le début du texte "Événements"
-          display: 'flex', 
-          flexDirection: 'column', 
-          gap: '4px', 
-          marginTop: '4px', 
-          marginBottom: '10px'
-        }}>
-          <button 
-            onClick={() => setActiveTab('evenements')}
-            style={{ 
-              background: 'none', 
-              border: 'none', 
-              color: activeTab === 'evenements' ? 'white' : '#A0AEC0', 
-              fontSize: '13px', 
-              cursor: 'pointer', 
-              textAlign: 'left', 
-              padding: '6px 0',
-              fontWeight: activeTab === 'evenements' ? '700' : '500',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              transition: '0.2s'
-            }}
-          >
-            <span style={{ color: activeTab === 'evenements' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
-            Gestion des missions et événements
-          </button>
-          <button 
-            onClick={() => setActiveTab('calendrier')}
-            style={{ 
-              background: 'none', 
-              border: 'none', 
-              color: activeTab === 'calendrier' ? 'white' : '#A0AEC0', 
-              fontSize: '13px', 
-              cursor: 'pointer', 
-              textAlign: 'left', 
-              padding: '6px 0',
-              fontWeight: activeTab === 'calendrier' ? '700' : '500',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              transition: '0.2s'
-            }}
-          >
-            <span style={{ color: activeTab === 'calendrier' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
-            Planning
-          </button>
-        </div>
-      )}
-      </div>
-    ))}
-  </nav>
+              {/* SOUS-MENU COMMUNICATION */}
+              {item.id === 'communication' && (activeTab === 'communication' || activeTab.startsWith('communication-')) && (
+                <div style={{
+                  paddingLeft: '54px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px',
+                  marginTop: '4px',
+                  marginBottom: '10px'
+                }}>
+                  <button
+                    onClick={() => setActiveTab('communication-articles')}
+                    style={{
+                      background: 'none', border: 'none',
+                      color: activeTab === 'communication-articles' ? 'white' : '#A0AEC0',
+                      fontSize: '13px', cursor: 'pointer', textAlign: 'left', padding: '6px 0',
+                      fontWeight: activeTab === 'communication-articles' ? '700' : '500',
+                      display: 'flex', alignItems: 'center', gap: '8px', transition: '0.2s'
+                    }}
+                  >
+                    <span style={{ color: activeTab === 'communication-articles' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
+                    Articles
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('communication-newsletters')}
+                    style={{
+                      background: 'none', border: 'none',
+                      color: activeTab === 'communication-newsletters' ? 'white' : '#A0AEC0',
+                      fontSize: '13px', cursor: 'pointer', textAlign: 'left', padding: '6px 0',
+                      fontWeight: activeTab === 'communication-newsletters' ? '700' : '500',
+                      display: 'flex', alignItems: 'center', gap: '8px', transition: '0.2s'
+                    }}
+                  >
+                    <span style={{ color: activeTab === 'communication-newsletters' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
+                    Newsletters
+                  </button>
+                </div>
+              )}
+
+              {/* SOUS-MENU ÉVÉNEMENTS */}
+              {item.id === 'evenements' && (activeTab === 'evenements' || activeTab === 'calendrier') && (
+                <div style={{
+                  paddingLeft: '54px', // Aligné sur le début du texte "Événements"
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '4px',
+                  marginTop: '4px',
+                  marginBottom: '10px'
+                }}>
+                  <button
+                    onClick={() => setActiveTab('evenements')}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: activeTab === 'evenements' ? 'white' : '#A0AEC0',
+                      fontSize: '13px',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      padding: '6px 0',
+                      fontWeight: activeTab === 'evenements' ? '700' : '500',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      transition: '0.2s'
+                    }}
+                  >
+                    <span style={{ color: activeTab === 'evenements' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
+                    Gestion des missions et événements
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('calendrier')}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: activeTab === 'calendrier' ? 'white' : '#A0AEC0',
+                      fontSize: '13px',
+                      cursor: 'pointer',
+                      textAlign: 'left',
+                      padding: '6px 0',
+                      fontWeight: activeTab === 'calendrier' ? '700' : '500',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      transition: '0.2s'
+                    }}
+                  >
+                    <span style={{ color: activeTab === 'calendrier' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
+                    Planning
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
         <div className="sidebar-footer">
           <div className="user-info">
             <div className="avatar">AD</div>
             <div>
-              <p style={{margin:0, fontSize:'13px', fontWeight:'bold'}}>Admin Bureau</p>
-              <p style={{margin:0, fontSize:'10px', color:'#718096'}}>Accès Protégé</p>
+              <p style={{ margin: 0, fontSize: '13px', fontWeight: 'bold' }}>Admin Bureau</p>
+              <p style={{ margin: 0, fontSize: '10px', color: '#718096' }}>Accès Protégé</p>
             </div>
           </div>
-          <button className="logout-btn"><LogOut size={14} style={{marginRight:8}}/> DÉCONNEXION</button>
+          <button className="logout-btn"><LogOut size={14} style={{ marginRight: 8 }} /> DÉCONNEXION</button>
         </div>
       </aside>
 
@@ -894,258 +907,258 @@ const toolbarButtonStyle = {
       <main className="main-content">
         <header className="header">
           <div className="title-section">
-    <h2>
-  {activeTab === 'calendrier'
-    ? 'Planning'
-    : activeTab === 'evenements'
-      ? 'Gestion des évènements & missions'
-      : activeTab === 'partenaires'
-        ? 'Partenaires & Donateurs'
-        : activeTab.replace('-', ' ')
-  }
-</h2>
-<p>Gestion interne de l'association</p>
-  </div>
+            <h2>
+              {activeTab === 'calendrier'
+                ? 'Planning'
+                : activeTab === 'evenements'
+                  ? 'Gestion des évènements & missions'
+                  : activeTab === 'partenaires'
+                    ? 'Partenaires & Donateurs'
+                    : activeTab.replace('-', ' ')
+              }
+            </h2>
+            <p>Gestion interne de l'association</p>
+          </div>
 
-  {/* On cache les actions si Analyse OU Calendrier */}
-  {activeTab !== 'analyse' && activeTab !== 'calendrier' && activeTab !== 'partenaires' && (
-    <div className="header-actions">
-      <div className="search-box">
-        <Search style={{position:'absolute', left:12, top:13, color:'#A0AEC0'}} size={18}/>
-        <input 
-          type="text" 
-          className="search-input" 
-          placeholder="Rechercher..." 
-          value={searchQuery} 
-          onChange={(e) => setSearchQuery(e.target.value)} 
-        />
-      </div>
-      <button className="btn-add" onClick={() => { 
-        setIsEditing(false); 
-        if(activeTab === 'benevoles') setShowBenevoleModal(true);
-        if(activeTab === 'evenements') setShowEventModal(true);
-      }}>
-        <Plus size={18}/> NOUVEAU
-      </button>
-    </div>
-  )}
-</header>
+          {/* On cache les actions si Analyse OU Calendrier */}
+          {activeTab !== 'analyse' && activeTab !== 'calendrier' && activeTab !== 'partenaires' && (
+            <div className="header-actions">
+              <div className="search-box">
+                <Search style={{ position: 'absolute', left: 12, top: 13, color: '#A0AEC0' }} size={18} />
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Rechercher..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <button className="btn-add" onClick={() => {
+                setIsEditing(false);
+                if (activeTab === 'benevoles') setShowBenevoleModal(true);
+                if (activeTab === 'evenements') setShowEventModal(true);
+              }}>
+                <Plus size={18} /> NOUVEAU
+              </button>
+            </div>
+          )}
+        </header>
 
         {(activeTab === 'analyse' || activeTab === 'calendrier') ? (
-  <div className="content-body">
-    {/* On n'affiche les stats que sur l'onglet Analyse */}
-    {activeTab === 'analyse' && (
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div><span className="stat-label">Bénévoles Actifs</span><p className="stat-value">{benevoles.length}</p></div>
-          <UserCheck size={32} color="#ED1B24"/>
-        </div>
-        <div className="stat-card">
-          <div><span className="stat-label">Événements</span><p className="stat-value">{events.length}</p></div>
-          <Calendar size={32} color="#ED1B24"/>
-        </div>
-        <div className="stat-card">
-          <div><span className="stat-label">Total des Dons</span><p className="stat-value">45 200€</p></div>
-          <Wallet size={32} color="#ED1B24"/>
-        </div>
-        <div className="stat-card">
-          <div><span className="stat-label">Admin Bureau</span><p className="stat-value">6</p></div>
-          <ShieldCheck size={32} color="#ED1B24"/>
-        </div>
-      </div>
-    )}
-    
-
-    {/* CONTENEUR DYNAMIQUE */}
-
-    <div className={activeTab === 'analyse' ? "analysis-section" : ""}>
-  
-  <div className="card" style={{ 
-    width: '100%',
-    gridColumn: activeTab === 'calendrier' ? "span 2" : "auto",
-    padding: activeTab === 'calendrier' ? '25px' : '30px' 
-  }}>
-    
-    {/* Le titre "Analyse" n'apparaît QUE sur l'onglet analyse */}
-    {activeTab === 'analyse' && (
-      <div style={{display:'flex', justifyContent:'space-between', marginBottom:20}}>
-        <h3 style={{margin:0, fontWeight:900, display:'flex', alignItems:'center'}}>
-          <TrendingUp size={20} color="#ED1B24" style={{marginRight:10}}/> 
-          Analyse des Flux & Graphs
-        </h3>
-        <button style={{border:'none', background:'#F4F7F9', padding:'5px 15px', borderRadius:20, fontSize:10, fontWeight:'bold', cursor:'pointer'}}>
-          <FileText size={12} style={{marginRight:5}}/> EXPORT PDF
-        </button>
-      </div>
-      )}
-        
-        {/* Affichage du Calendrier Global */}
-        {activeTab === 'calendrier' ? (
-          <div className="calendar-wrapper" style={{ background: 'white', borderRadius: '12px' }}>
-
-            {/* NAVIGATION DU CALENDRIER */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <h4 style={{ margin: 0, fontSize: '18px', fontWeight: '800', textTransform: 'capitalize' }}>
-              {currentDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
-            </h4>
-            <div style={{ display: 'flex', gap: '5px' }}>
-              <button onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)))} style={{ padding: '5px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', cursor: 'pointer', background: 'white' }}> &lt; </button>
-              <button onClick={() => setCurrentDate(new Date())} style={{ padding: '5px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', cursor: 'pointer', background: 'white', fontSize: '11px' }}> Aujourd'hui </button>
-              <button onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))} style={{ padding: '5px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', cursor: 'pointer', background: 'white' }}> &gt; </button>
-            </div>
-          </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px' }}>
-              <div style={{ width: '8px', height: '8px', background: '#2B6CB0', borderRadius: '50%' }}></div> Mission
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px' }}>
-              <div style={{ width: '8px', height: '8px', background: '#D97706', borderRadius: '50%' }}></div> Événement
-            </div>
-          </div>
-        </div>
-
-            {/* GRILLE DYNAMIQUE GOOGLE CALENDAR */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', backgroundColor: '#E2E8F0', gap: '1px', border: '1px solid #E2E8F0', borderRadius: '12px', overflow: 'hidden' }}>
-          {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(d => (
-            <div key={d} style={{ background: '#F8FAFC', padding: '10px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: '#64748B' }}>{d}</div>
-          ))}
-
-          {(() => {
-            const year = currentDate.getFullYear();
-            const month = currentDate.getMonth();
-            const firstDay = new Date(year, month, 1).getDay();
-            const offset = firstDay === 0 ? 6 : firstDay - 1;
-            const days = [];
-
-            for (let i = 0; i < 42; i++) {
-              const d = new Date(year, month, i - offset + 1);
-              const dStr = d.toISOString().split('T')[0];
-              const isCur = d.getMonth() === month;
-
-              days.push(
-                <div key={i} style={{ minHeight: '100px', background: isCur ? 'white' : '#F1F5F9', padding: '5px', position: 'relative' }}>
-                  <span style={{ fontSize: '11px', fontWeight: '700', color: isCur ? '#4A5568' : '#CBD5E0' }}>{d.getDate()}</span>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '5px' }}>
-                    {events.filter(ev => dStr >= ev.dateDebut && dStr <= ev.dateFin).map(ev => {
-                      const isStart = dStr === ev.dateDebut;
-                      const isEnd = dStr === ev.dateFin;
-                      const tooltipText = `📌 ${(ev.type || 'Elément').toUpperCase()}\n🏷️ ${ev.titre}\n📍 ${ev.lieu || 'N/A'}\n📅 Du ${ev.dateDebut} au ${ev.dateFin}`;
-
-                        return (
-                          <div 
-                            key={ev.id} 
-                            onClick={() => openViewModal(ev)} 
-                            title={tooltipText}
-                            style={{ 
-                          fontSize: '9px', padding: '3px 6px', color: 'white', fontWeight: 'bold', cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', minHeight: '16px',
-                          background: ev.type === 'Mission' ? '#2B6CB0' : '#D97706',
-                          borderRadius: isStart ? '4px 0 0 4px' : isEnd ? '0 4px 4px 0' : '0',
-                          marginLeft: isStart ? '0' : '-9px',
-                          marginRight: isEnd ? '0' : '-9px',
-                          zIndex: 10, position: 'relative'
-                            }}
-                          >
-                            {(isStart || d.getDay() === 1) && ev.titre}
-                          </div>
-                        );
-                      })}
-                    </div>
-                    </div>
-                  );
-                }
-                return days;
-              })()}
-            </div>
-          </div>
-        ) : activeTab === 'analyse' ? (
-          <div className="placeholder-chart">
-            <p>Remontée des données PHP pour graphiques dynamiques</p>
-          </div>
-        ): null}
-  </div>
-              {activeTab === 'analyse' && (
-    <div className="card">
-      <h3 style={{margin:'0 0 20px 0', fontWeight:900}}>Derniers Donateurs</h3>
-      {[1, 2, 3, 4].map(i => (
-        <div key={i} className="activity-item">
-          <div style={{display:'flex', gap:10, alignItems:'center'}}>
-            <div className="avatar" style={{background:'#ED1B24'}}>D</div>
-            <span style={{fontSize:13, fontWeight:'bold'}}>Donateur #{i}</span>
-          </div>
-          <span style={{fontSize:12, fontWeight:'bold', color:'#48BB78'}}>+50€</span>
-        </div>
-                ))}
+          <div className="content-body">
+            {/* On n'affiche les stats que sur l'onglet Analyse */}
+            {activeTab === 'analyse' && (
+              <div className="stats-grid">
+                <div className="stat-card">
+                  <div><span className="stat-label">Bénévoles Actifs</span><p className="stat-value">{benevoles.length}</p></div>
+                  <UserCheck size={32} color="#ED1B24" />
+                </div>
+                <div className="stat-card">
+                  <div><span className="stat-label">Événements</span><p className="stat-value">{events.length}</p></div>
+                  <Calendar size={32} color="#ED1B24" />
+                </div>
+                <div className="stat-card">
+                  <div><span className="stat-label">Total des Dons</span><p className="stat-value">45 200€</p></div>
+                  <Wallet size={32} color="#ED1B24" />
+                </div>
+                <div className="stat-card">
+                  <div><span className="stat-label">Admin Bureau</span><p className="stat-value">6</p></div>
+                  <ShieldCheck size={32} color="#ED1B24" />
+                </div>
               </div>
+            )}
+
+
+            {/* CONTENEUR DYNAMIQUE */}
+
+            <div className={activeTab === 'analyse' ? "analysis-section" : ""}>
+
+              <div className="card" style={{
+                width: '100%',
+                gridColumn: activeTab === 'calendrier' ? "span 2" : "auto",
+                padding: activeTab === 'calendrier' ? '25px' : '30px'
+              }}>
+
+                {/* Le titre "Analyse" n'apparaît QUE sur l'onglet analyse */}
+                {activeTab === 'analyse' && (
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+                    <h3 style={{ margin: 0, fontWeight: 900, display: 'flex', alignItems: 'center' }}>
+                      <TrendingUp size={20} color="#ED1B24" style={{ marginRight: 10 }} />
+                      Analyse des Flux & Graphs
+                    </h3>
+                    <button style={{ border: 'none', background: '#F4F7F9', padding: '5px 15px', borderRadius: 20, fontSize: 10, fontWeight: 'bold', cursor: 'pointer' }}>
+                      <FileText size={12} style={{ marginRight: 5 }} /> EXPORT PDF
+                    </button>
+                  </div>
+                )}
+
+                {/* Affichage du Calendrier Global */}
+                {activeTab === 'calendrier' ? (
+                  <div className="calendar-wrapper" style={{ background: 'white', borderRadius: '12px' }}>
+
+                    {/* NAVIGATION DU CALENDRIER */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                        <h4 style={{ margin: 0, fontSize: '18px', fontWeight: '800', textTransform: 'capitalize' }}>
+                          {currentDate.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}
+                        </h4>
+                        <div style={{ display: 'flex', gap: '5px' }}>
+                          <button onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)))} style={{ padding: '5px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', cursor: 'pointer', background: 'white' }}> &lt; </button>
+                          <button onClick={() => setCurrentDate(new Date())} style={{ padding: '5px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', cursor: 'pointer', background: 'white', fontSize: '11px' }}> Aujourd'hui </button>
+                          <button onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))} style={{ padding: '5px 10px', borderRadius: '6px', border: '1px solid #E2E8F0', cursor: 'pointer', background: 'white' }}> &gt; </button>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '10px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px' }}>
+                          <div style={{ width: '8px', height: '8px', background: '#2B6CB0', borderRadius: '50%' }}></div> Mission
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px' }}>
+                          <div style={{ width: '8px', height: '8px', background: '#D97706', borderRadius: '50%' }}></div> Événement
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* GRILLE DYNAMIQUE GOOGLE CALENDAR */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', backgroundColor: '#E2E8F0', gap: '1px', border: '1px solid #E2E8F0', borderRadius: '12px', overflow: 'hidden' }}>
+                      {['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'].map(d => (
+                        <div key={d} style={{ background: '#F8FAFC', padding: '10px', textAlign: 'center', fontSize: '11px', fontWeight: 'bold', color: '#64748B' }}>{d}</div>
+                      ))}
+
+                      {(() => {
+                        const year = currentDate.getFullYear();
+                        const month = currentDate.getMonth();
+                        const firstDay = new Date(year, month, 1).getDay();
+                        const offset = firstDay === 0 ? 6 : firstDay - 1;
+                        const days = [];
+
+                        for (let i = 0; i < 42; i++) {
+                          const d = new Date(year, month, i - offset + 1);
+                          const dStr = d.toISOString().split('T')[0];
+                          const isCur = d.getMonth() === month;
+
+                          days.push(
+                            <div key={i} style={{ minHeight: '100px', background: isCur ? 'white' : '#F1F5F9', padding: '5px', position: 'relative' }}>
+                              <span style={{ fontSize: '11px', fontWeight: '700', color: isCur ? '#4A5568' : '#CBD5E0' }}>{d.getDate()}</span>
+                              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '5px' }}>
+                                {events.filter(ev => dStr >= ev.dateDebut && dStr <= ev.dateFin).map(ev => {
+                                  const isStart = dStr === ev.dateDebut;
+                                  const isEnd = dStr === ev.dateFin;
+                                  const tooltipText = `📌 ${(ev.type || 'Elément').toUpperCase()}\n🏷️ ${ev.titre}\n📍 ${ev.lieu || 'N/A'}\n📅 Du ${ev.dateDebut} au ${ev.dateFin}`;
+
+                                  return (
+                                    <div
+                                      key={ev.id}
+                                      onClick={() => openViewModal(ev)}
+                                      title={tooltipText}
+                                      style={{
+                                        fontSize: '9px', padding: '3px 6px', color: 'white', fontWeight: 'bold', cursor: 'pointer', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', minHeight: '16px',
+                                        background: ev.type === 'Mission' ? '#2B6CB0' : '#D97706',
+                                        borderRadius: isStart ? '4px 0 0 4px' : isEnd ? '0 4px 4px 0' : '0',
+                                        marginLeft: isStart ? '0' : '-9px',
+                                        marginRight: isEnd ? '0' : '-9px',
+                                        zIndex: 10, position: 'relative'
+                                      }}
+                                    >
+                                      {(isStart || d.getDay() === 1) && ev.titre}
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          );
+                        }
+                        return days;
+                      })()}
+                    </div>
+                  </div>
+                ) : activeTab === 'analyse' ? (
+                  <div className="placeholder-chart">
+                    <p>Remontée des données PHP pour graphiques dynamiques</p>
+                  </div>
+                ) : null}
+              </div>
+              {activeTab === 'analyse' && (
+                <div className="card">
+                  <h3 style={{ margin: '0 0 20px 0', fontWeight: 900 }}>Derniers Donateurs</h3>
+                  {[1, 2, 3, 4].map(i => (
+                    <div key={i} className="activity-item">
+                      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                        <div className="avatar" style={{ background: '#ED1B24' }}>D</div>
+                        <span style={{ fontSize: 13, fontWeight: 'bold' }}>Donateur #{i}</span>
+                      </div>
+                      <span style={{ fontSize: 12, fontWeight: 'bold', color: '#48BB78' }}>+50€</span>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
-            
+
           </div>
-) : activeTab === 'benevoles' ? (
-  <>
-    {activeTab === 'benevoles' && (
-      <div style={{ 
-        display: 'flex', 
-        gap: '12px', 
-        marginBottom: '20px', 
-        background: 'white', 
-        padding: '12px 20px', 
-        borderRadius: '16px',
-        boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
-        alignItems: 'center',
-        flexWrap: 'wrap'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#718096', fontSize: '13px', fontWeight: '600' }}>
-          <Search size={14} /> Filtres :
-        </div>
+        ) : activeTab === 'benevoles' ? (
+          <>
+            {activeTab === 'benevoles' && (
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                marginBottom: '20px',
+                background: 'white',
+                padding: '12px 20px',
+                borderRadius: '16px',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.03)',
+                alignItems: 'center',
+                flexWrap: 'wrap'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#718096', fontSize: '13px', fontWeight: '600' }}>
+                  <Search size={14} /> Filtres :
+                </div>
 
-        {/* SELECT VILLE */}
-        <select 
-          value={filterVille} 
-          onChange={(e) => setFilterVille(e.target.value)}
-          style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '13px', outline: 'none', cursor: 'pointer' }}
-        >
-          <option value="">Toutes les villes</option>
-          {[...new Set(benevoles.map(b => b.ville))].filter(Boolean).map(v => (
-            <option key={v} value={v}>{v}</option>
-          ))}
-        </select>
+                {/* SELECT VILLE */}
+                <select
+                  value={filterVille}
+                  onChange={(e) => setFilterVille(e.target.value)}
+                  style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '13px', outline: 'none', cursor: 'pointer' }}
+                >
+                  <option value="">Toutes les villes</option>
+                  {[...new Set(benevoles.map(b => b.ville))].filter(Boolean).map(v => (
+                    <option key={v} value={v}>{v}</option>
+                  ))}
+                </select>
 
-        {/* SELECT PROFESSION */}
-        <select 
-          value={filterProfession} 
-          onChange={(e) => setFilterProfession(e.target.value)}
-          style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '13px', outline: 'none', cursor: 'pointer' }}
-        >
-          <option value="">Toutes les professions</option>
-          {[...new Set(benevoles.map(b => b.profession))].filter(Boolean).map(p => (
-            <option key={p} value={p}>{p}</option>
-          ))}
-        </select>
+                {/* SELECT PROFESSION */}
+                <select
+                  value={filterProfession}
+                  onChange={(e) => setFilterProfession(e.target.value)}
+                  style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '13px', outline: 'none', cursor: 'pointer' }}
+                >
+                  <option value="">Toutes les professions</option>
+                  {[...new Set(benevoles.map(b => b.profession))].filter(Boolean).map(p => (
+                    <option key={p} value={p}>{p}</option>
+                  ))}
+                </select>
 
-        {/* SELECT DISPO */}
-        <select 
-          value={filterDispo} 
-          onChange={(e) => setFilterDispo(e.target.value)}
-          style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '13px', outline: 'none', cursor: 'pointer' }}
-        >
-          <option value="">Toutes les dispos</option>
-          <option value="Semaine">Semaine</option>
-          <option value="Weekend">Weekend</option>
-          <option value="Libre">Libre</option>
-        </select>
+                {/* SELECT DISPO */}
+                <select
+                  value={filterDispo}
+                  onChange={(e) => setFilterDispo(e.target.value)}
+                  style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '13px', outline: 'none', cursor: 'pointer' }}
+                >
+                  <option value="">Toutes les dispos</option>
+                  <option value="Semaine">Semaine</option>
+                  <option value="Weekend">Weekend</option>
+                  <option value="Libre">Libre</option>
+                </select>
 
-        {/* BOUTON RÉINITIALISER */}
-        {(filterVille || filterProfession || filterDispo) && (
-          <button 
-            onClick={() => { setFilterVille(""); setFilterProfession(""); setFilterDispo(""); }}
-            style={{ background: 'none', border: 'none', color: '#ED1B24', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', padding: '0 10px' }}
-          >
-            Réinitialiser
-          </button>
-        )}
-      </div>
-    )}
+                {/* BOUTON RÉINITIALISER */}
+                {(filterVille || filterProfession || filterDispo) && (
+                  <button
+                    onClick={() => { setFilterVille(""); setFilterProfession(""); setFilterDispo(""); }}
+                    style={{ background: 'none', border: 'none', color: '#ED1B24', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer', padding: '0 10px' }}
+                  >
+                    Réinitialiser
+                  </button>
+                )}
+              </div>
+            )}
             <div className="table-container">
               <table>
                 <thead>
@@ -1163,15 +1176,15 @@ const toolbarButtonStyle = {
                     <tr key={b.id}>
                       <td className="clickable-name" onClick={() => openViewModal(b)}>{b.nom} {b.prenom}</td>
                       <td>
-                        <div style={{fontSize:13}}>{b.email}</div>
-                        <div style={{fontSize:11, color:'#A0AEC0'}}>{b.telephone}</div>
+                        <div style={{ fontSize: 13 }}>{b.email}</div>
+                        <div style={{ fontSize: 11, color: '#A0AEC0' }}>{b.telephone}</div>
                       </td>
                       <td>{b.ville}</td>
                       <td><span className={`status-badge status-${b.status}`}>{b.cotisation}</span></td>
                       <td>
-                        <div style={{display:'flex', gap:10}}>
-                          <Edit size={16} onClick={() => openEdit(b)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
-                          <Trash2 size={16} onClick={() => handleDelete(b.id)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
+                        <div style={{ display: 'flex', gap: 10 }}>
+                          <Edit size={16} onClick={() => openEdit(b)} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+                          <Trash2 size={16} onClick={() => handleDelete(b.id, 'benevoles')} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
                         </div>
                       </td>
                     </tr>
@@ -1199,13 +1212,13 @@ const toolbarButtonStyle = {
                   <tr key={ev.id}>
                     <td>{/* BADGE DYNAMIQUE */}
                       <span style={{
-                        flexShrink: 0, 
+                        flexShrink: 0,
                         padding: '2px 8px',
                         borderRadius: '12px',
                         fontSize: '10px',
                         fontWeight: 'bold',
                         textTransform: 'uppercase',
-                        background: ev.type === 'Mission' ? '#DEF7EC' : '#E1EFFE', 
+                        background: ev.type === 'Mission' ? '#DEF7EC' : '#E1EFFE',
                         color: ev.type === 'Mission' ? '#03543F' : '#1E429F',
                         border: `1px solid ${ev.type === 'Mission' ? '#84E1BC' : '#A4CAFE'}`,
                         display: 'inline-flex',
@@ -1215,10 +1228,10 @@ const toolbarButtonStyle = {
                       }}>
                         {ev.type ? ev.type.toUpperCase() : 'ÉVÉNEMENT'}
                       </span></td>
-                    <td style= {{minWidth: '205px'}}>
+                    <td style={{ minWidth: '205px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%' }}></div>
-                      <span 
-                        className="clickable-name" onClick={() => openViewModal(ev)} style={{ fontWeight: '600', fontSize: '14px', color: '#1A1C23',cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1, marginLeft: '10px' }}
+                      <span
+                        className="clickable-name" onClick={() => openViewModal(ev)} style={{ fontWeight: '600', fontSize: '14px', color: '#1A1C23', cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', flexGrow: 1, marginLeft: '10px' }}
                       >{ev.titre || "Sans titre"}
                       </span>
                     </td>
@@ -1226,9 +1239,9 @@ const toolbarButtonStyle = {
                     <td>{ev.lieu}</td>
                     <td>{ev.budget} €</td>
                     <td>
-                      <div style={{display:'flex', gap:10}}>
-                        <Edit size={16} onClick={() => openEdit(ev)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
-                        <Trash2 size={16} onClick={() => handleDelete(ev.id)} style={{cursor:'pointer', color:'#A0AEC0'}}/>
+                      <div style={{ display: 'flex', gap: 10 }}>
+                        <Edit size={16} onClick={() => openEdit(ev)} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+                        <Trash2 size={16} onClick={() => handleDelete(ev.id, 'evenements')} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
                       </div>
                     </td>
                   </tr>
@@ -1236,453 +1249,457 @@ const toolbarButtonStyle = {
               </tbody>
             </table>
           </div>
-        ) 
-        : activeTab !== 'analyse' && activeTab !== 'calendrier' && activeTab !== 'benevoles' && activeTab !== 'evenements' && activeTab !== 'partenaires' && activeTab !== 'communication'&& activeTab !== 'communication-articles' && activeTab !== 'communication-newsletters' &&(
-        <div className="placeholder-chart" style={{ height: 500 }}>
-        <p>Interface de gestion pour le module {activeTab}<br/>Utilisez la recherche pour filtrer les résultats.</p>
-  </div>
-)}
+        )
+          : activeTab !== 'analyse' && activeTab !== 'calendrier' && activeTab !== 'benevoles' && activeTab !== 'evenements' && activeTab !== 'partenaires' && activeTab !== 'communication' && activeTab !== 'communication-articles' && activeTab !== 'communication-newsletters' && (
+            <div className="placeholder-chart" style={{ height: 500 }}>
+              <p>Interface de gestion pour le module {activeTab}<br />Utilisez la recherche pour filtrer les résultats.</p>
+            </div>
+          )}
 
         {activeTab === 'partenaires' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '25px', marginTop: '-20px' }}>
-    
-    {/* BLOC 1 : PARTENAIRES (ENTREPRISES) */}
-    <div className="card">
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-        <h3 style={{ margin: 0, fontWeight: 900, display: 'flex', alignItems: 'center' }}>
-          <Handshake size={20} color="#ED1B24" style={{ marginRight: 10 }} /> Partenaires Entreprises
-        </h3>
-        <div style={{ display: 'flex', gap: '15px' }}>
-          {/* Barre de recherche locale pour les entreprises */}
-          <div className="search-box">
-            <Search style={{position:'absolute', left:12, top:10, color:'#A0AEC0'}} size={16}/>
-            <input 
-              type="text" 
-              className="search-input" 
-              style={{ width: '200px', padding: '8px 12px 8px 35px' }}
-              placeholder="Rechercher entreprise..." 
-              value={searchQuery} 
-              onChange={(e) => setSearchQuery(e.target.value)} 
-            />
-          </div>
-        <button className="btn-add" onClick={() => { setFormEntreprise({ nom: '', contact: '', email: '', telephone: '' }); 
-            setIsEditing(false); setShowEntrepriseModal(true); }}>
-          <Plus size={16}/> NOUVELLE ENTREPRISE
-        </button>
-      </div>
-      </div>
-      <div className="table-container" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-        <table>
-          <thead>
-            <tr>
-              <th>Nom de l'entreprise</th>
-              <th>Contact (Nom & Prénom)</th>
-              <th>Email / Tel</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {partenaires.filter(p => p.nom.toLowerCase().includes(searchQuery.toLowerCase())).map(p => (
-              <tr key={p.id}>
-              <td className="clickable-name" onClick={() => openViewModal({...p, viewType: 'entreprise'})}>{p.nom}</td>
-                <td>{p.contact}</td>
-                <td><div style={{fontSize:'12px'}}>{p.email}</div><div style={{fontSize:'10px', color:'#718096'}}>{p.telephone}</div></td>
-                <td>
-                  <div style={{ display: 'flex', gap: 10 }}>
-                    <Edit size={16} onClick={() => { setFormEntreprise(p); setIsEditing(true); setCurrentId(p.id); setShowEntrepriseModal(true); }} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
-                    <Trash2 size={16} onClick={() => setPartenaires(partenaires.filter(x => x.id !== p.id))} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+
+            {/* BLOC 1 : PARTENAIRES (ENTREPRISES) */}
+            <div className="card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                <h3 style={{ margin: 0, fontWeight: 900, display: 'flex', alignItems: 'center' }}>
+                  <Handshake size={20} color="#ED1B24" style={{ marginRight: 10 }} /> Partenaires Entreprises
+                </h3>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                  {/* Barre de recherche locale pour les entreprises */}
+                  <div className="search-box">
+                    <Search style={{ position: 'absolute', left: 12, top: 10, color: '#A0AEC0' }} size={16} />
+                    <input
+                      type="text"
+                      className="search-input"
+                      style={{ width: '200px', padding: '8px 12px 8px 35px' }}
+                      placeholder="Rechercher entreprise..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                   </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+                  <button className="btn-add" onClick={() => {
+                    setFormEntreprise({ nom: '', contact: '', email: '', telephone: '' });
+                    setIsEditing(false); setShowEntrepriseModal(true);
+                  }}>
+                    <Plus size={16} /> NOUVELLE ENTREPRISE
+                  </button>
+                </div>
+              </div>
+              <div className="table-container" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nom de l'entreprise</th>
+                      <th>Contact (Nom & Prénom)</th>
+                      <th>Email / Tel</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {partenaires.filter(p => p.nom.toLowerCase().includes(searchQuery.toLowerCase())).map(p => (
+                      <tr key={p.id}>
+                        <td className="clickable-name" onClick={() => openViewModal({ ...p, viewType: 'entreprise' })}>{p.nom}</td>
+                        <td>{p.contact}</td>
+                        <td><div style={{ fontSize: '12px' }}>{p.email}</div><div style={{ fontSize: '10px', color: '#718096' }}>{p.telephone}</div></td>
+                        <td>
+                          <div style={{ display: 'flex', gap: 10 }}>
+                            <Edit size={16} onClick={() => { setFormEntreprise(p); setIsEditing(true); setCurrentId(p.id); setShowEntrepriseModal(true); }} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+                            <Trash2 size={16} onClick={() => handleDelete(p.id, 'entreprises')} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-    {/* BLOC 2 : SUBVENTIONS */}
-    <div className="card">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h3 style={{ margin: 0, fontWeight: 900, display: 'flex', alignItems: 'center' }}>
-          <FileText size={20} color="#ED1B24" style={{ marginRight: 10 }} /> Subventions
-        </h3>
-        <div style={{ display: 'flex', gap: '15px' }}>
-          {/* Barre de recherche locale pour les subventions */}
-          <div className="search-box">
-            <Search style={{position:'absolute', left:12, top:10, color:'#A0AEC0'}} size={16}/>
-            <input 
-              type="text" 
-              className="search-input" 
-              style={{ width: '200px', padding: '8px 12px 8px 35px' }}
-              placeholder="Rechercher aide..." 
-              value={searchQuery} 
-              onChange={(e) => setSearchQuery(e.target.value)} 
-            />
-          </div>
-        <button className="btn-add" onClick={() => { setFormSubvention({ nom: '', organisme: '', montant: '', status: 'Reçue' }); 
-            setIsEditing(false); setShowSubventionModal(true); }}>
-          <Plus size={16}/> NOUVELLE SUBVENTION
-        </button>
-      </div>
-      </div>
-      <div className="table-container" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-        <table>
-          <thead>
-            <tr>
-              <th>Nom Subvention</th>
-              <th>Organisme</th>
-              <th>Montant</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {subventions.filter(s => s.nom.toLowerCase().includes(searchQuery.toLowerCase())).map(s => (
-              <tr key={s.id}>
-                <td className="clickable-name" onClick={() => openViewModal({...s, viewType: 'subvention'})}>{s.nom}</td>
-                <td>{s.organisme}</td>
-                <td style={{ fontWeight: 'bold', color: '#03543F' }}>{s.montant} €</td>
-                <td>
-                  <div style={{ display: 'flex', gap: 10 }}>
-                    <Edit size={16} onClick={() => { setFormSubvention(s); setIsEditing(true); setCurrentId(s.id); setShowSubventionModal(true); }} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
-                    <Trash2 size={16} onClick={() => setSubventions(subventions.filter(x => x.id !== s.id))} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+            {/* BLOC 2 : SUBVENTIONS */}
+            <div className="card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h3 style={{ margin: 0, fontWeight: 900, display: 'flex', alignItems: 'center' }}>
+                  <FileText size={20} color="#ED1B24" style={{ marginRight: 10 }} /> Subventions
+                </h3>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                  {/* Barre de recherche locale pour les subventions */}
+                  <div className="search-box">
+                    <Search style={{ position: 'absolute', left: 12, top: 10, color: '#A0AEC0' }} size={16} />
+                    <input
+                      type="text"
+                      className="search-input"
+                      style={{ width: '200px', padding: '8px 12px 8px 35px' }}
+                      placeholder="Rechercher aide..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                   </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    {/* MODALE ENTREPRISE */}
-{showEntrepriseModal && (
-  <div className="modal-overlay">
-    <div className="modal-card">
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
-        <h2 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>{isEditing ? "Modifier" : "Ajouter"} une Entreprise</h2>
-        <X onClick={() => setShowEntrepriseModal(false)} style={{ cursor: 'pointer', color: '#6B7280' }} />
-      </div>
-      <form onSubmit={handleEntrepriseSubmit}>
-        <div className="form-group"><label>Nom Entreprise *</label>
-          <input type="text" required value={formEntreprise.nom} onChange={e => setFormEntreprise({...formEntreprise, nom: e.target.value})} />
-        </div>
-        <div className="form-group"><label>Contact (Nom & Prenom)</label>
-          <input type="text" value={formEntreprise.contact} onChange={e => setFormEntreprise({...formEntreprise, contact: e.target.value})} />
-        </div>
-        <div className="form-row">
-          <div className="form-group"><label>Email</label><input type="email" value={formEntreprise.email} onChange={e => setFormEntreprise({...formEntreprise, email: e.target.value})} /></div>
-          <div className="form-group"><label>Tel</label><input type="text" value={formEntreprise.telephone} onChange={e => setFormEntreprise({...formEntreprise, telephone: e.target.value})} /></div>
-        </div>
-        <div className="btn-container"><button type="submit" className="btn-save">Enregistrer</button></div>
-      </form>
-    </div>
-  </div>
-)}
-
-{/* MODALE SUBVENTION */}
-{showSubventionModal && (
-  <div className="modal-overlay">
-    <div className="modal-card">
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
-        <h2 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>{isEditing ? "Modifier" : "Ajouter"} une Subvention</h2>
-        <X onClick={() => setShowSubventionModal(false)} style={{ cursor: 'pointer', color: '#6B7280' }} />
-      </div>
-      <form onSubmit={handleSubventionSubmit}>
-        <div className="form-group"><label>Nom de l'aide *</label>
-          <input type="text" required value={formSubvention.nom} onChange={e => setFormSubvention({...formSubvention, nom: e.target.value})} />
-        </div>
-        <div className="form-row">
-          <div className="form-group"><label>Organisme</label><input type="text" value={formSubvention.organisme} onChange={e => setFormSubvention({...formSubvention, organisme: e.target.value})} /></div>
-          <div className="form-group"><label>Montant (€)</label><input type="number" value={formSubvention.montant} onChange={e => setFormSubvention({...formSubvention, montant: e.target.value})} /></div>
-        </div>
-        <div className="btn-container"><button type="submit" className="btn-save">Enregistrer</button></div>
-      </form>
-    </div>
-  </div>
-)}
-
-{/* MODALE DE CONSULTATION DÉDIÉE (ENTREPRISE VS SUBVENTION) */}
-{showViewModal && selectedItem && (
-  <div className="modal-overlay">
-    <div className="modal-card view-modal">
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 25 }}>
-        <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
-          {selectedItem.viewType === 'entreprise' ? (
-            <><Handshake color="#ED1B24" /> Fiche Entreprise</>
-          ) : (
-            <><FileText color="#ED1B24" /> Détails Subvention</>
-          )}
-        </h2>
-        <X onClick={() => setShowViewModal(false)} style={{ cursor: 'pointer' }} />
-      </div>
-
-      <div className="view-content" style={{ display: 'grid', gap: '20px' }}>
-        {/* EN-TÊTE COMMUN MAIS ADAPTÉ */}
-        <div style={{ background: '#F8FAFC', padding: '15px', borderRadius: '8px', borderLeft: '4px solid #ED1B24' }}>
-          <label style={{ fontSize: '11px', color: '#718096', textTransform: 'uppercase' }}>
-            {selectedItem.viewType === 'entreprise' ? "Nom Entreprise" : "Nom de l'aide"}
-          </label>
-          <div style={{ fontSize: '20px', fontWeight: '800' }}>{selectedItem.nom}</div>
-        </div>
-
-        {/* AFFICHAGE CONDITIONNEL SELON TES SCREENS */}
-        {selectedItem.viewType === 'entreprise' ? (
-          /* CONTENU SCREEN 1 : ENTREPRISE */
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-            <div className="info-box" style={{ gridColumn: 'span 2' }}>
-              <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Contact (Nom & Prénom)</label>
-              <p style={{ margin: '5px 0 0 0', fontWeight: '600' }}>{selectedItem.contact || 'Non renseigné'}</p>
+                  <button className="btn-add" onClick={() => {
+                    setFormSubvention({ nom: '', organisme: '', montant: '', status: 'Reçue' });
+                    setIsEditing(false); setShowSubventionModal(true);
+                  }}>
+                    <Plus size={16} /> NOUVELLE SUBVENTION
+                  </button>
+                </div>
+              </div>
+              <div className="table-container" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nom Subvention</th>
+                      <th>Organisme</th>
+                      <th>Montant</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {subventions.filter(s => s.nom.toLowerCase().includes(searchQuery.toLowerCase())).map(s => (
+                      <tr key={s.id}>
+                        <td className="clickable-name" onClick={() => openViewModal({ ...s, viewType: 'subvention' })}>{s.nom}</td>
+                        <td>{s.organisme}</td>
+                        <td style={{ fontWeight: 'bold', color: '#03543F' }}>{s.montant} €</td>
+                        <td>
+                          <div style={{ display: 'flex', gap: 10 }}>
+                            <Edit size={16} onClick={() => { setFormSubvention(s); setIsEditing(true); setCurrentId(s.id); setShowSubventionModal(true); }} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+                            <Trash2 size={16} onClick={() => handleDelete(s.id, 'subventions')} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div className="info-box">
-              <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Email</label>
-              <p style={{ margin: '5px 0 0 0', fontWeight: '600' }}>{selectedItem.email || 'Non renseigné'}</p>
-            </div>
-            <div className="info-box">
-              <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Tel</label>
-              <p style={{ margin: '5px 0 0 0', fontWeight: '600' }}>{selectedItem.telephone || 'Non renseigné'}</p>
-            </div>
-          </div>
-        ) : (
-          /* CONTENU SCREEN 2 : SUBVENTION */
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
-            <div className="info-box">
-              <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Organisme</label>
-              <p style={{ margin: '5px 0 0 0', fontWeight: '600' }}>{selectedItem.organisme || 'Non renseigné'}</p>
-            </div>
-            <div className="info-box">
-              <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Montant (€)</label>
-              <p style={{ margin: '5px 0 0 0', color: '#2F855A', fontWeight: '800', fontSize: '18px' }}>
-                {selectedItem.montant} €
+
+            {/* MODALE ENTREPRISE */}
+            {showEntrepriseModal && (
+              <div className="modal-overlay">
+                <div className="modal-card">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+                    <h2 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>{isEditing ? "Modifier" : "Ajouter"} une Entreprise</h2>
+                    <X onClick={() => setShowEntrepriseModal(false)} style={{ cursor: 'pointer', color: '#6B7280' }} />
+                  </div>
+                  <form onSubmit={handleEntrepriseSubmit}>
+                    <div className="form-group"><label>Nom Entreprise *</label>
+                      <input type="text" required value={formEntreprise.nom} onChange={e => setFormEntreprise({ ...formEntreprise, nom: e.target.value })} />
+                    </div>
+                    <div className="form-group"><label>Contact (Nom & Prenom)</label>
+                      <input type="text" value={formEntreprise.contact} onChange={e => setFormEntreprise({ ...formEntreprise, contact: e.target.value })} />
+                    </div>
+                    <div className="form-row">
+                      <div className="form-group"><label>Email</label><input type="email" value={formEntreprise.email} onChange={e => setFormEntreprise({ ...formEntreprise, email: e.target.value })} /></div>
+                      <div className="form-group"><label>Tel</label><input type="text" value={formEntreprise.telephone} onChange={e => setFormEntreprise({ ...formEntreprise, telephone: e.target.value })} /></div>
+                    </div>
+                    <div className="btn-container"><button type="submit" className="btn-save">Enregistrer</button></div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {/* MODALE SUBVENTION */}
+            {showSubventionModal && (
+              <div className="modal-overlay">
+                <div className="modal-card">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+                    <h2 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>{isEditing ? "Modifier" : "Ajouter"} une Subvention</h2>
+                    <X onClick={() => setShowSubventionModal(false)} style={{ cursor: 'pointer', color: '#6B7280' }} />
+                  </div>
+                  <form onSubmit={handleSubventionSubmit}>
+                    <div className="form-group"><label>Nom de l'aide *</label>
+                      <input type="text" required value={formSubvention.nom} onChange={e => setFormSubvention({ ...formSubvention, nom: e.target.value })} />
+                    </div>
+                    <div className="form-row">
+                      <div className="form-group"><label>Organisme</label><input type="text" value={formSubvention.organisme} onChange={e => setFormSubvention({ ...formSubvention, organisme: e.target.value })} /></div>
+                      <div className="form-group"><label>Montant (€)</label><input type="number" value={formSubvention.montant} onChange={e => setFormSubvention({ ...formSubvention, montant: e.target.value })} /></div>
+                    </div>
+                    <div className="btn-container"><button type="submit" className="btn-save">Enregistrer</button></div>
+                  </form>
+                </div>
+              </div>
+            )}
+
+            {/* MODALE DE CONSULTATION DÉDIÉE (ENTREPRISE VS SUBVENTION) */}
+            {showViewModal && selectedItem && (
+              <div className="modal-overlay">
+                <div className="modal-card view-modal">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 25 }}>
+                    <h2 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: 10 }}>
+                      {selectedItem.viewType === 'entreprise' ? (
+                        <><Handshake color="#ED1B24" /> Fiche Entreprise</>
+                      ) : (
+                        <><FileText color="#ED1B24" /> Détails Subvention</>
+                      )}
+                    </h2>
+                    <X onClick={() => setShowViewModal(false)} style={{ cursor: 'pointer' }} />
+                  </div>
+
+                  <div className="view-content" style={{ display: 'grid', gap: '20px' }}>
+                    {/* EN-TÊTE COMMUN MAIS ADAPTÉ */}
+                    <div style={{ background: '#F8FAFC', padding: '15px', borderRadius: '8px', borderLeft: '4px solid #ED1B24' }}>
+                      <label style={{ fontSize: '11px', color: '#718096', textTransform: 'uppercase' }}>
+                        {selectedItem.viewType === 'entreprise' ? "Nom Entreprise" : "Nom de l'aide"}
+                      </label>
+                      <div style={{ fontSize: '20px', fontWeight: '800' }}>{selectedItem.nom}</div>
+                    </div>
+
+                    {/* AFFICHAGE CONDITIONNEL SELON TES SCREENS */}
+                    {selectedItem.viewType === 'entreprise' ? (
+                      /* CONTENU SCREEN 1 : ENTREPRISE */
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                        <div className="info-box" style={{ gridColumn: 'span 2' }}>
+                          <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Contact (Nom & Prénom)</label>
+                          <p style={{ margin: '5px 0 0 0', fontWeight: '600' }}>{selectedItem.contact || 'Non renseigné'}</p>
+                        </div>
+                        <div className="info-box">
+                          <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Email</label>
+                          <p style={{ margin: '5px 0 0 0', fontWeight: '600' }}>{selectedItem.email || 'Non renseigné'}</p>
+                        </div>
+                        <div className="info-box">
+                          <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Tel</label>
+                          <p style={{ margin: '5px 0 0 0', fontWeight: '600' }}>{selectedItem.telephone || 'Non renseigné'}</p>
+                        </div>
+                      </div>
+                    ) : (
+                      /* CONTENU SCREEN 2 : SUBVENTION */
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                        <div className="info-box">
+                          <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Organisme</label>
+                          <p style={{ margin: '5px 0 0 0', fontWeight: '600' }}>{selectedItem.organisme || 'Non renseigné'}</p>
+                        </div>
+                        <div className="info-box">
+                          <label style={{ fontSize: '11px', color: '#718096', fontWeight: 'bold' }}>Montant (€)</label>
+                          <p style={{ margin: '5px 0 0 0', color: '#2F855A', fontWeight: '800', fontSize: '18px' }}>
+                            {selectedItem.montant} €
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* MODALE DÉDIÉE DONATEURS AVEC DONOR NUMBER ET DATE */}
+                    {showViewModal && selectedItem && selectedItem.viewType === 'donateur' && (
+                      <div className="modal-overlay">
+                        <div className="modal-card">
+                          <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #EEE', paddingBottom: 15, marginBottom: 20 }}>
+                            <div>
+                              <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1A1C23', margin: 0 }}>
+                                Fiche Donateur : {selectedItem.civilite} {selectedItem.prenom} {selectedItem.nom}
+                              </h2>
+                              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '5px' }}>
+                                <span style={{
+                                  fontSize: '11px',
+                                  background: '#E2E8F0',
+                                  color: '#4A5568',
+                                  padding: '2px 8px',
+                                  borderRadius: '12px',
+                                  fontWeight: 'bold'
+                                }}>
+                                  ID REF : {selectedItem.donor_number || 'Génération...'}
+                                </span>
+                                <span style={{ fontSize: '12px', color: '#718096' }}>
+                                  Don effectué le : <strong>{selectedItem.date_don || "Date inconnue"}</strong>
+                                </span>
+                              </div>
+                            </div>
+                            <X onClick={() => setShowViewModal(false)} style={{ cursor: 'pointer', color: '#6B7280' }} />
+                          </div>
+
+                          <div className="info-grid">
+                            {/* Ligne Date et ID */}
+                            <div className="info-item" style={{ borderLeft: '4px solid #ED1B24' }}>
+                              <div className="info-label">Date & Heure du don</div>
+                              <div className="info-value" style={{ color: '#1A1C23', fontWeight: 'bold' }}>
+                                {selectedItem.date_don || "Non spécifiée"}
+                              </div>
+                            </div>
+
+                            <div className="info-item">
+                              <div className="info-label">Numéro Donateur (SQL)</div>
+                              <div className="info-value" style={{ fontWeight: 'bold' }}>{selectedItem.donor_number || "Automatique"}</div>
+                            </div>
+
+                            <div className="info-item" style={{ background: '#F0FFF4', borderColor: '#68D391' }}>
+                              <div className="info-label" style={{ color: '#2F855A' }}>Montant & Fréquence</div>
+                              <div className="info-value" style={{ color: '#2F855A', fontWeight: 'bold' }}>
+                                {selectedItem.montant} € ({selectedItem.frequence === 'monthly' ? 'Mensuel' : 'Ponctuel'})
+                              </div>
+                            </div>
+
+                            <div className="info-item">
+                              <div className="info-label">Moyen de Paiement</div>
+                              <div className="info-value" style={{ textTransform: 'uppercase' }}>{selectedItem.moyen_paiement}</div>
+                            </div>
+
+                            <div className="info-item full-width">
+                              <div className="info-label">Adresse de facturation</div>
+                              <div className="info-value">
+                                {selectedItem.adresse} {selectedItem.complement_adresse && `- ${selectedItem.complement_adresse}`}<br />
+                                {selectedItem.code_postal} {selectedItem.ville} ({selectedItem.pays})
+                              </div>
+                            </div>
+
+                            <div className="info-item">
+                              <div className="info-label">Email de contact</div>
+                              <div className="info-value">{selectedItem.email}</div>
+                            </div>
+
+                            <div className="info-item">
+                              <div className="info-label">Téléphone</div>
+                              <div className="info-value">{selectedItem.telephone || "N/A"}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {/* BOUTON MODIFIER EN BAS À DROITE */}
+                    <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'flex-end' }}>
+                      <button className="btn-secondary" onClick={() => {
+                        setShowViewModal(false);
+                        if (selectedItem.viewType === 'entreprise') {
+                          setFormEntreprise(selectedItem);
+                          setShowEntrepriseModal(true);
+                        } else {
+                          setFormSubvention(selectedItem);
+                          setShowSubventionModal(true);
+                        }
+                        setIsEditing(true);
+                        setCurrentId(selectedItem.id);
+                      }}>
+                        <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER LA FICHE
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h3 style={{ margin: 0, fontWeight: 900 }}>Historique des Donateurs</h3>
+
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  {/* BOUTON EXPORT CSV */}
+                  <button
+                    onClick={exportToCSV}
+                    style={{
+                      background: '#F4F7F9', border: '1px solid #E2E8F0', padding: '8px 15px',
+                      borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '8px'
+                    }}
+                  >
+                    <FileText size={14} /> EXPORTER CSV
+                  </button>
+
+                  {/* BOUTON FILTRE MONTANT */}
+                  <button
+                    onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
+                    style={{
+                      background: '#ED1B24', color: 'white', border: 'none', padding: '8px 15px',
+                      borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '8px'
+                    }}
+                  >
+                    <TrendingUp size={14} style={{ transform: sortOrder === 'asc' ? 'rotate(180deg)' : 'none' }} />
+                    TRIER PAR MONTANT ({sortOrder === 'desc' ? 'MAX' : 'MIN'})
+                  </button>
+                </div>
+              </div>
+
+              <p style={{ fontSize: '12px', color: '#718096', marginBottom: '15px' }}>
+                Suivi des contributions pour les bilans financiers et rapports à la mairie.
               </p>
+
+              {/* UTILISATION DES DONNÉES TRIÉES */}
+              {sortedDonateurs.map((donateur) => (
+                <div key={donateur.id} className="activity-item">
+                  <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                    <div className="avatar" style={{ background: '#ED1B24' }}>D</div>
+                    <div>
+                      <span style={{ fontSize: 13, fontWeight: 'bold' }}>{donateur.prenom} {donateur.nom}</span>
+                      <div style={{ fontSize: 11, color: '#718096' }}>Don de {donateur.montant}€ - {donateur.date_don}</div>
+                    </div>
+                  </div>
+                  <button
+                    className="btn-details"
+                    onClick={() => openViewModal(donateur)}
+                    style={{ background: '#F4F7F9', border: 'none', padding: '5px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}
+                  >
+                    DÉTAILS
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         )}
-        
-{/* MODALE DÉDIÉE DONATEURS AVEC DONOR NUMBER ET DATE */}
-{showViewModal && selectedItem && selectedItem.viewType === 'donateur' && (
-  <div className="modal-overlay">
-    <div className="modal-card">
-      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #EEE', paddingBottom: 15, marginBottom: 20 }}>
-        <div>
-          <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1A1C23', margin: 0 }}>
-            Fiche Donateur : {selectedItem.civilite} {selectedItem.prenom} {selectedItem.nom}
-          </h2>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '5px' }}>
-            <span style={{ 
-              fontSize: '11px', 
-              background: '#E2E8F0', 
-              color: '#4A5568', 
-              padding: '2px 8px', 
-              borderRadius: '12px', 
-              fontWeight: 'bold'
-            }}>
-              ID REF : {selectedItem.donor_number || 'Génération...'}
-            </span>
-            <span style={{ fontSize: '12px', color: '#718096' }}>
-              Don effectué le : <strong>{selectedItem.date_don || "Date inconnue"}</strong>
-            </span>
+        {/* LIGNE 1584: FIN DU BLOC PRÉCÉDENT */}
+
+        {activeTab === 'communication-articles' && (
+          <div className="card" style={{ marginTop: '-20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 25, borderBottom: '1px solid #EEE', paddingBottom: 15 }}>
+              <FileText color="#ED1B24" />
+              <h3 style={{ margin: 0, fontWeight: 900 }}>Créer un nouvel article</h3>
+            </div>
+
+            <form style={{ display: 'grid', gap: '20px' }}>
+              <div className="form-group">
+                <label style={{ fontWeight: 'bold' }}>Titre de l'article *</label>
+                <input type="text" placeholder="Entrez le titre de l'article..." required />
+                <span style={{ fontSize: '11px', color: '#718096' }}>Maximum 200 caractères</span>
+              </div>
+
+              <div className="form-group">
+                <label style={{ fontWeight: 'bold' }}>Image de l'article *</label>
+                <input type="file" accept="image/*" style={{ padding: '8px', fontSize: '12px' }} required />
+                <span style={{ fontSize: '11px', color: '#718096' }}>Sélectionnez un fichier (jpg, png, gif)</span>
+              </div>
+
+              <div className="form-group">
+                <label style={{ fontWeight: 'bold' }}>Contributeurs</label>
+                <input type="text" placeholder="Prénom1, Prénom2..." />
+                <span style={{ fontSize: '11px', color: '#718096' }}>Séparez les prénoms par des virgules.</span>
+              </div>
+
+              <div className="form-group">
+                <label style={{ fontWeight: 'bold' }}>Contenu de l'article *</label>
+                {/* Barre d'outils opérationnelle */}
+                <div style={{ background: '#F8FAFC', border: '1px solid #D1D5DB', borderBottom: 'none', padding: '10px', borderRadius: '6px 6px 0 0', display: 'flex', gap: '15px' }}>
+                  <button type="button" onClick={() => applyFormat('**')} style={toolbarButtonStyle}><strong>B</strong></button>
+                  <button type="button" onClick={() => applyFormat('*')} style={toolbarButtonStyle}><em>I</em></button>
+                  <button type="button" onClick={() => applyFormat('__')} style={toolbarButtonStyle}><u>U</u></button>
+                  <div style={{ width: '1px', background: '#D1D5DB' }}></div>
+                  <button type="button" style={toolbarButtonStyle}><Plus size={16} /></button>
+                </div>
+                <textarea
+                  id="article-content"
+                  placeholder="Rédigez le contenu de votre article..."
+                  style={{ height: '300px', borderRadius: '0 0 6px 6px', borderTop: 'none', padding: '15px' }}
+                  required
+                ></textarea>
+              </div>
+
+              {/* BOUTONS D'ACTION (DA SCREEN 16.59.17) */}
+              <div style={{ display: 'flex', gap: '15px', marginTop: '20px' }}>
+                <button type="submit" className="btn-save" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Package size={18} /> Publier l'article
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => window.open('/preview-article', '_blank')}
+                  style={{ background: '#6366F1', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
+                >
+                  <Eye size={18} /> Prévisualiser
+                </button>
+
+                <button
+                  type="reset"
+                  style={{ background: '#FDBA74', color: '#92400E', border: 'none', padding: '12px 25px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
+                >
+                  <Trash2 size={18} /> Réinitialiser
+                </button>
+              </div>
+            </form>
           </div>
-        </div>
-        <X onClick={() => setShowViewModal(false)} style={{ cursor: 'pointer', color: '#6B7280' }} />
-      </div>
-
-      <div className="info-grid">
-        {/* Ligne Date et ID */}
-        <div className="info-item" style={{ borderLeft: '4px solid #ED1B24' }}>
-          <div className="info-label">Date & Heure du don</div>
-          <div className="info-value" style={{ color: '#1A1C23', fontWeight: 'bold' }}>
-            {selectedItem.date_don || "Non spécifiée"}
-          </div>
-        </div>
-
-        <div className="info-item">
-          <div className="info-label">Numéro Donateur (SQL)</div>
-          <div className="info-value" style={{ fontWeight: 'bold' }}>{selectedItem.donor_number || "Automatique"}</div>
-        </div>
-
-        <div className="info-item" style={{ background: '#F0FFF4', borderColor: '#68D391' }}>
-          <div className="info-label" style={{ color: '#2F855A' }}>Montant & Fréquence</div>
-          <div className="info-value" style={{ color: '#2F855A', fontWeight: 'bold' }}>
-            {selectedItem.montant} € ({selectedItem.frequence === 'monthly' ? 'Mensuel' : 'Ponctuel'})
-          </div>
-        </div>
-
-        <div className="info-item">
-          <div className="info-label">Moyen de Paiement</div>
-          <div className="info-value" style={{textTransform: 'uppercase'}}>{selectedItem.moyen_paiement}</div>
-        </div>
-
-        <div className="info-item full-width">
-          <div className="info-label">Adresse de facturation</div>
-          <div className="info-value">
-            {selectedItem.adresse} {selectedItem.complement_adresse && `- ${selectedItem.complement_adresse}`}<br/>
-            {selectedItem.code_postal} {selectedItem.ville} ({selectedItem.pays})
-          </div>
-        </div>
-
-        <div className="info-item">
-          <div className="info-label">Email de contact</div>
-          <div className="info-value">{selectedItem.email}</div>
-        </div>
-        
-        <div className="info-item">
-          <div className="info-label">Téléphone</div>
-          <div className="info-value">{selectedItem.telephone || "N/A"}</div>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
-        {/* BOUTON MODIFIER EN BAS À DROITE */}
-        <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'flex-end' }}>
-          <button className="btn-secondary" onClick={() => {
-            setShowViewModal(false);
-            if (selectedItem.viewType === 'entreprise') {
-              setFormEntreprise(selectedItem);
-              setShowEntrepriseModal(true);
-            } else {
-              setFormSubvention(selectedItem);
-              setShowSubventionModal(true);
-            }
-            setIsEditing(true);
-            setCurrentId(selectedItem.id);
-          }}>
-            <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER LA FICHE
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
-
-<div className="card">
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-    <h3 style={{ margin: 0, fontWeight: 900 }}>Historique des Donateurs</h3>
-    
-    <div style={{ display: 'flex', gap: '10px' }}>
-      {/* BOUTON EXPORT CSV */}
-      <button 
-        onClick={exportToCSV}
-        style={{ 
-          background: '#F4F7F9', border: '1px solid #E2E8F0', padding: '8px 15px', 
-          borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer',
-          display: 'flex', alignItems: 'center', gap: '8px' 
-        }}
-      >
-        <FileText size={14} /> EXPORTER CSV
-      </button>
-
-      {/* BOUTON FILTRE MONTANT */}
-      <button 
-        onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
-        style={{ 
-          background: '#ED1B24', color: 'white', border: 'none', padding: '8px 15px', 
-          borderRadius: '8px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer',
-          display: 'flex', alignItems: 'center', gap: '8px'
-        }}
-      >
-        <TrendingUp size={14} style={{ transform: sortOrder === 'asc' ? 'rotate(180deg)' : 'none' }} />
-        TRIER PAR MONTANT ({sortOrder === 'desc' ? 'MAX' : 'MIN'})
-      </button>
-    </div>
-  </div>
-
-  <p style={{ fontSize: '12px', color: '#718096', marginBottom: '15px' }}>
-    Suivi des contributions pour les bilans financiers et rapports à la mairie.
-  </p>
-
-  {/* UTILISATION DES DONNÉES TRIÉES */}
-  {sortedDonateurs.map((donateur) => (
-    <div key={donateur.id} className="activity-item">
-      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-        <div className="avatar" style={{ background: '#ED1B24' }}>D</div>
-        <div>
-          <span style={{ fontSize: 13, fontWeight: 'bold' }}>{donateur.prenom} {donateur.nom}</span>
-          <div style={{ fontSize: 11, color: '#718096' }}>Don de {donateur.montant}€ - {donateur.date_don}</div>
-        </div>
-      </div>
-      <button 
-        className="btn-details" 
-        onClick={() => openViewModal(donateur)}
-        style={{ background: '#F4F7F9', border: 'none', padding: '5px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}
-      >
-        DÉTAILS
-      </button>
-    </div>
-  ))}
-</div>
-  </div>
-)}
-{/* LIGNE 1584: FIN DU BLOC PRÉCÉDENT */}
-
-{activeTab === 'communication-articles' && (
-  <div className="card" style={{ marginTop: '-20px' }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 25, borderBottom: '1px solid #EEE', paddingBottom: 15 }}>
-      <FileText color="#ED1B24" />
-      <h3 style={{ margin: 0, fontWeight: 900 }}>Créer un nouvel article</h3>
-    </div>
-
-    <form style={{ display: 'grid', gap: '20px' }}>
-      <div className="form-group">
-        <label style={{ fontWeight: 'bold' }}>Titre de l'article *</label>
-        <input type="text" placeholder="Entrez le titre de l'article..." required />
-        <span style={{ fontSize: '11px', color: '#718096' }}>Maximum 200 caractères</span>
-      </div>
-
-      <div className="form-group">
-        <label style={{ fontWeight: 'bold' }}>Image de l'article *</label>
-        <input type="file" accept="image/*" style={{ padding: '8px', fontSize: '12px' }} required />
-        <span style={{ fontSize: '11px', color: '#718096' }}>Sélectionnez un fichier (jpg, png, gif)</span>
-      </div>
-
-      <div className="form-group">
-        <label style={{ fontWeight: 'bold' }}>Contributeurs</label>
-        <input type="text" placeholder="Prénom1, Prénom2..." />
-        <span style={{ fontSize: '11px', color: '#718096' }}>Séparez les prénoms par des virgules.</span>
-      </div>
-
-      <div className="form-group">
-        <label style={{ fontWeight: 'bold' }}>Contenu de l'article *</label>
-        {/* Barre d'outils opérationnelle */}
-        <div style={{ background: '#F8FAFC', border: '1px solid #D1D5DB', borderBottom: 'none', padding: '10px', borderRadius: '6px 6px 0 0', display: 'flex', gap: '15px' }}>
-          <button type="button" onClick={() => applyFormat('**')} style={toolbarButtonStyle}><strong>B</strong></button>
-          <button type="button" onClick={() => applyFormat('*')} style={toolbarButtonStyle}><em>I</em></button>
-          <button type="button" onClick={() => applyFormat('__')} style={toolbarButtonStyle}><u>U</u></button>
-          <div style={{ width: '1px', background: '#D1D5DB' }}></div>
-          <button type="button" style={toolbarButtonStyle}><Plus size={16} /></button>
-        </div>
-        <textarea 
-          id="article-content"
-          placeholder="Rédigez le contenu de votre article..." 
-          style={{ height: '300px', borderRadius: '0 0 6px 6px', borderTop: 'none', padding: '15px' }}
-          required
-        ></textarea>
-      </div>
-
-      {/* BOUTONS D'ACTION (DA SCREEN 16.59.17) */}
-      <div style={{ display: 'flex', gap: '15px', marginTop: '20px' }}>
-        <button type="submit" className="btn-save" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <Package size={18} /> Publier l'article
-        </button>
-        
-        <button 
-          type="button" 
-          onClick={() => window.open('/preview-article', '_blank')}
-          style={{ background: '#6366F1', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
-        >
-          <Eye size={18} /> Prévisualiser
-        </button>
-
-        <button 
-          type="reset"
-          style={{ background: '#FDBA74', color: '#92400E', border: 'none', padding: '12px 25px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
-        >
-          <Trash2 size={18} /> Réinitialiser
-        </button>
-      </div>
-    </form>
-  </div>
-)}
+        )}
       </main>
     </div>
   );
