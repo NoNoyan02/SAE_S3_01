@@ -95,7 +95,7 @@ yarn-debug.log*
 yarn-error.log*
 
 #backend
-SAES301/backend/.env
+backend/.env
 
 #Autres
 .DS_Store

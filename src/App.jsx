@@ -12,6 +12,7 @@ import JeDeviens from './pages/Je-deviens.jsx';
 import Formations from './pages/Formations.jsx';
 import Donation from './pages/Donation.jsx';
 import PageIntrouvable from './pages/Page-introuvable.jsx';
+import Dashboard from "../SAES301/src/pages/Dashboard.jsx";
 
 const MainLayout = () => {
     return (
@@ -39,6 +40,7 @@ function App() {
                   <Route path="*" element={<PageIntrouvable/>}/>
               </Route>
               <Route path="/faire-un-don/~mon-don" element={<Donation/>}/>
+              <Route path="/admin/dashboard" element={<Dashboard/>}/>
           </Routes>
       </>
   );
