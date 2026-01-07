@@ -549,16 +549,16 @@ const Dashboard = () => {
 
               <div className="form-row">
                 <div className="form-group"><label>Email <span>*</span></label><input type="email" required value={formBenevole.email} onChange={e => setFormBenevole({ ...formBenevole, email: e.target.value })} placeholder="exemple@mail.com" /></div>
-                <div className="form-group"><label>Téléphone</label><input type="text" value={formBenevole.telephone} onChange={e => setFormBenevole({ ...formBenevole, telephone: e.target.value })} /></div>
+                <div className="form-group"><label>Téléphone <span>*</span></label><input type="text" value={formBenevole.telephone} onChange={e => setFormBenevole({ ...formBenevole, telephone: e.target.value })} /></div>
               </div>
 
               <div className="form-row">
-                <div className="form-group"><label>Ville</label><input type="text" value={formBenevole.ville} onChange={e => setFormBenevole({ ...formBenevole, ville: e.target.value })} /></div>
-                <div className="form-group"><label>Date de naissance</label><input type="date" value={formBenevole.dateNaissance} onChange={e => setFormBenevole({ ...formBenevole, dateNaissance: e.target.value })} /></div>
+                <div className="form-group"><label>Ville <span>*</span></label><input type="text" value={formBenevole.ville} onChange={e => setFormBenevole({ ...formBenevole, ville: e.target.value })} /></div>
+                <div className="form-group"><label>Date de naissance <span>*</span></label><input type="date" value={formBenevole.dateNaissance} onChange={e => setFormBenevole({ ...formBenevole, dateNaissance: e.target.value })} /></div>
               </div>
 
               <div className="form-row">
-                <div className="form-group"><label>Profession</label><input type="text" value={formBenevole.profession} onChange={e => setFormBenevole({ ...formBenevole, profession: e.target.value })} /></div>
+                <div className="form-group"><label>Profession <span>*</span></label><input type="text" value={formBenevole.profession} onChange={e => setFormBenevole({ ...formBenevole, profession: e.target.value })} /></div>
               </div>
 
               <div className="form-row">
@@ -680,15 +680,15 @@ const Dashboard = () => {
 
               <div className="form-row">
                 <div className="form-group"><label>Lieu <span>*</span></label><input type="text" required value={formEvent.lieu} onChange={e => setFormEvent({ ...formEvent, lieu: e.target.value })} placeholder="Ex: Super U Centre" /></div>
-                <div className="form-group"><label>Budget Prévisionnel (€)</label><input type="number" value={formEvent.budget} onChange={e => setFormEvent({ ...formEvent, budget: e.target.value })} placeholder="0" /></div>
+                <div className="form-group"><label>Budget Prévisionnel (€) <span>*</span></label><input type="number" value={formEvent.budget} onChange={e => setFormEvent({ ...formEvent, budget: e.target.value })} placeholder="0" /></div>
               </div>
 
               <div className="form-row">
-                <div className="form-group"><label>Logistique & Matériel</label><textarea value={formEvent.materiel} onChange={e => setFormEvent({ ...formEvent, materiel: e.target.value })} placeholder="Ex: Barnum, 2 tables, sonos..."></textarea></div>
+                <div className="form-group"><label>Logistique & Matériel <span>*</span></label><textarea value={formEvent.materiel} onChange={e => setFormEvent({ ...formEvent, materiel: e.target.value })} placeholder="Ex: Barnum, 2 tables, sonos..."></textarea></div>
               </div>
 
               <div className="form-row">
-                <div className="form-group"><label>Bénévoles Inscrits</label><input type="text" value={formEvent.benevolesInscrits} onChange={e => setFormEvent({ ...formEvent, benevolesInscrits: e.target.value })} placeholder="Ex: Nadia, Thomas, Julie..." /></div>
+                <div className="form-group"><label>Bénévoles Inscrits <span>*</span></label><input type="text" value={formEvent.benevolesInscrits} onChange={e => setFormEvent({ ...formEvent, benevolesInscrits: e.target.value })} placeholder="Ex: Nadia, Thomas, Julie..." /></div>
                 <div className="form-group">
                   <label>Documents (Affiches, CR) <span>*PDF uniquement</span></label>
                   <input
@@ -1383,12 +1383,12 @@ const Dashboard = () => {
                     <div className="form-group"><label>Nom Entreprise *</label>
                       <input type="text" required value={formEntreprise.nom} onChange={e => setFormEntreprise({ ...formEntreprise, nom: e.target.value })} />
                     </div>
-                    <div className="form-group"><label>Contact (Nom & Prenom)</label>
+                    <div className="form-group"><label>Contact (Nom & Prenom) <span>*</span></label>
                       <input type="text" value={formEntreprise.contact} onChange={e => setFormEntreprise({ ...formEntreprise, contact: e.target.value })} />
                     </div>
                     <div className="form-row">
-                      <div className="form-group"><label>Email</label><input type="email" value={formEntreprise.email} onChange={e => setFormEntreprise({ ...formEntreprise, email: e.target.value })} /></div>
-                      <div className="form-group"><label>Tel</label><input type="text" value={formEntreprise.telephone} onChange={e => setFormEntreprise({ ...formEntreprise, telephone: e.target.value })} /></div>
+                      <div className="form-group"><label>Email <span>*</span></label><input type="email" value={formEntreprise.email} onChange={e => setFormEntreprise({ ...formEntreprise, email: e.target.value })} /></div>
+                      <div className="form-group"><label>Tel <span>*</span></label><input type="text" value={formEntreprise.telephone} onChange={e => setFormEntreprise({ ...formEntreprise, telephone: e.target.value })} /></div>
                     </div>
                     <div className="btn-container"><button type="submit" className="btn-save">Enregistrer</button></div>
                   </form>
@@ -1409,8 +1409,8 @@ const Dashboard = () => {
                       <input type="text" required value={formSubvention.nom} onChange={e => setFormSubvention({ ...formSubvention, nom: e.target.value })} />
                     </div>
                     <div className="form-row">
-                      <div className="form-group"><label>Organisme</label><input type="text" value={formSubvention.organisme} onChange={e => setFormSubvention({ ...formSubvention, organisme: e.target.value })} /></div>
-                      <div className="form-group"><label>Montant (€)</label><input type="number" value={formSubvention.montant} onChange={e => setFormSubvention({ ...formSubvention, montant: e.target.value })} /></div>
+                      <div className="form-group"><label>Organisme <span>*</span></label><input type="text" value={formSubvention.organisme} onChange={e => setFormSubvention({ ...formSubvention, organisme: e.target.value })} /></div>
+                      <div className="form-group"><label>Montant (€) <span>*</span></label><input type="number" value={formSubvention.montant} onChange={e => setFormSubvention({ ...formSubvention, montant: e.target.value })} /></div>
                     </div>
                     <div className="btn-container"><button type="submit" className="btn-save">Enregistrer</button></div>
                   </form>
