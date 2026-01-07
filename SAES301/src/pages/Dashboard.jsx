@@ -258,6 +258,7 @@ const handleBenevoleSubmit = (e) => {
     { id: 'benevoles', label: 'Bénévoles', icon: <Users size={20} /> },
     { id: 'partenaires', label: 'Partenaires & Donateurs', icon: <Handshake size={20} /> },
     { id: 'evenements', label: 'Événements & Missions', icon: <Calendar size={20} /> },
+    { id: 'communication', label: 'Communication & Contenus', icon: <Package size={20} /> },
     { id: 'analyse', label: 'Analyse & Stats', icon: <BarChart3 size={20} /> },
   ];
 
@@ -732,7 +733,7 @@ const handleBenevoleSubmit = (e) => {
       </div>
     )}
 
-      {/* SIDEBAR */}
+{/* SIDEBAR */}
       <aside className="sidebar">
         <div className="logo-section">
           <span className="logo-red">LA CROIX ROUGE</span><br/>
@@ -742,7 +743,7 @@ const handleBenevoleSubmit = (e) => {
           {menuItems.map((item) => (
             <div key={item.id}>
               <button
-                className={`nav-item ${(activeTab === item.id || (item.id === 'evenements' && activeTab === 'calendrier')) ? 'active' : ''}`}
+                className={`nav-item ${(activeTab === item.id || (item.id === 'evenements' && activeTab === 'calendrier') || (item.id === 'communication' && activeTab.startsWith('communication-'))) ? 'active' : ''}`}
                 onClick={() => { 
                   setActiveTab(item.id); 
                   setSearchQuery(""); 
@@ -751,6 +752,46 @@ const handleBenevoleSubmit = (e) => {
           {item.icon}
           <span>{item.label}</span>
         </button>
+
+      {/* SOUS-MENU COMMUNICATION */}
+      {item.id === 'communication' && (activeTab === 'communication' || activeTab.startsWith('communication-')) && (
+        <div style={{ 
+          paddingLeft: '54px', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: '4px', 
+          marginTop: '4px', 
+          marginBottom: '10px'
+        }}>
+          <button 
+            onClick={() => setActiveTab('communication-articles')}
+            style={{ 
+              background: 'none', border: 'none', 
+              color: activeTab === 'communication-articles' ? 'white' : '#A0AEC0', 
+              fontSize: '13px', cursor: 'pointer', textAlign: 'left', padding: '6px 0',
+              fontWeight: activeTab === 'communication-articles' ? '700' : '500',
+              display: 'flex', alignItems: 'center', gap: '8px', transition: '0.2s'
+            }}
+          >
+            <span style={{ color: activeTab === 'communication-articles' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
+            Articles
+          </button>
+          <button 
+            onClick={() => setActiveTab('communication-newsletters')}
+            style={{ 
+              background: 'none', border: 'none', 
+              color: activeTab === 'communication-newsletters' ? 'white' : '#A0AEC0', 
+              fontSize: '13px', cursor: 'pointer', textAlign: 'left', padding: '6px 0',
+              fontWeight: activeTab === 'communication-newsletters' ? '700' : '500',
+              display: 'flex', alignItems: 'center', gap: '8px', transition: '0.2s'
+            }}
+          >
+            <span style={{ color: activeTab === 'communication-newsletters' ? '#ED1B24' : 'transparent', fontSize: '18px' }}>•</span>
+            Newsletters
+          </button>
+        </div>
+      )}
+        
       {/* SOUS-MENU ÉVÉNEMENTS */}
       {item.id === 'evenements' && (activeTab === 'evenements' || activeTab === 'calendrier') && (
         <div style={{ 
@@ -1165,7 +1206,7 @@ const handleBenevoleSubmit = (e) => {
             </table>
           </div>
         ) 
-        : activeTab !== 'analyse' && activeTab !== 'calendrier' && activeTab !== 'benevoles' && activeTab !== 'evenements' && activeTab !== 'partenaires' && (
+        : activeTab !== 'analyse' && activeTab !== 'calendrier' && activeTab !== 'benevoles' && activeTab !== 'evenements' && activeTab !== 'partenaires' && activeTab !== 'communication'&& activeTab !== 'communication-articles' && activeTab !== 'communication-newsletters' &&(
         <div className="placeholder-chart" style={{ height: 500 }}>
         <p>Interface de gestion pour le module {activeTab}<br/>Utilisez la recherche pour filtrer les résultats.</p>
   </div>
