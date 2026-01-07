@@ -39,27 +39,7 @@ const Dashboard = () => {
 
   // ÉTATS POUR LES DONATEURS DE PARTENAIRES ET SUBVENTIONS
   // Données simulées basées sur le payload de Donation.jsx
-  const [donateursData, setDonateursData] = useState([
-    {
-      id: 1,
-      viewType: 'donateur',
-      donor_number: "CRF-2025-001",
-      date_don: "07/01/2026 à 14:30",
-      civilite: "M.",
-      prenom: "Jean",
-      nom: "Dupont",
-      email: "jean.dupont@mail.com",
-      telephone: "0612345678",
-      montant: 200,
-      frequence: "once",
-      moyen_paiement: "card",
-      adresse: "15 Rue de la Paix",
-      code_postal: "75002",
-      ville: "Paris",
-      pays: "FRANCE",
-      date_naissance: "12/05/1985"
-    }
-  ]);
+  const [donateursData, setDonateursData] = useState([]);
 
   // 2. DONNÉES DES BÉNÉVOLES (VIA API)
   const [benevoles, setBenevoles] = useState([]);
@@ -71,16 +51,22 @@ const Dashboard = () => {
   const [partenaires, setPartenaires] = useState([]);
 
   // 4. DONNÉES DES SUBVENTIONS (VIA API)
+  // 4. DONNÉES DES SUBVENTIONS (VIA API)
   const [subventions, setSubventions] = useState([]);
+
+  // Stats Admin
+  const [nbAdmins, setNbAdmins] = useState(0);
 
   // CHARGEMENT DES DONNÉES DEPUIS L'API
   const fetchData = async () => {
     try {
-      const [resBen, resEvt, resEnt, resSub] = await Promise.all([
+      const [resBen, resEvt, resEnt, resSub, resDons] = await Promise.all([
         fetch('http://localhost:8000/api/benevoles.php').then(r => r.json()),
         fetch('http://localhost:8000/api/evenements.php').then(r => r.json()),
         fetch('http://localhost:8000/api/entreprises.php').then(r => r.json()),
-        fetch('http://localhost:8000/api/subventions.php').then(r => r.json())
+        fetch('http://localhost:8000/api/subventions.php').then(r => r.json()),
+        fetch('http://localhost:8000/api/historique_dons.php').then(r => r.json()),
+        fetch('http://localhost:8000/api/admins.php').then(r => r.json())
       ]);
       setBenevoles((Array.isArray(resBen) ? resBen : []).map(b => ({
         ...b,
@@ -113,6 +99,25 @@ const Dashboard = () => {
         ...s,
         nom: s.nom_aide
       })));
+
+      setDonateursData((Array.isArray(resDons) ? resDons : []).map((d, index) => ({
+        id: d.don_id || index,
+        donor_number: `DON-${d.don_id}`,
+        civilite: 'M./Mme',
+        prenom: d.prenom,
+        nom: d.nom,
+        email: d.email,
+        telephone: d.telephone,
+        montant: Number(d.montant), // Assure le format nombre
+        frequence: 'Ponctuel',
+        date_don: d.date_don,
+        ville: d.ville
+      })));
+
+      if (resAdmins && resAdmins.nbAdmins) {
+        setNbAdmins(resAdmins.nbAdmins);
+      }
+
     } catch (error) {
       console.error("Erreur chargement API:", error);
     }
@@ -130,7 +135,9 @@ const Dashboard = () => {
     return sortOrder === 'desc' ? b.montant - a.montant : a.montant - b.montant;
   });
 
-  // Fonction pour l'export CSV
+  // Calcul du total des dons
+  const totalDons = donateursData.reduce((acc, curr) => acc + curr.montant, 0);
+
   const exportToCSV = () => {
     const headers = ["ID_Donateur", "Civilite", "Prenom", "Nom", "Email", "Tel", "Montant", "Frequence", "Date_Don", "Ville"];
     const rows = donateursData.map(d => [
@@ -985,11 +992,11 @@ const Dashboard = () => {
                   <Calendar size={32} color="#ED1B24" />
                 </div>
                 <div className="stat-card">
-                  <div><span className="stat-label">Total des Dons</span><p className="stat-value">45 200€</p></div>
+                  <div><span className="stat-label">Total des Dons</span><p className="stat-value">{totalDons.toLocaleString()} €</p></div>
                   <Wallet size={32} color="#ED1B24" />
                 </div>
                 <div className="stat-card">
-                  <div><span className="stat-label">Admin Bureau</span><p className="stat-value">6</p></div>
+                  <div><span className="stat-label">Admin Bureau</span><p className="stat-value">{nbAdmins}</p></div>
                   <ShieldCheck size={32} color="#ED1B24" />
                 </div>
               </div>
@@ -1107,13 +1114,13 @@ const Dashboard = () => {
               {activeTab === 'analyse' && (
                 <div className="card">
                   <h3 style={{ margin: '0 0 20px 0', fontWeight: 900 }}>Derniers Donateurs</h3>
-                  {[1, 2, 3, 4].map(i => (
-                    <div key={i} className="activity-item">
+                  {[...donateursData].sort((a, b) => new Date(b.date_don) - new Date(a.date_don)).slice(0, 4).map(d => (
+                    <div key={d.id} className="activity-item">
                       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                        <div className="avatar" style={{ background: '#ED1B24' }}>D</div>
-                        <span style={{ fontSize: 13, fontWeight: 'bold' }}>Donateur #{i}</span>
+                        <div className="avatar" style={{ background: '#ED1B24' }}>{d.prenom.charAt(0)}{d.nom.charAt(0)}</div>
+                        <span style={{ fontSize: 13, fontWeight: 'bold' }}>{d.prenom} {d.nom}</span>
                       </div>
-                      <span style={{ fontSize: 12, fontWeight: 'bold', color: '#48BB78' }}>+50€</span>
+                      <span style={{ fontSize: 12, fontWeight: 'bold', color: '#48BB78' }}>+{d.montant}€</span>
                     </div>
                   ))}
                 </div>
