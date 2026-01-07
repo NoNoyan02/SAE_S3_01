@@ -37,6 +37,29 @@ const Dashboard = () => {
   });
   const [searchSub, setSearchSub] = useState(""); // Recherche locale Subventions
 
+  // ÉTATS POUR LES DONATEURS DE PARTENAIRES ET SUBVENTIONS
+  // Données simulées basées sur le payload de Donation.jsx
+const [donateursData, setDonateursData] = useState([
+  {
+    id: 1,
+    viewType: 'donateur',
+    donor_number: "CRF-2025-001",
+    date_don: "07/01/2026 à 14:30",
+    prenom: "Jean",
+    nom: "Dupont",
+    email: "jean.dupont@mail.com",
+    telephone: "0612345678",
+    montant: 200,
+    frequence: "once",
+    moyen_paiement: "card",
+    adresse: "15 Rue de la Paix",
+    code_postal: "75002",
+    ville: "Paris",
+    pays: "FRANCE",
+    date_naissance: "12/05/1985"
+  }
+]);
+
 // 2. DONNÉES DES BÉNÉVOLES (LOCAL STORAGE)
   const [benevoles, setBenevoles] = useState(() => {
     const saved = localStorage.getItem('benevoles_data'); 
@@ -1333,6 +1356,81 @@ const handleBenevoleSubmit = (e) => {
           </div>
         )}
         
+{/* MODALE DÉDIÉE DONATEURS AVEC DONOR NUMBER ET DATE */}
+{showViewModal && selectedItem && selectedItem.viewType === 'donateur' && (
+  <div className="modal-overlay">
+    <div className="modal-card">
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #EEE', paddingBottom: 15, marginBottom: 20 }}>
+        <div>
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1A1C23', margin: 0 }}>
+            Fiche Donateur : {selectedItem.prenom} {selectedItem.nom}
+          </h2>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '5px' }}>
+            <span style={{ 
+              fontSize: '11px', 
+              background: '#E2E8F0', 
+              color: '#4A5568', 
+              padding: '2px 8px', 
+              borderRadius: '12px', 
+              fontWeight: 'bold'
+            }}>
+              ID REF : {selectedItem.donor_number || 'Génération...'}
+            </span>
+            <span style={{ fontSize: '12px', color: '#718096' }}>
+              Don effectué le : <strong>{selectedItem.date_don || "Date inconnue"}</strong>
+            </span>
+          </div>
+        </div>
+        <X onClick={() => setShowViewModal(false)} style={{ cursor: 'pointer', color: '#6B7280' }} />
+      </div>
+
+      <div className="info-grid">
+        {/* Ligne Date et ID */}
+        <div className="info-item" style={{ borderLeft: '4px solid #ED1B24' }}>
+          <div className="info-label">Date & Heure du don</div>
+          <div className="info-value" style={{ color: '#1A1C23', fontWeight: 'bold' }}>
+            {selectedItem.date_don || "Non spécifiée"}
+          </div>
+        </div>
+
+        <div className="info-item">
+          <div className="info-label">Numéro Donateur (SQL)</div>
+          <div className="info-value" style={{ fontWeight: 'bold' }}>{selectedItem.donor_number || "Automatique"}</div>
+        </div>
+
+        <div className="info-item" style={{ background: '#F0FFF4', borderColor: '#68D391' }}>
+          <div className="info-label" style={{ color: '#2F855A' }}>Montant & Fréquence</div>
+          <div className="info-value" style={{ color: '#2F855A', fontWeight: 'bold' }}>
+            {selectedItem.montant} € ({selectedItem.frequence === 'monthly' ? 'Mensuel' : 'Ponctuel'})
+          </div>
+        </div>
+
+        <div className="info-item">
+          <div className="info-label">Moyen de Paiement</div>
+          <div className="info-value" style={{textTransform: 'uppercase'}}>{selectedItem.moyen_paiement}</div>
+        </div>
+
+        <div className="info-item full-width">
+          <div className="info-label">Adresse de facturation</div>
+          <div className="info-value">
+            {selectedItem.adresse} {selectedItem.complement_adresse && `- ${selectedItem.complement_adresse}`}<br/>
+            {selectedItem.code_postal} {selectedItem.ville} ({selectedItem.pays})
+          </div>
+        </div>
+
+        <div className="info-item">
+          <div className="info-label">Email de contact</div>
+          <div className="info-value">{selectedItem.email}</div>
+        </div>
+        
+        <div className="info-item">
+          <div className="info-label">Téléphone</div>
+          <div className="info-value">{selectedItem.telephone || "N/A"}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
         {/* BOUTON MODIFIER EN BAS À DROITE */}
         <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'flex-end' }}>
           <button className="btn-secondary" onClick={() => {
@@ -1355,23 +1453,33 @@ const handleBenevoleSubmit = (e) => {
   </div>
 )}
 
-    {/* BLOC 3 : DONATEURS (Comme demandé dans le sujet) */}
-    <div className="card">
-      <h3 style={{ margin: '0 0 20px 0', fontWeight: 900 }}>Historique des Donateurs</h3>
-      <p style={{ fontSize: '12px', color: '#718096', marginBottom: '15px' }}>Ce module permet de valoriser nos soutiens dans nos communications.</p>
-      {[1, 2, 3, 4].map(i => (
-        <div key={i} className="activity-item">
-          <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-            <div className="avatar" style={{ background: '#ED1B24' }}>D</div>
-            <div>
-              <span style={{ fontSize: 13, fontWeight: 'bold' }}>Donateur Fidèle #{i}</span>
-              <div style={{ fontSize: 11, color: '#718096' }}>Contribution annuelle : 200€</div>
-            </div>
-          </div>
-          <button style={{ background: '#F4F7F9', border: 'none', padding: '5px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}>DÉTAILS</button>
+    {/* BLOC 3 : DONATEURS */}
+<div className="card">
+  <h3 style={{ margin: '0 0 20px 0', fontWeight: 900 }}>Historique des Donateurs</h3>
+  <p style={{ fontSize: '12px', color: '#718096', marginBottom: '15px' }}>
+    Suivi des contributions pour les bilans financiers et rapports à la mairie.
+  </p>
+  
+  {/* Simulation d'un donateur provenant de donation.jsx */}
+  {donateursData.map((donateur, i) => (
+    <div key={i} className="activity-item">
+      <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+        <div className="avatar" style={{ background: '#ED1B24' }}>D</div>
+        <div>
+          <span style={{ fontSize: 13, fontWeight: 'bold' }}>{donateur.prenom} {donateur.nom}</span>
+          <div style={{ fontSize: 11, color: '#718096' }}>Don de {donateur.montant}€</div>
         </div>
-      ))}
+      </div>
+      <button 
+        className="btn-details" 
+        style={{ background: '#F4F7F9', border: 'none', padding: '5px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}
+        onClick={() => openViewModal({ ...donateur, type: 'donateur' })}
+      >
+        DÉTAILS
+      </button>
     </div>
+  ))}
+</div>
   </div>
 )}
       </main>
