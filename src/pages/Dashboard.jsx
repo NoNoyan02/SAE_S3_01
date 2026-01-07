@@ -57,16 +57,20 @@ const Dashboard = () => {
   // Stats Admin
   const [nbAdmins, setNbAdmins] = useState(0);
 
+  // NEWSLETTER
+  const [newsletters, setNewsletters] = useState([]);
+
   // CHARGEMENT DES DONNÉES DEPUIS L'API
   const fetchData = async () => {
     try {
-      const [resBen, resEvt, resEnt, resSub, resDons] = await Promise.all([
+      const [resBen, resEvt, resEnt, resSub, resDons, resAdmins, resNews] = await Promise.all([
         fetch('http://localhost:8000/api/benevoles.php').then(r => r.json()),
         fetch('http://localhost:8000/api/evenements.php').then(r => r.json()),
         fetch('http://localhost:8000/api/entreprises.php').then(r => r.json()),
         fetch('http://localhost:8000/api/subventions.php').then(r => r.json()),
         fetch('http://localhost:8000/api/historique_dons.php').then(r => r.json()),
-        fetch('http://localhost:8000/api/admins.php').then(r => r.json())
+        fetch('http://localhost:8000/api/admins.php').then(r => r.json()),
+        fetch('http://localhost:8000/api/newsletter.php').then(r => r.json())
       ]);
       setBenevoles((Array.isArray(resBen) ? resBen : []).map(b => ({
         ...b,
@@ -117,6 +121,10 @@ const Dashboard = () => {
       if (resAdmins && resAdmins.nbAdmins) {
         setNbAdmins(resAdmins.nbAdmins);
       }
+
+      // Gestion safe du retour newsletter
+      setNewsletters(Array.isArray(resNews) ? resNews : []);
+
 
     } catch (error) {
       console.error("Erreur chargement API:", error);
@@ -1127,6 +1135,35 @@ const Dashboard = () => {
               )}
             </div>
 
+          </div>
+        ) : activeTab === 'communication-newsletters' ? (
+          <div className="card">
+            <h3 style={{ margin: '0 0 20px 0', fontWeight: 900 }}>Abonnés Newsletter ({newsletters.length})</h3>
+            <div className="table-container">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Email</th>
+                    <th>Date Inscription</th>
+                    <th>Info Entr.</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {newsletters.map((n, i) => (
+                    <tr key={i}>
+                      <td>{n.email}</td>
+                      <td>{new Date(n.date_inscription).toLocaleDateString()}</td>
+                      <td>
+                        {n.offre_entreprise == 1 ?
+                          <span className="status-badge status-actif">OUI</span> :
+                          <span className="status-badge status-retard">NON</span>
+                        }
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         ) : activeTab === 'benevoles' ? (
           <>
