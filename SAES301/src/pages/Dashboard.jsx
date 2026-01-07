@@ -23,9 +23,19 @@ const Dashboard = () => {
   // États pour le calendrier
   const [currentDate, setCurrentDate] = useState(new Date(2026, 0, 1)); // Commence en Janvier 2026
 
-  // États pour les Partenaires et Subventions
-  const [showPartenaireModal, setShowPartenaireModal] = useState(false);
-  const [formPartenaire, setFormPartenaire] = useState({ type: 'Entreprise', nom: '', contact: '', email: '', telephone: '', organisme: '', montant: '', dateReception: '', status: 'Actif' });
+  // ÉTATS POUR LES PARTENAIRES (ENTREPRISES)
+  const [showEntrepriseModal, setShowEntrepriseModal] = useState(false);
+  const [formEntreprise, setFormEntreprise] = useState({ 
+    nom: '', contact: '', email: '', telephone: '' 
+  });
+  const [searchEnt, setSearchEnt] = useState(""); // Recherche locale Entreprises
+
+  // ÉTATS POUR LES SUBVENTIONS
+  const [showSubventionModal, setShowSubventionModal] = useState(false);
+  const [formSubvention, setFormSubvention] = useState({ 
+    nom: '', organisme: '', montant: '', status: 'Reçue' 
+  });
+  const [searchSub, setSearchSub] = useState(""); // Recherche locale Subventions
 
 // 2. DONNÉES DES BÉNÉVOLES (LOCAL STORAGE)
   const [benevoles, setBenevoles] = useState(() => {
@@ -100,9 +110,13 @@ const [subventions, setSubventions] = useState(() => {
   const [selectedItem, setSelectedItem] = useState(null);
 
   // 4. ÉTAT POUR LE FORMULAIRE
+
+  // Pour les bénévoles
   const [formBenevole, setFormBenevole] = useState({
     nom: '', prenom: '', email: '', telephone: '', ville: '', dateNaissance: '', profession: '', regime: '', sante: '', infos: '', dispo: 'Semaine', cotisation: 'À jour'
   });
+
+  // Pour les événements / missions
   const [formEvent, setFormEvent] = useState({ 
   type: 'Événement', 
   titre: '', 
@@ -154,6 +168,30 @@ const handleBenevoleSubmit = (e) => {
       setEvents([...events, { ...formEvent, id: Date.now() }]);
     }
     closeModals();
+  };
+
+  // Gestion des Entreprises
+  const handleEntrepriseSubmit = (e) => {
+    e.preventDefault();
+    if (isEditing) {
+      setPartenaires(partenaires.map(p => p.id === currentId ? { ...formEntreprise, id: currentId } : p));
+    } else {
+      setPartenaires([...partenaires, { ...formEntreprise, id: Date.now() }]);
+    }
+    setShowEntrepriseModal(false);
+    setIsEditing(false);
+  };
+
+  // Gestion des Subventions
+  const handleSubventionSubmit = (e) => {
+    e.preventDefault();
+    if (isEditing) {
+      setSubventions(subventions.map(s => s.id === currentId ? { ...formSubvention, id: currentId } : s));
+    } else {
+      setSubventions([...subventions, { ...formSubvention, id: Date.now() }]);
+    }
+    setShowSubventionModal(false);
+    setIsEditing(false);
   };
 
   const closeModals = () => {
@@ -1048,11 +1086,12 @@ const handleBenevoleSubmit = (e) => {
               </tbody>
             </table>
           </div>
-        ) : (
-          <div className="placeholder-chart" style={{height:500}}>
-            <p>Interface de gestion pour le module {activeTab}<br/>Utilisez la recherche pour filtrer les résultats.</p>
-          </div>
-        )}
+        ) 
+        : activeTab !== 'analyse' && activeTab !== 'calendrier' && activeTab !== 'benevoles' && activeTab !== 'evenements' && activeTab !== 'partenaires' && (
+        <div className="placeholder-chart" style={{ height: 500 }}>
+        <p>Interface de gestion pour le module {activeTab}<br/>Utilisez la recherche pour filtrer les résultats.</p>
+  </div>
+)}
 
         {activeTab === 'partenaires' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '25px', marginTop: '-20px' }}>
@@ -1076,7 +1115,8 @@ const handleBenevoleSubmit = (e) => {
               onChange={(e) => setSearchQuery(e.target.value)} 
             />
           </div>
-        <button className="btn-add" onClick={() => { setFormPartenaire({type:'Entreprise'}); setIsEditing(false); setShowPartenaireModal(true); }}>
+        <button className="btn-add" onClick={() => { setFormEntreprise({ nom: '', contact: '', email: '', telephone: '' }); 
+            setIsEditing(false); setShowEntrepriseModal(true); }}>
           <Plus size={16}/> NOUVELLE ENTREPRISE
         </button>
       </div>
@@ -1086,7 +1126,7 @@ const handleBenevoleSubmit = (e) => {
           <thead>
             <tr>
               <th>Nom de l'entreprise</th>
-              <th>Contact</th>
+              <th>Contact (Nom & Prénom)</th>
               <th>Email / Tel</th>
               <th>Actions</th>
             </tr>
@@ -1099,7 +1139,7 @@ const handleBenevoleSubmit = (e) => {
                 <td><div style={{fontSize:'12px'}}>{p.email}</div><div style={{fontSize:'10px', color:'#718096'}}>{p.telephone}</div></td>
                 <td>
                   <div style={{ display: 'flex', gap: 10 }}>
-                    <Edit size={16} onClick={() => { setFormPartenaire(p); setIsEditing(true); setCurrentId(p.id); setShowPartenaireModal(true); }} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+                    <Edit size={16} onClick={() => { setFormEntreprise(p); setIsEditing(true); setCurrentId(p.id); setShowEntrepriseModal(true); }} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
                     <Trash2 size={16} onClick={() => setPartenaires(partenaires.filter(x => x.id !== p.id))} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
                   </div>
                 </td>
@@ -1129,7 +1169,8 @@ const handleBenevoleSubmit = (e) => {
               onChange={(e) => setSearchQuery(e.target.value)} 
             />
           </div>
-        <button className="btn-add" onClick={() => { setFormPartenaire({type:'Subvention'}); setIsEditing(false); setShowPartenaireModal(true); }}>
+        <button className="btn-add" onClick={() => { setFormSubvention({ nom: '', organisme: '', montant: '', status: 'Reçue' }); 
+            setIsEditing(false); setShowSubventionModal(true); }}>
           <Plus size={16}/> NOUVELLE SUBVENTION
         </button>
       </div>
@@ -1152,7 +1193,7 @@ const handleBenevoleSubmit = (e) => {
                 <td style={{ fontWeight: 'bold', color: '#03543F' }}>{s.montant} €</td>
                 <td>
                   <div style={{ display: 'flex', gap: 10 }}>
-                    <Edit size={16} onClick={() => { setFormPartenaire(s); setIsEditing(true); setCurrentId(s.id); setShowPartenaireModal(true); }} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
+                    <Edit size={16} onClick={() => { setFormSubvention(s); setIsEditing(true); setCurrentId(s.id); setShowSubventionModal(true); }} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
                     <Trash2 size={16} onClick={() => setSubventions(subventions.filter(x => x.id !== s.id))} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
                   </div>
                 </td>
@@ -1162,6 +1203,53 @@ const handleBenevoleSubmit = (e) => {
         </table>
       </div>
     </div>
+
+    {/* MODALE ENTREPRISE */}
+{showEntrepriseModal && (
+  <div className="modal-overlay">
+    <div className="modal-card">
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+        <h2 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>{isEditing ? "Modifier" : "Ajouter"} une Entreprise</h2>
+        <X onClick={() => setShowEntrepriseModal(false)} style={{ cursor: 'pointer', color: '#6B7280' }} />
+      </div>
+      <form onSubmit={handleEntrepriseSubmit}>
+        <div className="form-group"><label>Nom Entreprise *</label>
+          <input type="text" required value={formEntreprise.nom} onChange={e => setFormEntreprise({...formEntreprise, nom: e.target.value})} />
+        </div>
+        <div className="form-group"><label>Contact (Nom & Prenom)</label>
+          <input type="text" value={formEntreprise.contact} onChange={e => setFormEntreprise({...formEntreprise, contact: e.target.value})} />
+        </div>
+        <div className="form-row">
+          <div className="form-group"><label>Email</label><input type="email" value={formEntreprise.email} onChange={e => setFormEntreprise({...formEntreprise, email: e.target.value})} /></div>
+          <div className="form-group"><label>Tel</label><input type="text" value={formEntreprise.telephone} onChange={e => setFormEntreprise({...formEntreprise, telephone: e.target.value})} /></div>
+        </div>
+        <div className="btn-container"><button type="submit" className="btn-save">Enregistrer</button></div>
+      </form>
+    </div>
+  </div>
+)}
+
+{/* MODALE SUBVENTION */}
+{showSubventionModal && (
+  <div className="modal-overlay">
+    <div className="modal-card">
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+        <h2 style={{ fontSize: 24, fontWeight: 700, margin: 0 }}>{isEditing ? "Modifier" : "Ajouter"} une Subvention</h2>
+        <X onClick={() => setShowSubventionModal(false)} style={{ cursor: 'pointer', color: '#6B7280' }} />
+      </div>
+      <form onSubmit={handleSubventionSubmit}>
+        <div className="form-group"><label>Nom de l'aide *</label>
+          <input type="text" required value={formSubvention.nom} onChange={e => setFormSubvention({...formSubvention, nom: e.target.value})} />
+        </div>
+        <div className="form-row">
+          <div className="form-group"><label>Organisme</label><input type="text" value={formSubvention.organisme} onChange={e => setFormSubvention({...formSubvention, organisme: e.target.value})} /></div>
+          <div className="form-group"><label>Montant (€)</label><input type="number" value={formSubvention.montant} onChange={e => setFormSubvention({...formSubvention, montant: e.target.value})} /></div>
+        </div>
+        <div className="btn-container"><button type="submit" className="btn-save">Enregistrer</button></div>
+      </form>
+    </div>
+  </div>
+)}
 
     {/* BLOC 3 : DONATEURS (Comme demandé dans le sujet) */}
     <div className="card">
