@@ -1302,7 +1302,9 @@ const Dashboard = () => {
                   ? 'Gestion des évènements & missions'
                   : activeTab === 'partenaires'
                     ? 'Partenaires & Donateurs'
-                    : activeTab.replace('-', ' ')
+                    : activeTab === 'users'
+                      ? 'Gestion des Utilisateurs'
+                      : activeTab.replace('-', ' ')
               }
             </h2>
             <p className="subtitle">
@@ -1950,65 +1952,7 @@ const Dashboard = () => {
                 </div>
               </div>
 
-              {/* BLOC 3 : HISTORIQUE DES DONATEURS */}
-              <div className="card">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                  <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 800, fontFamily: 'Outfit, sans-serif' }}>Historique des Donateurs</h3>
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button className="btn-secondary" onClick={exportToCSV} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'bold', border: '1px solid #E2E8F0', background: 'white', padding: '8px 15px', borderRadius: '8px', cursor: 'pointer' }}>
-                      <FileText size={16} /> EXPORTER CSV
-                    </button>
-                    <button style={{ display: 'flex', alignItems: 'center', gap: '5px', fontWeight: 'bold', background: '#ED1B24', color: 'white', border: 'none', padding: '8px 15px', borderRadius: '8px', cursor: 'pointer' }} onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}>
-                      <TrendingUp size={16} /> TRIER PAR MONTANT ({sortOrder === 'asc' ? 'MIN' : 'MAX'})
-                    </button>
-                  </div>
-                </div>
 
-                <p style={{ color: '#718096', marginBottom: '20px', fontSize: '14px' }}>
-                  Suivi des contributions pour les bilans financiers et rapports à la mairie.
-                </p>
-
-                <div className="table-container" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Donateur</th>
-                        <th>Ville</th>
-                        <th>Montant</th>
-                        <th>Fréquence</th>
-                        <th>Paiement</th>
-                        <th>Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {sortedDonateurs.map((d) => (
-                        <tr key={d.id}>
-                          <td>{new Date(d.date_don).toLocaleDateString()}</td>
-                          <td>
-                            <div className="clickable-name" onClick={() => openViewModal({ ...d, viewType: 'donateur' })}>
-                              {d.civilite} {d.prenom} {d.nom}
-                            </div>
-                            <div style={{ fontSize: '11px', color: '#718096' }}>{d.email}</div>
-                          </td>
-                          <td>{d.ville || '-'}</td>
-                          <td style={{ fontWeight: 'bold', color: '#2F855A' }}>{d.montant} €</td>
-                          <td><span className="status-badge status-actif">{d.frequence}</span></td>
-                          <td>{d.moyen_paiement}</td>
-                          <td>
-                            <button className="btn-icon" onClick={() => window.open(`http://localhost:8000/api/receipt.php?id=${d.id}`, '_blank')}>
-                              <Printer size={16} color="#718096" />
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                      {sortedDonateurs.length === 0 && (
-                        <tr><td colSpan="7" style={{ textAlign: 'center', padding: '30px', color: '#A0AEC0' }}>Aucun don enregistré pour le moment.</td></tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
 
               {/* MODALE ENTREPRISE */}
               {showEntrepriseModal && (
@@ -2850,64 +2794,64 @@ const Dashboard = () => {
           )
         }
         {/* DEBUT ONGLET USERS */}
-        {activeTab === 'users' && (
-          <div>
-            <div className="title-section">
-              <h2>Gestion des Utilisateurs</h2>
-              <p>Gérez les accès et les rôles de vos collaborateurs.</p>
-            </div>
+        {
+          activeTab === 'users' && (
+            <div>
 
-            <div className="table-container">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Nom Complet</th>
-                    <th>Email</th>
-                    <th>Téléphone</th>
-                    <th>Rôle Actuel</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map(u => (
-                    <tr key={u.id}>
-                      <td>
-                        <div style={{ fontWeight: 'bold' }}>{u.full_name}</div>
-                        <div style={{ fontSize: '12px', color: '#718096' }}>Inscrit le {new Date(u.created_at).toLocaleDateString()}</div>
-                      </td>
-                      <td>{u.email}</td>
-                      <td>{u.phone || '-'}</td>
-                      <td>
-                        <span className={`status-badge ${u.role_id == 1 ? 'status-actif' : 'status-retard'}`} style={{ background: u.role_id == 1 ? '#C6F6D5' : '#E2E8F0', color: u.role_id == 1 ? '#22543D' : '#4A5568' }}>
-                          {u.role_name || (u.role_id == 1 ? 'Admin' : 'Donateur')}
-                        </span>
-                      </td>
-                      <td>
-                        {u.role_id == 1 ? (
-                          <button className="action-btn" onClick={() => handleRoleUpdate(u.id, 3)} style={{ color: 'orange', border: '1px solid orange', padding: '5px 10px', borderRadius: '5px', background: 'white', cursor: 'pointer' }}>
-                            Retirer Droits Admin
-                          </button>
-                        ) : (
-                          <button className="action-btn" onClick={() => handleRoleUpdate(u.id, 1)} style={{ color: 'green', border: '1px solid green', padding: '5px 10px', borderRadius: '5px', background: 'white', cursor: 'pointer' }}>
-                            Passer Admin
-                          </button>
-                        )}
-                      </td>
+
+
+              <div className="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Nom Complet</th>
+                      <th>Email</th>
+                      <th>Téléphone</th>
+                      <th>Rôle Actuel</th>
+                      <th>Actions</th>
                     </tr>
-                  ))}
-                  {users.length === 0 && (
-                    <tr><td colSpan="5" style={{ textAlign: 'center', padding: '30px' }}>Aucun utilisateur trouvé.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {users.map(u => (
+                      <tr key={u.id}>
+                        <td>
+                          <div style={{ fontWeight: 'bold' }}>{u.full_name}</div>
+                          <div style={{ fontSize: '12px', color: '#718096' }}>Inscrit le {new Date(u.created_at).toLocaleDateString()}</div>
+                        </td>
+                        <td>{u.email}</td>
+                        <td>{u.phone || '-'}</td>
+                        <td>
+                          <span className={`status-badge ${u.role_id == 1 ? 'status-actif' : 'status-retard'}`} style={{ background: u.role_id == 1 ? '#C6F6D5' : '#E2E8F0', color: u.role_id == 1 ? '#22543D' : '#4A5568' }}>
+                            {u.role_name || (u.role_id == 1 ? 'Admin' : 'Donateur')}
+                          </span>
+                        </td>
+                        <td>
+                          {u.role_id == 1 ? (
+                            <button className="action-btn" onClick={() => handleRoleUpdate(u.id, 3)} style={{ color: 'orange', border: '1px solid orange', padding: '5px 10px', borderRadius: '5px', background: 'white', cursor: 'pointer' }}>
+                              Retirer Droits Admin
+                            </button>
+                          ) : (
+                            <button className="action-btn" onClick={() => handleRoleUpdate(u.id, 1)} style={{ color: 'green', border: '1px solid green', padding: '5px 10px', borderRadius: '5px', background: 'white', cursor: 'pointer' }}>
+                              Passer Admin
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                    {users.length === 0 && (
+                      <tr><td colSpan="5" style={{ textAlign: 'center', padding: '30px' }}>Aucun utilisateur trouvé.</td></tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
 
-            <div style={{ marginTop: '30px', padding: '20px', background: '#FFFAF0', border: '1px solid #FBD38D', borderRadius: '8px', color: '#744210' }}>
-              <strong>Note de sécurité :</strong> Seuls les Administrateurs peuvent accéder à cette page.
-              Attention, donner les droits Admin à un utilisateur lui donne accès à tout le Dashboard.
+              <div style={{ marginTop: '30px', padding: '20px', background: '#FFFAF0', border: '1px solid #FBD38D', borderRadius: '8px', color: '#744210' }}>
+                <strong>Note de sécurité :</strong> Seuls les Administrateurs peuvent accéder à cette page.
+                Attention, donner les droits Admin à un utilisateur lui donne accès à tout le Dashboard.
+              </div>
             </div>
-          </div>
-        )}
+          )
+        }
       </main >
     </div >
   );
