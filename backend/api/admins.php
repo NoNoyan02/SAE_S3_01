@@ -6,10 +6,10 @@ header("Content-Type: application/json; charset=UTF-8");
 require_once __DIR__ . "/../config/db.php";
 require_once __DIR__ . "/auth_middleware.php";
 
-checkAdminAuth();
+checkStaffAuth();
 
 try {
-    $stmt = $pdo->query("SELECT COUNT(*) as nbAdmins FROM users");
+    $stmt = $pdo->query("SELECT COUNT(*) as nbAdmins FROM users WHERE role_id = 1");
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     echo json_encode(["nbAdmins" => $result['nbAdmins']]);

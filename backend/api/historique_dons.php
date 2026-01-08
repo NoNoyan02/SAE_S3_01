@@ -42,7 +42,8 @@ try {
             JOIN dons do ON d.id = do.donateur_id ";
 
     // Si pas admin, on filtre sur le donateur lié
-    if ($userRole !== 'Admin') {
+    // Si c'est un donateur (externe), on filtre sur son profil
+    if ($userRole === 'Donateur') {
         if (!$donateurId) {
             // User sans profil donateur ? Rien à afficher
             echo json_encode([]);
@@ -55,9 +56,10 @@ try {
 
     $stmt = $pdo->prepare($sql);
 
-    if ($userRole !== 'Admin') {
+    if ($userRole === 'Donateur') {
         $stmt->execute([':donateur_id' => $donateurId]);
     } else {
+        // Staff -> Voit tout
         $stmt->execute();
     }
 

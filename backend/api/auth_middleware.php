@@ -1,17 +1,35 @@
 <?php
 // backend/api/auth_middleware.php
 
+/**
+ * Vérifie si l'utilisateur est un Admin
+ */
 function checkAdminAuth()
 {
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 
-    // Vérifier si l'utilisateur est connecté et si son rôle est 'Admin'
-    // Vous pouvez adapter cette logique selon comment vous stockez le rôle en session lors du login.php
     if (!isset($_SESSION['user']) || !isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'Admin') {
         http_response_code(403);
-        echo json_encode(["error" => "Rôle insuffisant ou non connecté. Accès refusé."]);
+        echo json_encode(["error" => "Réservé aux Administrateurs. Accès refusé."]);
+        exit();
+    }
+}
+
+/**
+ * Vérifie si l'utilisateur fait partie du Staff (Admin, Responsables, Collaborateurs)
+ * Bloque uniquement les 'Donateur' ou non-connectés
+ */
+function checkStaffAuth()
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    if (!isset($_SESSION['user']) || !isset($_SESSION['user']['role']) || $_SESSION['user']['role'] === 'Donateur') {
+        http_response_code(403);
+        echo json_encode(["error" => "Accès réservé au personnel. Accès refusé."]);
         exit();
     }
 }

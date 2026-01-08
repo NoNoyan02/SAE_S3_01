@@ -28,6 +28,50 @@ switch ($method) {
             echo json_encode(["error" => $e->getMessage()]);
         }
         break;
+    case 'POST':
+        verifyCsrfToken();
+        // Créer un nouvel utilisateur staff
+        $input = json_decode(file_get_contents("php://input"), true);
+        $fullName = $input['full_name'] ?? '';
+        $email = $input['email'] ?? '';
+        $password = $input['password'] ?? '';
+        $roleId = $input['role_id'] ?? null;
+        $phone = $input['phone'] ?? '';
+
+        if (!$fullName || !$email || !$password || !$roleId) {
+            http_response_code(400);
+            echo json_encode(["error" => "Tous les champs obligatoires (nom, email, mot de passe, rôle) sont requis."]);
+            exit;
+        }
+
+        try {
+            // Vérifier si l'email existe déjà
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
+            $stmt->execute([$email]);
+            if ($stmt->fetch()) {
+                http_response_code(400);
+                echo json_encode(["error" => "Cet email est déjà utilisé."]);
+                exit;
+            }
+
+            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+            $sql = "INSERT INTO users (full_name, email, password_hash, phone, role_id) 
+                    VALUES (:full_name, :email, :password_hash, :phone, :role_id)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':full_name' => $fullName,
+                ':email' => $email,
+                ':password_hash' => $passwordHash,
+                ':phone' => $phone,
+                ':role_id' => $roleId
+            ]);
+
+            echo json_encode(["message" => "Utilisateur créé avec succès", "id" => $pdo->lastInsertId()]);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(["error" => $e->getMessage()]);
+        }
+        break;
 
     case 'PUT':
         verifyCsrfToken();

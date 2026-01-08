@@ -46,7 +46,7 @@ function App() {
                 <Route path="/faire-un-don/~mon-don" element={<Donation />} />
                 <Route path="/admin" element={<AdminLogin />} />
                 <Route path="/admin/dashboard" element={
-                    <ProtectedRoute role="Admin">
+                    <ProtectedRoute role="Staff">
                         <Dashboard />
                     </ProtectedRoute>
                 } />

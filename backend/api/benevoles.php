@@ -6,7 +6,7 @@ header("Content-Type: application/json; charset=UTF-8");
 require_once __DIR__ . "/../config/db.php";
 require_once __DIR__ . "/auth_middleware.php";
 
-checkAdminAuth();
+checkStaffAuth();
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -56,6 +56,57 @@ switch ($method) {
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(["error" => "Erreur lors de l'ajout : " . $e->getMessage()]);
+        }
+        break;
+
+    case 'PUT':
+        verifyCsrfToken();
+        $data = json_decode(file_get_contents("php://input"), true);
+        $id = $data['id'] ?? null;
+
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(["error" => "ID manquant pour la modification"]);
+            break;
+        }
+
+        try {
+            $sql = "UPDATE benevoles SET 
+                        nom = :nom,
+                        prenom = :prenom,
+                        email = :email,
+                        telephone = :telephone,
+                        date_naissance = :date_naissance,
+                        ville = :ville,
+                        profession = :profession,
+                        cotisation = :cotisation,
+                        disponibilite = :disponibilite,
+                        regime_alimentaire = :regime_alimentaire,
+                        restrictions_sante = :restrictions_sante,
+                        champs_complementaires = :champs_complementaires
+                    WHERE id = :id";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':nom' => $data['nom'],
+                ':prenom' => $data['prenom'],
+                ':email' => $data['email'],
+                ':telephone' => $data['telephone'],
+                ':date_naissance' => $data['dateNaissance'] ?? ($data['date_naissance'] ?? null),
+                ':ville' => $data['ville'],
+                ':profession' => $data['profession'],
+                ':cotisation' => $data['cotisation'],
+                ':disponibilite' => $data['dispo'] ?? ($data['disponibilite'] ?? null),
+                ':regime_alimentaire' => $data['regime'] ?? ($data['regime_alimentaire'] ?? null),
+                ':restrictions_sante' => $data['sante'] ?? ($data['restrictions_sante'] ?? null),
+                ':champs_complementaires' => $data['infos'] ?? ($data['champs_complementaires'] ?? null),
+                ':id' => $id
+            ]);
+
+            echo json_encode(["message" => "Bénévole mis à jour avec succès"]);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(["error" => "Erreur lors de la modification : " . $e->getMessage()]);
         }
         break;
 

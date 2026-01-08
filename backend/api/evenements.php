@@ -6,7 +6,7 @@ header("Content-Type: application/json; charset=UTF-8");
 require_once __DIR__ . "/../config/db.php";
 require_once __DIR__ . "/auth_middleware.php";
 
-checkAdminAuth();
+checkStaffAuth();
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -54,6 +54,53 @@ switch ($method) {
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(["error" => "Erreur lors de l'ajout : " . $e->getMessage()]);
+        }
+        break;
+
+    case 'PUT':
+        verifyCsrfToken();
+        $data = json_decode(file_get_contents("php://input"), true);
+        $id = $data['id'] ?? null;
+
+        if (!$id) {
+            http_response_code(400);
+            echo json_encode(["error" => "ID manquant pour la modification"]);
+            break;
+        }
+
+        try {
+            $sql = "UPDATE evenements SET 
+                        type_element = :type_element,
+                        nom_element = :nom_element,
+                        date_debut = :date_debut,
+                        date_fin = :date_fin,
+                        lieu = :lieu,
+                        budget = :budget,
+                        logistique_materiel = :logistique_materiel,
+                        benevoles_inscrits = :benevoles_inscrits,
+                        document_url = :document_url,
+                        notes = :notes
+                    WHERE id = :id";
+
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                ':type_element' => $data['type'] ?? ($data['type_element'] ?? null),
+                ':nom_element' => $data['titre'] ?? ($data['nom_element'] ?? null),
+                ':date_debut' => $data['dateDebut'] ?? ($data['date_debut'] ?? null),
+                ':date_fin' => $data['dateFin'] ?? ($data['date_fin'] ?? null),
+                ':lieu' => $data['lieu'] ?? null,
+                ':budget' => $data['budget'] ?? null,
+                ':logistique_materiel' => $data['materiel'] ?? ($data['logistique_materiel'] ?? null),
+                ':benevoles_inscrits' => $data['benevolesInscrits'] ?? ($data['benevoles_inscrits'] ?? null),
+                ':document_url' => $data['documents'] ?? ($data['document_url'] ?? null),
+                ':notes' => $data['infos'] ?? ($data['notes'] ?? null),
+                ':id' => $id
+            ]);
+
+            echo json_encode(["message" => "Événement mis à jour avec succès"]);
+        } catch (PDOException $e) {
+            http_response_code(500);
+            echo json_encode(["error" => "Erreur lors de la modification : " . $e->getMessage()]);
         }
         break;
 

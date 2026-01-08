@@ -12,10 +12,17 @@ const ProtectedRoute = ({ children, role = 'Admin' }) => {
     try {
         const user = JSON.parse(storedUser);
 
-        // Vérification du rôle
-        if (role && user.role !== role) {
-            // Connecté mais mauvais rôle -> Redirection accueil ou login
-            return <Navigate to="/" replace />;
+        // Si on demande un rôle spécifique
+        if (role) {
+            // Cas "Staff" : tout sauf Donateur
+            if (role === 'Staff' && user.role === 'Donateur') {
+                return <Navigate to="/" replace />;
+            }
+
+            // Cas précis (pourrait être un tableau ou une chaine)
+            if (role !== 'Staff' && user.role !== role) {
+                return <Navigate to="/" replace />;
+            }
         }
 
         return children;

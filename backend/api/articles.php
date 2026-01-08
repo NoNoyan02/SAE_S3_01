@@ -22,7 +22,7 @@ switch ($method) {
         break;
 
     case 'POST':
-        checkAdminAuth(); // Admin seulement
+        checkStaffAuth(); // Staff access
         verifyCsrfToken(); // CSRF Protection
 
         $data = json_decode(file_get_contents("php://input"), true);
@@ -51,7 +51,7 @@ switch ($method) {
         break;
 
     case 'DELETE':
-        checkAdminAuth();
+        checkStaffAuth();
         verifyCsrfToken();
 
         $id = $_GET['id'] ?? null;

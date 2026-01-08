@@ -23,8 +23,8 @@ const AdminLogin = () => {
                 return;
             }
 
-            if (data.user.role !== 'Admin') {
-                setError('Accès réservé aux administrateurs.');
+            if (data.user.role === 'Donateur') {
+                setError('Accès réservé au personnel administratif.');
                 return;
             }
 

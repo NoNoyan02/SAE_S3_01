@@ -10,11 +10,12 @@ import StatCard from '../components/dashboard/StatCard';
 
 const Dashboard = () => {
   // 1. ÉTATS GÉNÉRALS
-  const [activeTab, setActiveTab] = useState('analyse');
+  const [activeTab, setActiveTab] = useState('dashboard-view');
   const [searchQuery, setSearchQuery] = useState("");
   const [showBenevoleModal, setShowBenevoleModal] = useState(false);
   const [showEventModal, setShowEventModal] = useState(false);
   const [showNewsletterModal, setShowNewsletterModal] = useState(false); // AJOUT
+  const [showUserModal, setShowUserModal] = useState(false); // AJOUT
   const [showViewModal, setShowViewModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
@@ -45,6 +46,10 @@ const Dashboard = () => {
   // FORMULAIRE NEWSLETTER
   const [formNewsletter, setFormNewsletter] = useState({
     email: '', acceptConditions: true, offre_entreprise: false
+  });
+
+  const [formUser, setFormUser] = useState({
+    full_name: '', email: '', password: '', role_id: '2', phone: ''
   });
 
   // ÉTATS POUR LES DONATEURS DE PARTENAIRES ET SUBVENTIONS
@@ -301,11 +306,64 @@ const Dashboard = () => {
   const openEdit = (item) => {
     setIsEditing(true);
     setCurrentId(item.id);
-    if (activeTab === 'benevoles') { setFormBenevole({ ...item }); setShowBenevoleModal(true); }
-    if (activeTab === 'evenements') { setFormEvent({ ...item }); setShowEventModal(true); }
+
+    if (activeTab === 'benevoles') {
+      setFormBenevole({
+        nom: item.nom || '',
+        prenom: item.prenom || '',
+        email: item.email || '',
+        telephone: item.telephone || '',
+        dateNaissance: item.date_naissance || '',
+        ville: item.ville || '',
+        profession: item.profession || '',
+        cotisation: item.cotisation || '',
+        dispo: item.disponibilite || '',
+        regime: item.regime_alimentaire || '',
+        sante: item.restrictions_sante || '',
+        infos: item.champs_complementaires || ''
+      });
+      setShowBenevoleModal(true);
+    }
+
+    if (activeTab === 'evenements' || activeTab === 'calendrier') {
+      setFormEvent({
+        type: item.type_element || 'Événement',
+        titre: item.nom_element || '',
+        dateDebut: item.date_debut || '',
+        dateFin: item.date_fin || '',
+        lieu: item.lieu || '',
+        budget: item.budget || '',
+        materiel: item.logistique_materiel || '',
+        benevolesInscrits: item.benevoles_inscrits || '',
+        documents: item.document_url || '',
+        infos: item.notes || ''
+      });
+      setShowEventModal(true);
+    }
+
+    if (activeTab === 'entreprises') {
+      setFormEntreprise({
+        nom: item.nom_entreprise || '',
+        contact: item.contact_nom_prenom || '',
+        email: item.email || '',
+        telephone: item.telephone || ''
+      });
+      setShowEntrepriseModal(true);
+    }
+
+    if (activeTab === 'subventions') {
+      setFormSubvention({
+        nom: item.nom_aide || '',
+        organisme: item.organisme || '',
+        montant: item.montant || '',
+        status: item.status || 'Reçue'
+      });
+      setShowSubventionModal(true);
+    }
+
     if (activeTab === 'communication-newsletters') {
       setFormNewsletter({
-        ...item,
+        email: item.email || '',
         acceptConditions: item.accepte_conditions == 1,
         offre_entreprise: item.offre_entreprise == 1
       });
@@ -320,10 +378,13 @@ const Dashboard = () => {
 
   const handleBenevoleSubmit = async (e) => {
     e.preventDefault();
+    const method = isEditing ? 'PUT' : 'POST';
+    const payload = isEditing ? { ...formBenevole, id: currentId } : formBenevole;
+
     await fetch('http://localhost:8000/api/benevoles.php', {
-      method: 'POST',
+      method: method,
       headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
-      body: JSON.stringify(formBenevole)
+      body: JSON.stringify(payload)
     });
     fetchData();
     closeModals();
@@ -332,10 +393,13 @@ const Dashboard = () => {
   // MODIF : Nouvelle fonction pour enregistrer une mission
   const handleEventSubmit = async (e) => {
     e.preventDefault();
+    const method = isEditing ? 'PUT' : 'POST';
+    const payload = isEditing ? { ...formEvent, id: currentId } : formEvent;
+
     await fetch('http://localhost:8000/api/evenements.php', {
-      method: 'POST',
+      method: method,
       headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
-      body: JSON.stringify(formEvent)
+      body: JSON.stringify(payload)
     });
     fetchData();
     closeModals();
@@ -344,67 +408,98 @@ const Dashboard = () => {
   // Gestion des Entreprises - CORRIGÉ
   const handleEntrepriseSubmit = async (e) => {
     e.preventDefault();
+    const method = isEditing ? 'PUT' : 'POST';
+    const payload = isEditing ? { ...formEntreprise, id: currentId } : formEntreprise;
+
     await fetch('http://localhost:8000/api/entreprises.php', {
-      method: 'POST',
+      method: method,
       headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
-      body: JSON.stringify(formEntreprise)
+      body: JSON.stringify(payload)
     });
     fetchData(); // Reload API
     setShowEntrepriseModal(false);
     setIsEditing(false);
+    setCurrentId(null);
   };
 
   // Gestion des Subventions - CORRIGÉ
   const handleSubventionSubmit = async (e) => {
     e.preventDefault();
+    const method = isEditing ? 'PUT' : 'POST';
+    const payload = isEditing ? { ...formSubvention, id: currentId } : formSubvention;
+
     await fetch('http://localhost:8000/api/subventions.php', {
-      method: 'POST',
+      method: method,
       headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
-      body: JSON.stringify(formSubvention)
+      body: JSON.stringify(payload)
     });
     fetchData();
     setShowSubventionModal(false);
     setIsEditing(false);
+    setCurrentId(null);
   };
 
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
+    const method = isEditing ? 'PUT' : 'POST';
+    const payload = isEditing ? { ...formNewsletter, id: currentId } : formNewsletter;
+
     await fetch('http://localhost:8000/api/newsletter.php', {
-      method: 'POST',
+      method: method,
       headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
-      body: JSON.stringify({
-        ...formNewsletter,
-        id: isEditing ? currentId : null,
-        acceptConditions: formNewsletter.acceptConditions,
-        acceptEntreprise: formNewsletter.offre_entreprise // map backend expected
-      })
+      body: JSON.stringify(payload)
     });
     fetchData();
     setShowNewsletterModal(false);
     setIsEditing(false);
-    setIsEditing(false);
+    setCurrentId(null);
   };
 
   // GESTION RÔLES UTILISATEURS
   const handleRoleUpdate = async (userId, newRoleId) => {
     if (!window.confirm("Voulez-vous modifier les droits de cet utilisateur ?")) return;
-
     try {
       const res = await fetch('http://localhost:8000/api/users.php', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken
+        },
         body: JSON.stringify({ id: userId, role_id: newRoleId }),
         credentials: 'include'
       });
-      const data = await res.json();
-      if (data.error) {
-        alert("Erreur: " + data.error);
-      } else {
-        alert("Rôle mis à jour !");
+      if (res.ok) {
         fetchData();
+        alert("Rôle mis à jour !");
       }
-    } catch (e) {
-      alert("Erreur serveur");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleUserSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('http://localhost:8000/api/users.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken
+        },
+        body: JSON.stringify(formUser),
+        credentials: 'include'
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert("Utilisateur créé avec succès !");
+        setShowUserModal(false);
+        fetchData();
+      } else {
+        alert("Erreur : " + data.error);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la création.");
     }
   };
 
@@ -584,6 +679,7 @@ const Dashboard = () => {
   const emojis = ['😀', '😂', '😍', '🤔', '😭', '😎', '👍', '👎', '🎉', '🔥', '❤️', '✅', '❌', '⚠️', '⭐', '💡', '📅', '📍', '✉️', '📞'];
 
   // AUTH CHECK
+  const [userData, setUserData] = useState(null);
   const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
@@ -592,7 +688,8 @@ const Dashboard = () => {
       window.location.href = '/';
     } else {
       const user = JSON.parse(storedUser);
-      setUserRole(user.role || 'Collaborateur');
+      setUserData(user);
+      setUserRole(user.role || 'Donateur');
     }
   }, []);
 
@@ -601,20 +698,38 @@ const Dashboard = () => {
     window.location.href = '/';
   };
 
+  // Protection des onglets selon le rôle
+  useEffect(() => {
+    if (!userRole) return;
+    if (userRole === 'Admin') return;
+
+    // On cherche si l'onglet actuel est autorisé
+    // Note: activeTab peut être 'calendrier' (lié à evenements) ou 'communication-xxx'
+    let baseTab = activeTab;
+    if (activeTab === 'calendrier') baseTab = 'evenements';
+    if (activeTab.startsWith('communication-')) baseTab = 'communication';
+
+    const item = allMenuItems.find(i => i.id === baseTab);
+    if (item && item.roles && !item.roles.includes(userRole)) {
+      console.warn(`Accès refusé à ${activeTab} pour le rôle ${userRole}`);
+      setActiveTab('dashboard-view');
+    }
+  }, [activeTab, userRole]);
+
   const closeModals = () => {
-    setShowBenevoleModal(false); setShowEventModal(false); setShowViewModal(false); setIsEditing(false); setShowNewsletterModal(false);
+    setShowBenevoleModal(false); setShowEventModal(false); setShowViewModal(false); setIsEditing(false); setShowNewsletterModal(false); setShowUserModal(false);
     setFormBenevole({ nom: '', prenom: '', email: '', telephone: '', ville: '', dateNaissance: '', profession: '', regime: '', sante: '', infos: '', dispo: 'Semaine', cotisation: 'À jour' });
     setFormEvent({ titre: '', date: '', lieu: '', budget: '', materiel: '', benevolesInscrits: '', documents: '' });
     setFormNewsletter({ email: '', acceptConditions: true, offre_entreprise: false });
+    setFormUser({ full_name: '', email: '', password: '', role_id: '2', phone: '' });
   };
 
   const allMenuItems = [
-    { id: 'tableau-de-bord', label: 'Tableau de bord', icon: <LayoutDashboard size={20} />, roles: ['Admin', 'Collaborateur'] },
-    { id: 'benevoles', label: 'Bénévoles', icon: <Users size={20} />, roles: ['Admin'] },
-    { id: 'partenaires', label: 'Partenaires & Donateurs', icon: <Handshake size={20} />, roles: ['Admin'] },
-    { id: 'evenements', label: 'Événements & Missions', icon: <Calendar size={20} />, roles: ['Admin', 'Collaborateur'] },
-    { id: 'communication', label: 'Communication & Contenus', icon: <Package size={20} />, roles: ['Admin'] },
-    { id: 'analyse', label: 'Analyse & Stats', icon: <BarChart3 size={20} />, roles: ['Admin'] },
+    { id: 'dashboard-view', label: 'Tableau de bord', icon: <LayoutDashboard size={20} />, roles: ['Admin', 'Responsable Bénévoles', 'Responsable Partenaires', 'Responsable Événements', 'Responsable Communication', 'Collaborateur'] },
+    { id: 'benevoles', label: 'Bénévoles', icon: <Users size={20} />, roles: ['Admin', 'Responsable Bénévoles'] },
+    { id: 'partenaires', label: 'Partenaires & Donateurs', icon: <Handshake size={20} />, roles: ['Admin', 'Responsable Partenaires'] },
+    { id: 'evenements', label: 'Événements & Missions', icon: <Calendar size={20} />, roles: ['Admin', 'Responsable Événements'] },
+    { id: 'communication', label: 'Communication & Contenus', icon: <Package size={20} />, roles: ['Admin', 'Responsable Communication'] },
     { id: 'users', label: 'Utilisateurs & Droits', icon: <ShieldCheck size={20} />, roles: ['Admin'] },
   ];
 
@@ -978,10 +1093,7 @@ const Dashboard = () => {
               {/* BOUTON MODIFIER ADAPTÉ AUX BÉNÉVOLES */}
               <button className="btn-secondary" onClick={() => {
                 setShowViewModal(false); // On ferme la vue lecture
-                setFormBenevole(selectedItem); // On pré-remplit le formulaire avec les infos de la fiche
-                setIsEditing(true); // On passe en mode édition
-                setCurrentId(selectedItem.id); // On garde l'ID pour la mise à jour
-                setShowBenevoleModal(true); // On ouvre le formulaire de saisie des bénévoles
+                openEdit(selectedItem); // Utilisation de la fonction de mapping centralisée
               }}>
                 <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER LA FICHE
               </button>
@@ -1134,10 +1246,7 @@ const Dashboard = () => {
             <div style={{ marginTop: 30, paddingTop: 20, borderTop: '1px solid #E2E8F0', display: 'flex', justifyContent: 'flex-end' }}>
               <button className="btn-secondary" onClick={() => {
                 setShowViewModal(false);
-                setFormEvent(selectedItem);
-                setIsEditing(true);
-                setCurrentId(selectedItem.id);
-                setShowEventModal(true);
+                openEdit(selectedItem);
               }}>
                 <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER LA FICHE
               </button>
@@ -1203,6 +1312,54 @@ const Dashboard = () => {
               </div>
               <div className="btn-container">
                 <button type="submit" className="btn-save">Enregistrer</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {showUserModal && (
+        <div className="modal-overlay">
+          <div className="modal-card" style={{ maxWidth: '600px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+              <h2 style={{ fontSize: 24, fontWeight: 700 }}>Nouvel Administrateur / Staff</h2>
+              <X onClick={closeModals} style={{ cursor: 'pointer', color: '#6B7280' }} />
+            </div>
+            <form onSubmit={handleUserSubmit}>
+              <div className="form-group">
+                <label>Nom complet <span>*</span></label>
+                <input type="text" required value={formUser.full_name} onChange={e => setFormUser({ ...formUser, full_name: e.target.value })} placeholder="Ex: Jean Dupont" />
+              </div>
+              <div className="form-group">
+                <label>Email <span>*</span></label>
+                <input type="email" required value={formUser.email} onChange={e => setFormUser({ ...formUser, email: e.target.value })} placeholder="email@exemple.com" />
+              </div>
+              <div className="form-group">
+                <label>Mot de passe <span>*</span></label>
+                <input type="password" required value={formUser.password} onChange={e => setFormUser({ ...formUser, password: e.target.value })} placeholder="Min 6 caractères" />
+              </div>
+              <div className="form-group">
+                <label>Téléphone</label>
+                <input type="text" value={formUser.phone} onChange={e => setFormUser({ ...formUser, phone: e.target.value })} placeholder="06..." />
+              </div>
+              <div className="form-group">
+                <label>Rôle <span>*</span></label>
+                <select
+                  required
+                  value={formUser.role_id}
+                  onChange={e => setFormUser({ ...formUser, role_id: e.target.value })}
+                  style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid #E2E8F0' }}
+                >
+                  <option value="1">Admin Bureau</option>
+                  <option value="2">Collaborateur</option>
+                  <option value="6">Responsable Bénévoles</option>
+                  <option value="7">Responsable Partenaires</option>
+                  <option value="8">Responsable Événements</option>
+                  <option value="9">Responsable Communication</option>
+                </select>
+              </div>
+              <div className="btn-container" style={{ marginTop: 30 }}>
+                <button type="submit" className="btn-save" style={{ width: '100%' }}>CRÉER LE COMPTE</button>
               </div>
             </form>
           </div>
@@ -1325,10 +1482,10 @@ const Dashboard = () => {
         </nav>
         <div className="sidebar-footer">
           <div className="user-info">
-            <div className="avatar">AD</div>
+            <div className="avatar">{userData?.full_name?.substring(0, 2).toUpperCase() || '??'}</div>
             <div>
-              <p style={{ margin: 0, fontSize: '13px', fontWeight: 'bold' }}>Admin Bureau</p>
-              <p style={{ margin: 0, fontSize: '10px', color: '#718096' }}>Accès Protégé</p>
+              <p style={{ margin: 0, fontSize: '13px', fontWeight: 'bold' }}>{userData?.full_name || 'Utilisateur'}</p>
+              <p style={{ margin: 0, fontSize: '10px', color: '#718096' }}>{userRole || 'Accès Protégé'}</p>
             </div>
           </div>
           <button className="logout-btn" onClick={handleLogout}><LogOut size={14} style={{ marginRight: 8 }} /> DÉCONNEXION</button>
@@ -1362,16 +1519,14 @@ const Dashboard = () => {
                   'communication': 'Outils de communication',
                   'communication-articles': 'Rédaction de contenu',
                   'communication-newsletters': 'Gestion des abonnés',
-                  'analyse': 'Statistiques et rapports',
-                  'users': 'Administration des accès',
-                  'tableau-de-bord': 'Votre espace personnel'
+                  'dashboard-view': 'Statistiques et rapports',
                 }[activeTab] || 'Gestion interne de l\'association'
               }
             </p>
           </div>
 
           {/* On cache les actions si Analyse OU Calendrier */}
-          {activeTab !== 'analyse' && activeTab !== 'calendrier' && activeTab !== 'partenaires' && (
+          {activeTab !== 'dashboard-view' && activeTab !== 'calendrier' && activeTab !== 'partenaires' && (
             <div className="header-actions">
               <div className="search-box">
                 <Search style={{ position: 'absolute', left: 12, top: 13, color: '#A0AEC0' }} size={18} />
@@ -1387,6 +1542,10 @@ const Dashboard = () => {
                 setIsEditing(false);
                 if (activeTab === 'benevoles') setShowBenevoleModal(true);
                 if (activeTab === 'evenements') setShowEventModal(true);
+                if (activeTab === 'users') {
+                  setFormUser({ full_name: '', email: '', password: '', role_id: '2', phone: '' });
+                  setShowUserModal(true);
+                }
               }}>
                 <Plus size={18} /> NOUVEAU
               </button>
@@ -1394,10 +1553,10 @@ const Dashboard = () => {
           )}
         </header>
 
-        {(activeTab === 'analyse' || activeTab === 'calendrier') ? (
+        {(activeTab === 'dashboard-view' || activeTab === 'calendrier') ? (
           <div className="content-body">
             {/* On n'affiche les stats que sur l'onglet Analyse */}
-            {activeTab === 'analyse' && (
+            {activeTab === 'dashboard-view' && (
               <div className="stats-grid">
                 <StatCard label="Bénévoles Actifs" value={benevoles.length} icon={UserCheck} />
                 <StatCard label="Événements" value={events.length} icon={Calendar} />
@@ -1409,7 +1568,7 @@ const Dashboard = () => {
 
             {/* CONTENEUR DYNAMIQUE */}
 
-            <div className={activeTab === 'analyse' ? "analysis-section" : ""}>
+            <div className={activeTab === 'dashboard-view' ? "analysis-section" : ""}>
 
               <div className="card" style={{
                 width: '100%',
@@ -1418,7 +1577,7 @@ const Dashboard = () => {
               }}>
 
                 {/* Le titre "Analyse" n'apparaît QUE sur l'onglet analyse */}
-                {activeTab === 'analyse' && (
+                {activeTab === 'dashboard-view' && (
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
                     <h3 style={{ margin: 0, fontWeight: 900, display: 'flex', alignItems: 'center' }}>
                       <TrendingUp size={20} color="#ED1B24" style={{ marginRight: 10 }} />
@@ -1512,7 +1671,7 @@ const Dashboard = () => {
                       })()}
                     </div>
                   </div>
-                ) : activeTab === 'analyse' ? (
+                ) : activeTab === 'dashboard-view' ? (
 
                   <div style={{ display: 'grid', gap: '20px' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px' }}>
@@ -1559,22 +1718,28 @@ const Dashboard = () => {
                     {/* 2. DONS HEBDOMADAIRES */}
                     <div className="card">
                       <h4 style={{ margin: '0 0 20px 0', color: '#718096' }}>Dons Hebdomadaires (Dernières 12 semaines)</h4>
-                      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', height: '150px' }}>
-                        {stats?.weekly_donations?.map((w, i) => (
-                          <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-                            <div
-                              style={{
-                                height: `${Math.min((w.total / 2000) * 100, 100)}%`,
-                                width: '12px',
-                                backgroundColor: '#3182CE',
-                                borderRadius: '4px 4px 0 0',
-                                marginBottom: '5px'
-                              }}
-                              title={`${w.total} €`}
-                            ></div>
-                            <span style={{ fontSize: '9px', color: '#A0AEC0' }}>{w.semaine.split('-')[1]}</span>
-                          </div>
-                        ))}
+                      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', height: '150px', paddingTop: '20px' }}>
+                        {(() => {
+                          const weeklyData = stats?.weekly_donations || [];
+                          const maxWeekly = Math.max(...weeklyData.map(w => Number(w.total)), 1);
+
+                          return weeklyData.map((w, i) => (
+                            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                              <div
+                                style={{
+                                  height: `${(Number(w.total) / maxWeekly) * 120}px`, // Max 120px to leave space for label
+                                  width: '12px',
+                                  backgroundColor: '#3182CE',
+                                  borderRadius: '4px 4px 0 0',
+                                  marginBottom: '5px',
+                                  transition: 'height 0.5s ease'
+                                }}
+                                title={`${w.total} €`}
+                              ></div>
+                              <span style={{ fontSize: '9px', color: '#A0AEC0', whiteSpace: 'nowrap' }}>{w.date_label}</span>
+                            </div>
+                          ));
+                        })()}
                         {(!stats?.weekly_donations || stats.weekly_donations.length === 0) && <p style={{ width: '100%', textAlign: 'center', color: '#A0AEC0', fontStyle: 'italic' }}>Pas de données récentes</p>}
                       </div>
                     </div>
@@ -1624,7 +1789,7 @@ const Dashboard = () => {
 
                 ) : null}
               </div>
-              {activeTab === 'analyse' && (
+              {activeTab === 'dashboard-view' && (
                 <div className="card">
                   <h3 style={{ margin: '0 0 20px 0', fontSize: '24px', fontWeight: 800, fontFamily: 'Outfit, sans-serif' }}>Derniers Donateurs</h3>
                   {[...donateursData].sort((a, b) => new Date(b.date_don) - new Date(a.date_don)).slice(0, 4).map(d => (
@@ -1641,6 +1806,105 @@ const Dashboard = () => {
             </div>
 
           </div >
+        ) : activeTab === 'communication' ? (
+          <div style={{ display: 'grid', gap: '30px' }}>
+            <div className="stats-grid">
+              <StatCard label="Articles publiés" value={articles.length} icon={FileText} color="#ED1B24" />
+              <StatCard label="Abonnés Newsletter" value={newsletters.length} icon={Users} color="#ED1B24" />
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '20px' }}>
+              {/* Derniers Articles */}
+              <div className="card">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                  <h3 style={{ margin: 0, fontWeight: 900, fontSize: '20px', fontFamily: 'Outfit, sans-serif' }}>Derniers Articles</h3>
+                  <button
+                    onClick={() => setActiveTab('communication-articles')}
+                    style={{ background: '#F4F7F9', border: 'none', padding: '5px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer', color: '#718096' }}
+                  >
+                    GÉRER LES ARTICLES
+                  </button>
+                </div>
+                {articles.length > 0 ? (
+                  [...articles].reverse().slice(0, 5).map(art => (
+                    <div key={art.id} className="activity-item">
+                      <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                        <div style={{ width: 45, height: 45, borderRadius: 10, overflow: 'hidden', background: '#F4F7F9', flexShrink: 0, border: '1px solid #E2E8F0' }}>
+                          <img src={art.image_url || "https://placehold.co/100x100?text=Art"} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
+                        </div>
+                        <div style={{ overflow: 'hidden' }}>
+                          <div style={{ fontSize: 13, fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} dangerouslySetInnerHTML={{ __html: art.title }}></div>
+                          <div style={{ fontSize: 11, color: '#718096', marginTop: 2 }}>Par {art.author || 'Équipe'} • {new Date(art.created_at).toLocaleDateString()}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '40px 20px', color: '#A0AEC0' }}>
+                    <FileText size={32} style={{ marginBottom: 10, opacity: 0.3 }} />
+                    <p style={{ fontSize: 13 }}>Aucun article publié pour le moment.</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Derniers Abonnés */}
+              <div className="card">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                  <h3 style={{ margin: 0, fontWeight: 900, fontSize: '20px', fontFamily: 'Outfit, sans-serif' }}>Nouveaux Abonnés</h3>
+                  <button
+                    onClick={() => setActiveTab('communication-newsletters')}
+                    style={{ background: '#F4F7F9', border: 'none', padding: '5px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer', color: '#718096' }}
+                  >
+                    GÉRER LA LISTE
+                  </button>
+                </div>
+                {newsletters.length > 0 ? (
+                  [...newsletters].reverse().slice(0, 5).map((news, i) => (
+                    <div key={i} className="activity-item">
+                      <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+                        <div className="avatar" style={{ background: '#FEE2E2', color: '#ED1B24', fontWeight: '800', fontSize: 14 }}>
+                          {news.email.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <div style={{ fontSize: 13, fontWeight: 'bold' }}>{news.email}</div>
+                          <div style={{ fontSize: 11, color: '#718096' }}>Inscrit le {new Date(news.date_inscription).toLocaleDateString()}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '40px 20px', color: '#A0AEC0' }}>
+                    <Users size={32} style={{ marginBottom: 10, opacity: 0.3 }} />
+                    <p style={{ fontSize: 13 }}>Aucun abonné à la newsletter.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Actions Rapides */}
+            <div className="card" style={{ background: '#FFF5F5', border: '1px dashed #FEB2B2', borderRadius: '16px' }}>
+              <h4 style={{ margin: '0 0 15px 0', fontSize: '16px', fontWeight: 800, color: '#C53030' }}>Actions de communication rapides</h4>
+              <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+                <button
+                  className="btn-add"
+                  onClick={() => setActiveTab('communication-articles')}
+                  style={{ background: '#ED1B24', display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px' }}
+                >
+                  <Plus size={18} /> RÉDIGER UN NOUVEL ARTICLE
+                </button>
+                <button
+                  onClick={() => {
+                    setIsEditing(false);
+                    setFormNewsletter({ email: '', acceptConditions: false, offre_entreprise: false });
+                    setShowNewsletterModal(true);
+                  }}
+                  style={{ background: 'white', color: '#1A202C', border: '1px solid #E2E8F0', borderRadius: '10px', padding: '10px 20px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
+                >
+                  <Plus size={18} /> AJOUTER UN ABONNÉ MANUELLEMENT
+                </button>
+              </div>
+            </div>
+          </div>
         ) : activeTab === 'communication-newsletters' ? (
           <div className="card">
             <h3 style={{ margin: '0 0 20px 0', fontSize: '24px', fontWeight: 900, fontFamily: 'Outfit, sans-serif' }}>Abonnés Newsletter ({newsletters.length})</h3>
@@ -1756,7 +2020,7 @@ const Dashboard = () => {
                         <div style={{ fontSize: 11, color: '#A0AEC0' }}>{b.telephone}</div>
                       </td>
                       <td>{b.ville}</td>
-                      <td><span className={`status-badge status-${b.status}`}>{b.cotisation}</span></td>
+                      <td><span className={`status - badge status - ${b.status}`}>{b.cotisation}</span></td>
                       <td>
                         <div style={{ display: 'flex', gap: 10 }}>
                           <Edit size={16} onClick={() => openEdit(b)} style={{ cursor: 'pointer', color: '#A0AEC0' }} />
@@ -1826,58 +2090,11 @@ const Dashboard = () => {
             </table>
           </div>
         )
-          : activeTab === 'tableau-de-bord' ? (
-            <div style={{ display: 'grid', gap: '30px' }}>
-              <div className="card">
-                <h3 style={{ fontWeight: 800, color: '#2D3748', marginBottom: '10px', fontSize: '24px', fontFamily: 'Outfit, sans-serif' }}>Bienvenue sur votre Espace Donateur</h3>
-                <p style={{ color: '#718096' }}>Retrouvez ici l'historique de vos dons et téléchargez vos reçus fiscaux.</p>
-              </div>
-
-              <div className="card">
-                <h3 style={{ marginBottom: '20px', fontWeight: 900, fontSize: '24px', fontFamily: 'Outfit, sans-serif' }}>Historique de vos dons</h3>
-                <div className="table-container">
-                  <table>
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Montant</th>
-                        <th>Moyen de Paiement</th>
-                        <th>Reçu Fiscal</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {donateursData.length > 0 ? donateursData.map(d => (
-                        <tr key={d.id}>
-                          <td>{new Date(d.date_don).toLocaleDateString()}</td>
-                          <td style={{ fontWeight: 'bold', color: '#38A169' }}>{d.montant} €</td>
-                          <td>{d.moyen_paiement}</td>
-                          <td>
-                            <button
-                              onClick={() => window.open(`http://localhost:8000/api/receipt.php?id=${d.id}`, '_blank')}
-                              style={{
-                                background: '#ED1B24', color: 'white', border: 'none', padding: '8px 15px',
-                                borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', fontSize: '12px',
-                                display: 'flex', alignItems: 'center', gap: '5px'
-                              }}
-                            >
-                              <Printer size={14} /> Télécharger Reçu
-                            </button>
-                          </td>
-                        </tr>
-                      )) : (
-                        <tr><td colSpan="4" style={{ textAlign: 'center', padding: '20px' }}>Aucun don enregistré pour le moment.</td></tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+          : activeTab !== 'dashboard-view' && activeTab !== 'calendrier' && activeTab !== 'benevoles' && activeTab !== 'evenements' && activeTab !== 'partenaires' && activeTab !== 'communication' && activeTab !== 'communication-articles' && activeTab !== 'communication-newsletters' && activeTab !== 'users' && (
+            <div className="placeholder-chart" style={{ height: 500 }}>
+              <p>Interface de gestion pour le module {activeTab}<br />Utilisez la recherche pour filtrer les résultats.</p>
             </div>
           )
-            : activeTab !== 'analyse' && activeTab !== 'calendrier' && activeTab !== 'benevoles' && activeTab !== 'evenements' && activeTab !== 'partenaires' && activeTab !== 'communication' && activeTab !== 'communication-articles' && activeTab !== 'communication-newsletters' && activeTab !== 'users' && (
-              <div className="placeholder-chart" style={{ height: 500 }}>
-                <p>Interface de gestion pour le module {activeTab}<br />Utilisez la recherche pour filtrer les résultats.</p>
-              </div>
-            )
         }
 
         {
@@ -2181,15 +2398,7 @@ const Dashboard = () => {
                       <div style={{ marginTop: '15px', display: 'flex', justifyContent: 'flex-end' }}>
                         <button className="btn-secondary" onClick={() => {
                           setShowViewModal(false);
-                          if (selectedItem.viewType === 'entreprise') {
-                            setFormEntreprise(selectedItem);
-                            setShowEntrepriseModal(true);
-                          } else {
-                            setFormSubvention(selectedItem);
-                            setShowSubventionModal(true);
-                          }
-                          setIsEditing(true);
-                          setCurrentId(selectedItem.id);
+                          openEdit(selectedItem);
                         }}>
                           <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER LA FICHE
                         </button>
@@ -2856,34 +3065,48 @@ const Dashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {users.map(u => (
-                      <tr key={u.id}>
-                        <td>
-                          <div style={{ fontWeight: 'bold' }}>{u.full_name}</div>
-                          <div style={{ fontSize: '12px', color: '#718096' }}>Inscrit le {new Date(u.created_at).toLocaleDateString()}</div>
-                        </td>
-                        <td>{u.email}</td>
-                        <td>{u.phone || '-'}</td>
-                        <td>
-                          <span className={`status-badge ${u.role_id == 1 ? 'status-actif' : 'status-retard'}`} style={{ background: u.role_id == 1 ? '#C6F6D5' : '#E2E8F0', color: u.role_id == 1 ? '#22543D' : '#4A5568' }}>
-                            {u.role_name || (u.role_id == 1 ? 'Admin' : 'Donateur')}
-                          </span>
-                        </td>
-                        <td>
-                          {u.role_id == 1 ? (
-                            <button className="action-btn" onClick={() => handleRoleUpdate(u.id, 3)} style={{ color: 'orange', border: '1px solid orange', padding: '5px 10px', borderRadius: '5px', background: 'white', cursor: 'pointer' }}>
-                              Retirer Droits Admin
-                            </button>
-                          ) : (
-                            <button className="action-btn" onClick={() => handleRoleUpdate(u.id, 1)} style={{ color: 'green', border: '1px solid green', padding: '5px 10px', borderRadius: '5px', background: 'white', cursor: 'pointer' }}>
-                              Passer Admin
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                    {users.length === 0 && (
-                      <tr><td colSpan="5" style={{ textAlign: 'center', padding: '30px' }}>Aucun utilisateur trouvé.</td></tr>
+                    {users
+                      .filter(u => u.role_id !== null && u.role_id !== undefined && u.role_id != 3) // Filtrage des donateurs
+                      .map(u => (
+                        <tr key={u.id}>
+                          <td>
+                            <div style={{ fontWeight: 'bold' }}>{u.full_name}</div>
+                            <div style={{ fontSize: '12px', color: '#718096' }}>Inscrit le {new Date(u.created_at).toLocaleDateString()}</div>
+                          </td>
+                          <td>{u.email}</td>
+                          <td>{u.phone || '-'}</td>
+                          <td>
+                            <span className={`status-badge ${u.role_id == 1 ? 'status-actif' : 'status-retard'}`} style={{ background: u.role_id == 1 ? '#C6F6D5' : '#E2E8F0', color: u.role_id == 1 ? '#22543D' : '#4A5568' }}>
+                              {u.role_name || (u.role_id == 1 ? 'Admin' : 'Staff')}
+                            </span>
+                          </td>
+                          <td>
+                            <select
+                              value={u.role_id || ''}
+                              onChange={(e) => handleRoleUpdate(u.id, e.target.value)}
+                              style={{
+                                padding: '6px 10px',
+                                borderRadius: '8px',
+                                border: '1px solid #E2E8F0',
+                                fontSize: '12px',
+                                backgroundColor: 'white',
+                                cursor: 'pointer',
+                                outline: 'none',
+                                fontWeight: '600'
+                              }}
+                            >
+                              <option value="1">Admin</option>
+                              <option value="2">Collaborateur</option>
+                              <option value="6">Responsable Bénévoles</option>
+                              <option value="7">Responsable Partenaires</option>
+                              <option value="8">Responsable Événements</option>
+                              <option value="9">Responsable Communication</option>
+                            </select>
+                          </td>
+                        </tr>
+                      ))}
+                    {users.filter(u => u.role_id !== null && u.role_id !== undefined && u.role_id != 3).length === 0 && (
+                      <tr><td colSpan="5" style={{ textAlign: 'center', padding: '30px' }}>Aucun administrateur trouvé.</td></tr>
                     )}
                   </tbody>
                 </table>
