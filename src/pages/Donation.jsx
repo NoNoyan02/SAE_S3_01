@@ -41,19 +41,6 @@ export default function Donation() {
     const [donorText, setDonorText] = useState("");
     const [openAccordion, setOpenAccordion] = useState(null);
 
-    // Responsive State
-    const [isDesktop, setIsDesktop] = useState(window.innerWidth > 1500);
-    const [activeSection, setActiveSection] = useState(1);
-
-    // Add resize listener
-    useEffect(() => {
-        const handleResize = () => {
-            setIsDesktop(window.innerWidth > 1500);
-        };
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
     // États du formulaire (Issu de message (1).txt)
     const [email, setEmail] = useState("");
     const [civilite, setCivilite] = useState("");
@@ -383,10 +370,9 @@ export default function Donation() {
                 .video-container {
                     position: relative;
                     width: 100%;
-                    /* Dynamic height based on screen size via JS class or media query */
-                    height: ${isDesktop ? '100vh' : 'auto'};
-                    min-height: 100vh;
-                    overflow-y: ${isDesktop ? 'hidden' : 'auto'};
+                    min-height: 100vh; /* Allow growth */
+                    height: auto;
+                    overflow-y: auto; /* Enable scroll */
                     overflow-x: hidden;
                     display: flex;
                     flex-direction: column;
@@ -408,7 +394,7 @@ export default function Donation() {
                 /* --- HEADER & LOGO --- */
                 .header-donation {
                     width: 100%;
-                    max-width: 1600px;
+                    max-width: 1800px;
                     padding: 10px 20px;
                     margin-top: 60px; /* Espace barre fixe */
                     margin-bottom: 10px; /* Réduit pour gagner de la place */
@@ -423,7 +409,7 @@ export default function Donation() {
                 .logo-link {
                     position: absolute;
                     top: 0;
-                    left: 20px;
+                    left: 0;
                     z-index: 20;
                 }
 
@@ -479,7 +465,8 @@ export default function Donation() {
 
                 /* --- DONATION BAR & TICKER --- */
                 .donation-bar {
-                    position: fixed;
+                    position: relative;
+                    width: 100%;
                     top: 0;
                     left: 0;
                     right: 0;
@@ -527,62 +514,43 @@ export default function Donation() {
                     }
                 }
 
-                /* --- MAIN SECTION (FLEXBOX) --- */
+                /* --- MAIN SECTION (Responsive Hybrid) --- */
                 .don-section {
                     display: flex;
-                    flex-direction: ${isDesktop ? 'row' : 'column'};
-                    justify-content: center;
-                    align-items: ${isDesktop ? 'flex-start' : 'center'};
-                    gap: 20px; /* Gap réduit */
+                    flex-direction: column; /* Default: Stacked (Mobile/Laptop) */
+                    align-items: center;
+                    justify-content: flex-start;
+                    gap: 20px;
                     width: 100%;
-                    max-width: 1200px;
-                    padding: 0 20px;
+                    max-width: 1400px;
+                    padding: 0 20px 40px;
                     z-index: 2;
-                    transform: scale(0.95); /* Légère réduction pour tout faire tenir si besoin */
-                    flex-grow: 1; /* Push footer down */
-                    margin-bottom: 40px;
+                    flex-grow: 1;
                 }
 
-                /* CARTES COMMUNES (MODERNISÉES) */
+                /* CARTES COMMUNES */
                 .don-module, .coordonnees-card, .reglement-card {
                     background: var(--card-bg);
                     border-radius: 16px;
-                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Ombres plus douces et larges */
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
                     overflow: hidden;
-                    width: 360px;
+                    width: 100%;
+                    max-width: 500px; /* Max width when stacked */
                     flex-shrink: 0;
-                    backdrop-filter: blur(10px); /* petit effet glassmorphism si supporté */
+                    backdrop-filter: blur(10px);
                 }
 
                 .don-header, .card-header {
                     background: var(--primary-color);
                     color: #fff;
                     text-align: center;
-                    padding: 12px 0; /* Reduced padding */
-                    font-size: 1rem; /* Reduced from 1.1rem */
+                    padding: 12px 0; 
+                    font-size: 1rem;
                     font-weight: 700;
                     letter-spacing: 0.5px;
-                    cursor: ${isDesktop ? 'default' : 'pointer'}; /* Clickable on mobile */
                 }
 
-                .don-header h2, .card-header h2 { 
-                    margin: 0; 
-                    font-size: inherit; 
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    gap: 10px;
-                }
-
-                /* Mobile Toggle Icon */
-                .mobile-toggle {
-                    display: ${isDesktop ? 'none' : 'inline-block'};
-                    transition: transform 0.3s;
-                }
-                
-                .mobile-toggle.open {
-                    transform: rotate(180deg);
-                }
+                .don-header h2, .card-header h2 { margin: 0; font-size: inherit; }
 
                 /* --- TABS --- */
                 .don-tabs {
@@ -866,14 +834,17 @@ export default function Donation() {
                     z-index: 50;
                     pointer-events: none; /* Laisse passer les clics autour */
                     margin-top: auto; /* Push to bottom */
+                    background: transparent; /* Ensure no odd background blocking */
                 }
 
                 .footer-inner {
                     max-width: 1200px;
                     margin: 0 auto;
                     display: flex;
+                    flex-direction: column; /* MOBILE DEFAULT: Stacked Accordion */
+                    align-items: center;
                     justify-content: center;
-                    gap: 20px;
+                    gap: 15px;
                     pointer-events: auto; /* Réactive les clics sur les boutons */
                 }
 
@@ -884,7 +855,8 @@ export default function Donation() {
                     backdrop-filter: blur(5px);
                     border: 1px solid rgba(255,255,255,0.2);
                     border-radius: 16px;
-                    width: 300px; /* Un peu plus petit */
+                    width: 90%;
+                    max-width: 500px;
                     transition: background 0.3s;
                 }
                 
@@ -906,18 +878,17 @@ export default function Donation() {
                     font-size: 1rem;
                 }
 
-                /* Animation d'ouverture */
-                /* Animation d'ouverture VERS LE HAUT (Drop-up) */
+                /* Animation d'ouverture VERS LE HAUT (Desktop) ou BAS (Mobile) */
                 .acc-body {
-                    position: absolute;
-                    bottom: 100%; /* Juste au-dessus du header */
+                    position: relative; /* Mobile: Flow naturally (Down) */
+                    bottom: auto;
                     left: 0;
                     width: 100%;
-                    margin-bottom: 10px;
+                    margin-top: 10px;
                     max-height: 0;
                     overflow: hidden;
                     transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), padding 0.4s, opacity 0.4s;
-                    background: rgba(0, 0, 0, 0.25); /* Fond sombre pour lisibilité */
+                    background: rgba(0, 0, 0, 0.25);
                     border-radius: 16px;
                     border: 1px solid rgba(255,255,255,0.1);
                     opacity: 0;
@@ -948,20 +919,64 @@ export default function Donation() {
 
                 }
 
-                /* RESPONSIVE */
-                @media (max-width: 1100px) {
+                /* RESPONSIVE DESKTOP (> 1500px w + 850px h) : Modules Side-by-Side but Scrollable/Relative */
+                @media (min-width: 1500px) and (min-height: 850px) {
+                    .video-container {
+                        /* Unlock scroll: behave like mobile but wider */
+                        height: auto;
+                        min-height: 100vh;
+                        overflow-y: auto; 
+                        justify-content: flex-start; /* Flow from top */
+                    }
+
+                    /* Tighten vertical spacing for Desktop to fit screen */
+                    .header-donation {
+                        margin-top: 40px; 
+                        margin-bottom: 50px; 
+                        padding-top: 0;
+                        padding-bottom: 0;
+                    }
+                    
                     .don-section {
-                        flex-wrap: wrap;
-                        align-items: center;
+                        flex-direction: row; /* Side by side modules */
+                        align-items: flex-start;
+                        justify-content: center;
+                        padding-bottom: 40px; /* Reduced from 20px */
+                        margin-top: auto; 
+                        margin-bottom: auto;
                     }
+                    
                     .don-module, .coordonnees-card, .reglement-card {
-                        width: 100%;
-                        max-width: 500px;
+                        width: 360px;
+                        max-width: none;
                     }
-                    .header-donation { margin-top: 100px; flex-direction: column; }
-                    .logo-link { 
-                        position: static; 
-                        margin-bottom: 20px; 
+                    
+                    /* Footer stays relative but items are row */
+                    .don-footer {
+                        position: relative; 
+                        width: 100%;
+                        margin-top: 0;
+                    }
+
+                    .footer-inner {
+                        flex-direction: row; /* Side-by-side items */
+                        align-items: flex-end;
+                        gap: 20px;
+                    }
+
+                    /* Accordion body: Relative Drop-DOWN for desktop too */
+                    .acc-body {
+                        position: relative; /* Expand naturally pushing content down */
+                        bottom: auto;
+                        left: 0;
+                        margin-bottom: 0;
+                        margin-top: 10px;
+                        background: rgba(0, 0, 0, 0.25);
+                        box-shadow: none;
+                    }
+
+                    .acc {
+                        width: 300px;
                     }
                 }
 
@@ -1010,15 +1025,11 @@ export default function Donation() {
                 {/* Section principale */}
                 <section className="don-section">
                     {/* Bloc 1: Mon soutien */}
-                    <section className="don-module">
-                        <div className="don-header" onClick={() => !isDesktop && setActiveSection(activeSection === 1 ? null : 1)}>
-                            <h2>
-                                1. Mon soutien
-                                <span className={`mobile-toggle ${activeSection === 1 ? 'open' : ''}`}>▼</span>
-                            </h2>
+                    <section><section className="don-module">
+                        <div className="don-header">
+                            <h2>1. Mon soutien</h2>
                         </div>
 
-                        <div style={{ display: (isDesktop || activeSection === 1) ? 'block' : 'none' }}>
                         <div className="don-tabs">
                             <button
                                 className={`tab ${activeTab === "once" ? "active" : ""}`}
@@ -1099,21 +1110,16 @@ export default function Donation() {
                                 <p>Après déduction fiscale, votre don ne vous coûte que <strong>{deduction} €</strong>.</p>
                             </div>
                         )}
-                        
-                        </div> {/* End of Accordion Body Wrapper */}
-                    </section>
+                    </section></section>
 
                     {/* Bloc 2: Mes coordonnées */}
                     <section className="don-coordonnees">
                         <div className="coordonnees-card">
-                            <div className="card-header" onClick={() => !isDesktop && setActiveSection(activeSection === 2 ? null : 2)}>
-                                <h2>
-                                    2. Mes coordonnées
-                                    <span className={`mobile-toggle ${activeSection === 2 ? 'open' : ''}`}>▼</span>
-                                </h2>
+                            <div className="card-header">
+                                <h2>2. Mes coordonnées</h2>
                             </div>
 
-                            <form className="card-body" style={{ display: (isDesktop || activeSection === 2) ? 'block' : 'none' }}>
+                            <form className="card-body">
                                 <div className="form-group-donation">
                                     <label htmlFor="email">Email *</label>
                                     <input 
@@ -1333,14 +1339,10 @@ export default function Donation() {
                     {/* Bloc 3: Mon règlement */}
                     <section className="don-reglement">
                         <div className="reglement-card">
-                            <div className="card-header" onClick={() => !isDesktop && setActiveSection(activeSection === 3 ? null : 3)}>
-                                <h2>
-                                    3. Mon règlement
-                                    <span className={`mobile-toggle ${activeSection === 3 ? 'open' : ''}`}>▼</span>
-                                </h2>
+                            <div className="card-header">
+                                <h2>3. Mon règlement</h2>
                             </div>
                             
-                            <div style={{ display: (isDesktop || activeSection === 3) ? 'block' : 'none' }}>
                             <div className="secure-box" style={{borderTop:'none', borderBottom:'1px solid #eee', background:'#fff', padding:'15px', display:'flex', alignItems:'center', gap:'10px'}}>
                                 <img src={bouclier} alt="Securisé" className="lock-icon" style={{width:'20px', height:'20px'}} />
                                 <p style={{margin:0, fontSize:'0.85rem', color:'#555'}}>
@@ -1442,13 +1444,10 @@ export default function Donation() {
                             <div style={{textAlign: 'center', paddingBottom: '20px'}}>
                                 <img src={bouclier} alt="Securisé" style={{width: '50px', opacity: 0.3}} />
                             </div>
-                            </div>
                         </div>
                     </section>
                 </section>
-            </div>
-
-            {/* Footer Accordéon Modernisé */}
+                {/* Footer Accordéon Modernisé */}
             <footer className="don-footer">
                 <div className="footer-inner">
                     {[
@@ -1497,6 +1496,9 @@ export default function Donation() {
                     ))}
                 </div>
             </footer>
+            </div>
+
+            
         </>
     );
 }
