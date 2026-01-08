@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import {
   LayoutDashboard, Users, Handshake, Calendar,
   BarChart3, LogOut, Plus, Search,
-  TrendingUp, Wallet, UserCheck, ShieldCheck, FileText, Edit, Trash2, X, Eye, Package, MapPin
+  TrendingUp, Wallet, UserCheck, ShieldCheck, FileText, Edit, Trash2, X, Eye, Package, MapPin,
+  Undo2, Redo2, Bold, Italic, Underline, AlignLeft, AlignCenter, Outdent, Indent, List, ListOrdered,
+  Omega, Smile, Image, PlaySquare, Link, MoreHorizontal, Maximize, Printer, AlignRight, ChevronDown, Type, Highlighter
 } from 'lucide-react';
 
 const Dashboard = () => {
@@ -11,6 +13,7 @@ const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showBenevoleModal, setShowBenevoleModal] = useState(false);
   const [showEventModal, setShowEventModal] = useState(false);
+  const [showNewsletterModal, setShowNewsletterModal] = useState(false); // AJOUT
   const [showViewModal, setShowViewModal] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
@@ -37,9 +40,25 @@ const Dashboard = () => {
   });
   const [searchSub, setSearchSub] = useState(""); // Recherche locale Subventions
 
+  // FORMULAIRE NEWSLETTER
+  const [formNewsletter, setFormNewsletter] = useState({
+    email: '', acceptConditions: true, offre_entreprise: false
+  });
+
   // ÉTATS POUR LES DONATEURS DE PARTENAIRES ET SUBVENTIONS
   // Données simulées basées sur le payload de Donation.jsx
   const [donateursData, setDonateursData] = useState([]);
+
+  // ÉTATS POUR L'ÉDITEUR D'ARTICLE (RICH TEXT)
+  const [showSpecialCharModal, setShowSpecialCharModal] = useState(false);
+  const [showEmojiModal, setShowEmojiModal] = useState(false);
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [imageModalTab, setImageModalTab] = useState('General'); // General, Advanced
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [mediaModalTab, setMediaModalTab] = useState('General'); // General, Embed, Advanced
+  const [showLinkModal, setShowLinkModal] = useState(false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [formArticle, setFormArticle] = useState({ titre: '', contenu: '', image: null });
 
   // 2. DONNÉES DES BÉNÉVOLES (VIA API)
   const [benevoles, setBenevoles] = useState([]);
@@ -233,7 +252,9 @@ const Dashboard = () => {
     if (type === 'benevoles') url = `http://localhost:8000/api/benevoles.php?id=${id}`;
     if (type === 'evenements') url = `http://localhost:8000/api/evenements.php?id=${id}`;
     if (type === 'entreprises') url = `http://localhost:8000/api/entreprises.php?id=${id}`;
+    if (type === 'entreprises') url = `http://localhost:8000/api/entreprises.php?id=${id}`;
     if (type === 'subventions') url = `http://localhost:8000/api/subventions.php?id=${id}`;
+    if (type === 'newsletter') url = `http://localhost:8000/api/newsletter.php?id=${id}`;
 
     if (url) {
       await fetch(url, { method: 'DELETE' });
@@ -246,6 +267,14 @@ const Dashboard = () => {
     setCurrentId(item.id);
     if (activeTab === 'benevoles') { setFormBenevole({ ...item }); setShowBenevoleModal(true); }
     if (activeTab === 'evenements') { setFormEvent({ ...item }); setShowEventModal(true); }
+    if (activeTab === 'communication-newsletters') {
+      setFormNewsletter({
+        ...item,
+        acceptConditions: item.accepte_conditions == 1,
+        offre_entreprise: item.offre_entreprise == 1
+      });
+      setShowNewsletterModal(true);
+    }
   };
 
   const openViewModal = (item) => {
@@ -302,6 +331,24 @@ const Dashboard = () => {
     setIsEditing(false);
   };
 
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    await fetch('http://localhost:8000/api/newsletter.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...formNewsletter,
+        id: isEditing ? currentId : null,
+        acceptConditions: formNewsletter.acceptConditions,
+        acceptEntreprise: formNewsletter.offre_entreprise // map backend expected
+      })
+    });
+    fetchData();
+    setShowNewsletterModal(false);
+    setIsEditing(false);
+  };
+
+
   // Constante pour l'article
   const applyFormat = (tag) => {
     const textarea = document.getElementById('article-content');
@@ -333,10 +380,124 @@ const Dashboard = () => {
     transition: 'background 0.2s'
   };
 
+  const selectStyle = {
+    padding: '4px 8px',
+    borderRadius: '4px',
+    border: '1px solid #E2E8F0',
+    fontSize: '12px',
+    color: '#4A5568',
+    cursor: 'pointer',
+    outline: 'none'
+  };
+
+  const colorInputStyle = {
+    width: '30px',
+    height: '30px',
+    padding: '0',
+    border: 'none',
+    background: 'none',
+    cursor: 'pointer'
+  };
+
+  const separatorStyle = {
+    width: '1px',
+    height: '24px',
+    background: '#E2E8F0',
+    margin: '0 5px'
+  };
+
+  const moreMenuStyle = {
+    position: 'absolute',
+    top: '100%',
+    right: '0',
+    marginTop: '5px',
+    background: 'white',
+    border: '1px solid #E2E8F0',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+    zIndex: 10,
+    width: '150px',
+    display: 'flex',
+    flexDirection: 'column',
+    padding: '5px'
+  };
+
+  const menuItemStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    padding: '10px',
+    border: 'none',
+    background: 'none',
+    width: '100%',
+    textAlign: 'left',
+    fontSize: '13px',
+    cursor: 'pointer',
+    color: '#4A5568',
+    borderRadius: '4px'
+  };
+
+  // Toggle Plein Écran
+  const toggleFullScreen = () => {
+    if (!document.fullscreenElement) {
+      document.getElementById('article-content-editor').requestFullscreen();
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+  };
+
+  // --- LOGIQUE POUR L'ÉDITEUR RICHE ---
+  // Fonction pour exécuter une commande en forçant le focus
+  const handleToolbarAction = (command, value = null) => {
+    const editor = document.getElementById('article-content-editor');
+    if (editor) {
+      editor.focus();
+      document.execCommand(command, false, value);
+    }
+  };
+
+  // Sauvegarde de la sélection pour ne pas perdre la position du curseur
+  const [savedSelection, setSavedSelection] = useState(null);
+
+  const saveSelection = () => {
+    const sel = window.getSelection();
+    if (sel.rangeCount > 0) return sel.getRangeAt(0);
+    return null;
+  };
+
+  const restoreSelection = (range) => {
+    if (range) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    }
+  };
+
+  const handleOpenModal = (setModal, e) => {
+    if (e) e.preventDefault(); // Empêche la perte de focus
+    const range = saveSelection();
+    setSavedSelection(range);
+    setModal(true);
+  };
+
+  const handleInsert = (html, setModal) => {
+    setModal(false);
+    document.getElementById('article-content-editor').focus();
+    restoreSelection(savedSelection);
+    document.execCommand('insertHTML', false, html);
+  };
+
+  // Listes pour les modales
+  const specialChars = ['©', '®', '™', '€', '£', '¥', '§', '¶', '†', '‡', '•', '—', '–', '≠', '≤', '≥', '∞', 'µ', 'α', 'β', 'π', 'Ω'];
+  const emojis = ['😀', '😂', '😍', '🤔', '😭', '😎', '👍', '👎', '🎉', '🔥', '❤️', '✅', '❌', '⚠️', '⭐', '💡', '📅', '📍', '✉️', '📞'];
+
   const closeModals = () => {
-    setShowBenevoleModal(false); setShowEventModal(false); setShowViewModal(false); setIsEditing(false);
+    setShowBenevoleModal(false); setShowEventModal(false); setShowViewModal(false); setIsEditing(false); setShowNewsletterModal(false);
     setFormBenevole({ nom: '', prenom: '', email: '', telephone: '', ville: '', dateNaissance: '', profession: '', regime: '', sante: '', infos: '', dispo: 'Semaine', cotisation: 'À jour' });
     setFormEvent({ titre: '', date: '', lieu: '', budget: '', materiel: '', benevolesInscrits: '', documents: '' });
+    setFormNewsletter({ email: '', acceptConditions: true, offre_entreprise: false });
   };
 
   const menuItems = [
@@ -550,6 +711,9 @@ const Dashboard = () => {
         .status-badge { padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
         .status-actif { background: #DEF7EC; color: #03543F; }
         .status-retard { background: #FDE8E8; color: #9B1C1C; }
+        
+        .clickable-name { color: #2563EB; font-weight: bold; cursor: pointer; text-decoration: underline; }
+        .clickable-name:hover { color: #1D4ED8; }
 
         /* MODALE FORMULAIRE STYLE PHOTO */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; overflow-y: auto; padding: 20px; }
@@ -815,6 +979,69 @@ const Dashboard = () => {
                 <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER LA FICHE
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODALE : FICHE DÉTAILLÉE POUR NEWSLETTER */}
+      {showViewModal && selectedItem && activeTab === 'communication-newsletters' && (
+        <div className="modal-overlay">
+          <div className="modal-card" style={{ maxWidth: '500px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #EEE', paddingBottom: 15, marginBottom: 10 }}>
+              <h2 style={{ fontSize: 22, fontWeight: 800 }}>Détails Abonné</h2>
+              <X onClick={closeModals} style={{ cursor: 'pointer', color: '#6B7280' }} />
+            </div>
+            <div className="info-grid" style={{ gridTemplateColumns: '1fr' }}>
+              <div className="info-item"><div className="info-label">Email</div><div className="info-value">{selectedItem.email}</div></div>
+              <div className="info-item"><div className="info-label">Date Inscription</div><div className="info-value">{new Date(selectedItem.date_inscription).toLocaleDateString()}</div></div>
+              <div className="info-item"><div className="info-label">Conditions Générales</div><div className="info-value">{selectedItem.accepte_conditions == 1 ? "Acceptées ✅" : "Refusées ❌"}</div></div>
+              <div className="info-item"><div className="info-label">Offres Entreprises</div><div className="info-value">{selectedItem.offre_entreprise == 1 ? "Oui ✅" : "Non ❌"}</div></div>
+            </div>
+            <div style={{ marginTop: 30, display: 'flex', justifyContent: 'flex-end' }}>
+              <button className="btn-secondary" onClick={() => {
+                setShowViewModal(false);
+                setFormNewsletter({
+                  ...selectedItem,
+                  acceptConditions: selectedItem.accepte_conditions == 1,
+                  offre_entreprise: selectedItem.offre_entreprise == 1
+                });
+                setIsEditing(true);
+                setCurrentId(selectedItem.id);
+                setShowNewsletterModal(true);
+              }}>
+                <Edit size={14} style={{ marginRight: 8 }} /> MODIFIER
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODALE : ÉDITION NEWSLETTER */}
+      {showNewsletterModal && (
+        <div className="modal-overlay">
+          <div className="modal-card" style={{ maxWidth: '600px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+              <h2 style={{ fontSize: 24, fontWeight: 700 }}>{isEditing ? "Modifier l'abonné" : "Nouvel abonné"}</h2>
+              <X onClick={closeModals} style={{ cursor: 'pointer', color: '#6B7280' }} />
+            </div>
+            <form onSubmit={handleNewsletterSubmit}>
+              <div className="form-group"><label>Email <span>*</span></label><input type="email" required value={formNewsletter.email} onChange={e => setFormNewsletter({ ...formNewsletter, email: e.target.value })} /></div>
+              <div className="form-row" style={{ marginTop: 20 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <input type="checkbox" checked={formNewsletter.acceptConditions} onChange={e => setFormNewsletter({ ...formNewsletter, acceptConditions: e.target.checked })} />
+                  <label>Accepte les conditions</label>
+                </div>
+              </div>
+              <div className="form-row">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                  <input type="checkbox" checked={formNewsletter.offre_entreprise} onChange={e => setFormNewsletter({ ...formNewsletter, offre_entreprise: e.target.checked })} />
+                  <label>Souhaite offres entreprises</label>
+                </div>
+              </div>
+              <div className="btn-container">
+                <button type="submit" className="btn-save">Enregistrer</button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -1145,19 +1372,19 @@ const Dashboard = () => {
                   <tr>
                     <th>Email</th>
                     <th>Date Inscription</th>
-                    <th>Info Entr.</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {newsletters.map((n, i) => (
                     <tr key={i}>
-                      <td>{n.email}</td>
+                      <td className="clickable-name" onClick={() => openViewModal(n)}>{n.email}</td>
                       <td>{new Date(n.date_inscription).toLocaleDateString()}</td>
                       <td>
-                        {n.offre_entreprise == 1 ?
-                          <span className="status-badge status-actif">OUI</span> :
-                          <span className="status-badge status-retard">NON</span>
-                        }
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button className="btn-icon" onClick={() => openEdit(n)}><Edit size={16} /></button>
+                          <button className="btn-icon delete" onClick={() => handleDelete(n.id, 'newsletter')}><Trash2 size={16} /></button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -1730,24 +1957,160 @@ const Dashboard = () => {
               </div>
 
               <div className="form-group">
-                <label style={{ fontWeight: 'bold' }}>Contenu de l'article *</label>
-                {/* Barre d'outils opérationnelle */}
-                <div style={{ background: '#F8FAFC', border: '1px solid #D1D5DB', borderBottom: 'none', padding: '10px', borderRadius: '6px 6px 0 0', display: 'flex', gap: '15px' }}>
-                  <button type="button" onClick={() => applyFormat('**')} style={toolbarButtonStyle}><strong>B</strong></button>
-                  <button type="button" onClick={() => applyFormat('*')} style={toolbarButtonStyle}><em>I</em></button>
-                  <button type="button" onClick={() => applyFormat('__')} style={toolbarButtonStyle}><u>U</u></button>
-                  <div style={{ width: '1px', background: '#D1D5DB' }}></div>
-                  <button type="button" style={toolbarButtonStyle}><Plus size={16} /></button>
+                <label style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <Edit size={14} /> Contenu de l'article *
+                </label>
+
+                {/* BARRE D'OUTILS COMPLÈTE */}
+                <div style={{
+                  background: '#F8FAFC', border: '1px solid #D1D5DB', borderBottom: 'none',
+                  padding: '8px 12px', borderRadius: '6px 6px 0 0', display: 'flex',
+                  alignItems: 'center', gap: '10px', flexWrap: 'wrap'
+                }}>
+
+                  {/* Undo / Redo */}
+                  <div style={{ display: 'flex', gap: '5px' }}>
+                    <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => handleToolbarAction('undo')} style={toolbarButtonStyle} title="Annuler"><Undo2 size={16} /></button>
+                    <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => handleToolbarAction('redo')} style={toolbarButtonStyle} title="Rétablir"><Redo2 size={16} /></button>
+                  </div>
+
+                  <div style={separatorStyle}></div>
+
+                  {/* Sélecteurs de Texte */}
+                  <select onMouseDown={e => e.preventDefault()} onChange={(e) => handleToolbarAction('formatBlock', e.target.value)} style={selectStyle}>
+                    <option value="p">Paragraphe</option>
+                    <option value="h1">Titre 1</option>
+                    <option value="h2">Titre 2</option>
+                  </select>
+
+                  <select onMouseDown={e => e.preventDefault()} onChange={(e) => handleToolbarAction('fontName', e.target.value)} style={selectStyle}>
+                    <option value="Albert Sans">Albert Sans</option>
+                    <option value="Arial">Arial</option>
+                  </select>
+
+                  <select onMouseDown={e => e.preventDefault()} onChange={(e) => handleToolbarAction('fontSize', e.target.value)} style={selectStyle}>
+                    <option value="3">14px</option>
+                    <option value="5">18px</option>
+                    <option value="7">36px</option>
+                  </select>
+
+                  <div style={separatorStyle}></div>
+
+                  {/* Style de caractères */}
+                  <div style={{ display: 'flex', gap: '2px' }}>
+                    <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => handleToolbarAction('bold')} style={toolbarButtonStyle}><Bold size={16} /></button>
+                    <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => handleToolbarAction('italic')} style={toolbarButtonStyle}><Italic size={16} /></button>
+                    <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => handleToolbarAction('underline')} style={toolbarButtonStyle}><Underline size={16} /></button>
+                  </div>
+
+                  <div style={separatorStyle}></div>
+
+                  {/* Alignement & Tabulation */}
+                  <div style={{ display: 'flex', gap: '2px' }}>
+                    <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => handleToolbarAction('justifyLeft')} style={toolbarButtonStyle}><AlignLeft size={16} /></button>
+                    <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => handleToolbarAction('justifyCenter')} style={toolbarButtonStyle}><AlignCenter size={16} /></button>
+                    <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => handleToolbarAction('justifyRight')} style={toolbarButtonStyle}><AlignRight size={16} /></button>
+                    <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => handleToolbarAction('outdent')} style={toolbarButtonStyle}><Outdent size={16} /></button>
+                    <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => handleToolbarAction('indent')} style={toolbarButtonStyle}><Indent size={16} /></button>
+                  </div>
+
+                  <div style={separatorStyle}></div>
+
+                  {/* Listes */}
+                  <div style={{ display: 'flex', gap: '2px' }}>
+                    <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => handleToolbarAction('insertUnorderedList')} style={toolbarButtonStyle}><List size={16} /></button>
+                    <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => handleToolbarAction('insertOrderedList')} style={toolbarButtonStyle}><ListOrdered size={16} /></button>
+                  </div>
+
+                  <div style={separatorStyle}></div>
+
+                  {/* Couleurs (Custom UI) */}
+                  <div style={{ display: 'flex', gap: '2px', alignItems: 'center' }}>
+                    {/* Text Color */}
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => document.getElementById('foreColorInput').click()} style={{ ...toolbarButtonStyle, padding: '2px 4px', flexDirection: 'column', gap: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                          <Type size={14} color="#000" />
+                          <ChevronDown size={10} color="#4A5568" />
+                        </div>
+                        <div style={{ width: '100%', height: '3px', background: 'red', marginTop: '2px' }} id="foreColorIndicator"></div>
+                      </button>
+                      <input
+                        id="foreColorInput"
+                        type="color"
+                        onMouseDown={e => e.preventDefault()}
+                        onChange={(e) => {
+                          handleToolbarAction('foreColor', e.target.value);
+                          document.getElementById('foreColorIndicator').style.background = e.target.value;
+                        }}
+                        style={{ position: 'absolute', opacity: 0, width: '100%', height: '100%', cursor: 'pointer', left: 0, top: 0 }}
+                      />
+                    </div>
+
+                    {/* Highlight Color */}
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => document.getElementById('hiliteColorInput').click()} style={{ ...toolbarButtonStyle, padding: '2px 4px', flexDirection: 'column', gap: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+                          <Highlighter size={14} color="#000" />
+                          <ChevronDown size={10} color="#4A5568" />
+                        </div>
+                        <div style={{ width: '100%', height: '3px', background: 'black', marginTop: '2px' }} id="hiliteColorIndicator"></div>
+                      </button>
+                      <input
+                        id="hiliteColorInput"
+                        type="color"
+                        onMouseDown={e => e.preventDefault()}
+                        onChange={(e) => {
+                          handleToolbarAction('hiliteColor', e.target.value);
+                          document.getElementById('hiliteColorIndicator').style.background = e.target.value;
+                        }}
+                        style={{ position: 'absolute', opacity: 0, width: '100%', height: '100%', cursor: 'pointer', left: 0, top: 0 }}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={separatorStyle}></div>
+
+                  {/* Médias & Spéciaux */}
+                  <button type="button" onMouseDown={e => e.preventDefault()} onClick={(e) => handleOpenModal(setShowSpecialCharModal, e)} style={toolbarButtonStyle}><Omega size={16} /></button>
+                  <button type="button" onMouseDown={e => e.preventDefault()} onClick={(e) => handleOpenModal(setShowEmojiModal, e)} style={toolbarButtonStyle}><Smile size={16} /></button>
+                  <button type="button" onMouseDown={e => e.preventDefault()} onClick={(e) => handleOpenModal(setShowImageModal, e)} style={toolbarButtonStyle}><Image size={16} /></button>
+                  <button type="button" onMouseDown={e => e.preventDefault()} onClick={(e) => handleOpenModal(setShowVideoModal, e)} style={toolbarButtonStyle}><PlaySquare size={16} /></button>
+                  <button type="button" onMouseDown={e => e.preventDefault()} onClick={(e) => handleOpenModal(setShowLinkModal, e)} style={toolbarButtonStyle}><Link size={16} /></button>
+
+                  {/* Menu Plus */}
+                  <div style={{ position: 'relative' }}>
+                    <button type="button" onMouseDown={e => e.preventDefault()} onClick={() => setShowMoreMenu(!showMoreMenu)} style={{ ...toolbarButtonStyle, background: '#BFDBFE' }}>
+                      <MoreHorizontal size={16} />
+                    </button>
+                    {showMoreMenu && (
+                      <div style={moreMenuStyle}>
+                        <button type="button" onClick={toggleFullScreen} style={menuItemStyle}><Maximize size={14} /> Plein écran</button>
+                        <button type="button" onClick={() => window.open('/preview-article', '_blank')} style={menuItemStyle}><Eye size={14} /> Prévisualiser</button>
+                        <button type="button" onClick={() => window.print()} style={menuItemStyle}><Printer size={14} /> Imprimer</button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <textarea
-                  id="article-content"
-                  placeholder="Rédigez le contenu de votre article..."
-                  style={{ height: '300px', borderRadius: '0 0 6px 6px', borderTop: 'none', padding: '15px' }}
-                  required
-                ></textarea>
+
+                {/* ZONE D'ÉCRITURE RICHE (L'ÉLÉMENT QUI MANQUAIT) */}
+                <div
+                  id="article-content-editor"
+                  contentEditable="true"
+                  onInput={(e) => setFormArticle({ ...formArticle, contenu: e.currentTarget.innerHTML })}
+                  style={{
+                    minHeight: '400px',
+                    border: '1px solid #D1D5DB',
+                    borderRadius: '0 0 12px 12px',
+                    padding: '20px',
+                    background: 'white',
+                    outline: 'none',
+                    overflowY: 'auto'
+                  }}
+                ></div>
               </div>
 
-              {/* BOUTONS D'ACTION (DA SCREEN 16.59.17) */}
+              {/* BOUTONS D'ACTION (PUBLIER, PRÉVISUALISER, RÉINITIALISER) */}
               <div style={{ display: 'flex', gap: '15px', marginTop: '20px' }}>
                 <button type="submit" className="btn-save" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <Package size={18} /> Publier l'article
@@ -1762,13 +2125,290 @@ const Dashboard = () => {
                 </button>
 
                 <button
-                  type="reset"
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm("Voulez-vous vraiment tout effacer ?")) {
+                      document.getElementById('article-content-editor').innerHTML = "";
+                    }
+                  }}
                   style={{ background: '#FDBA74', color: '#92400E', border: 'none', padding: '12px 25px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}
                 >
                   <Trash2 size={18} /> Réinitialiser
                 </button>
               </div>
             </form>
+          </div>
+        )}
+
+        {/* MODALES EDITEUR */}
+        {showSpecialCharModal && (
+          <div className="modal-overlay" onClick={() => setShowSpecialCharModal(false)}>
+            <div className="modal-card" style={{ width: '300px', padding: '15px' }} onClick={e => e.stopPropagation()}>
+              <h4 style={{ margin: '0 0 10px 0' }}>Caractères Spéciaux</h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '5px' }}>
+                {specialChars.map(char => (
+                  <button key={char} onClick={() => handleInsert(char, setShowSpecialCharModal)} style={{ padding: '8px', border: '1px solid #E2E8F0', background: 'white', cursor: 'pointer', borderRadius: '4px' }}>
+                    {char}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showEmojiModal && (
+          <div className="modal-overlay" onClick={() => setShowEmojiModal(false)}>
+            <div className="modal-card" style={{ width: '300px', padding: '15px' }} onClick={e => e.stopPropagation()}>
+              <h4 style={{ margin: '0 0 10px 0' }}>Emojis</h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '5px' }}>
+                {emojis.map(emoji => (
+                  <button key={emoji} onClick={() => handleInsert(emoji, setShowEmojiModal)} style={{ padding: '8px', border: '1px solid #E2E8F0', background: 'white', cursor: 'pointer', borderRadius: '4px', fontSize: '18px' }}>
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showImageModal && (
+          <div className="modal-overlay" onClick={() => setShowImageModal(false)}>
+            <div className="modal-card" style={{ width: '500px', padding: '0', overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
+              <div style={{ padding: '15px 20px', borderBottom: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h4 style={{ margin: 0 }}>Insert/Edit Image</h4>
+                <X size={18} style={{ cursor: 'pointer' }} onClick={() => setShowImageModal(false)} />
+              </div>
+
+              <div style={{ display: 'flex', borderBottom: '1px solid #E2E8F0', padding: '0 20px' }}>
+                <button
+                  onClick={() => setImageModalTab('General')}
+                  style={{ padding: '10px 0', marginRight: '20px', background: 'none', border: 'none', borderBottom: imageModalTab === 'General' ? '2px solid #3B82F6' : 'none', color: imageModalTab === 'General' ? '#3B82F6' : '#64748B', fontWeight: 'bold', cursor: 'pointer' }}
+                >General</button>
+                <button
+                  onClick={() => setImageModalTab('Advanced')}
+                  style={{ padding: '10px 0', background: 'none', border: 'none', borderBottom: imageModalTab === 'Advanced' ? '2px solid #3B82F6' : 'none', color: imageModalTab === 'Advanced' ? '#3B82F6' : '#64748B', fontWeight: 'bold', cursor: 'pointer' }}
+                >Advanced</button>
+              </div>
+
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const src = formData.get('src');
+                const alt = formData.get('alt');
+                const title = formData.get('title');
+                const width = formData.get('width');
+                const height = formData.get('height');
+                const className = formData.get('class');
+                const vSpace = formData.get('vspace');
+                const hSpace = formData.get('hspace');
+                const border = formData.get('border');
+                const borderStyle = formData.get('borderStyle');
+
+                let style = "";
+                if (width) style += `width: ${width}px; `;
+                if (height) style += `height: ${height}px; `;
+                if (vSpace) style += `margin-top: ${vSpace}px; margin-bottom: ${vSpace}px; `;
+                if (hSpace) style += `margin-left: ${hSpace}px; margin-right: ${hSpace}px; `;
+                if (border && borderStyle) style += `border: ${border}px ${borderStyle} #000; `;
+
+                const html = `<img src="${src}" alt="${alt}" title="${title}" class="${className}" style="${style}" />`;
+                handleInsert(html, setShowImageModal);
+              }} style={{ padding: '20px' }}>
+
+                {imageModalTab === 'General' && (
+                  <>
+                    <div className="form-group">
+                      <label>Source</label>
+                      <input name="src" type="url" className="form-control" style={{ width: '100%' }} required />
+                    </div>
+                    <div className="form-group">
+                      <label>Alternative description</label>
+                      <input name="alt" type="text" className="form-control" style={{ width: '100%' }} />
+                    </div>
+                    <div className="form-group">
+                      <label>Image title</label>
+                      <input name="title" type="text" className="form-control" style={{ width: '100%' }} />
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '10px', alignItems: 'end' }}>
+                      <div className="form-group">
+                        <label>Width</label>
+                        <input name="width" type="number" className="form-control" style={{ width: '100%' }} />
+                      </div>
+                      <div className="form-group">
+                        <label>Height</label>
+                        <input name="height" type="number" className="form-control" style={{ width: '100%' }} />
+                      </div>
+                      <div style={{ paddingBottom: '10px' }}>🔒</div>
+                    </div>
+                    <div className="form-group">
+                      <label>Class</label>
+                      <select name="class" className="form-control" style={{ width: '100%' }}>
+                        <option value="img-responsive">Image responsive</option>
+                        <option value="img-centered">Image centrée</option>
+                        <option value="img-left">Image flottante à gauche</option>
+                        <option value="img-right">Image flottante à droite</option>
+                        <option value="img-full">Image pleine largeur</option>
+                      </select>
+                    </div>
+                  </>
+                )}
+
+                {imageModalTab === 'Advanced' && (
+                  <>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                      <div className="form-group">
+                        <label>Vertical space</label>
+                        <input name="vspace" type="number" className="form-control" style={{ width: '100%' }} />
+                      </div>
+                      <div className="form-group">
+                        <label>Horizontal space</label>
+                        <input name="hspace" type="number" className="form-control" style={{ width: '100%' }} />
+                      </div>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' }}>
+                      <div className="form-group">
+                        <label>Border width</label>
+                        <input name="border" type="number" className="form-control" style={{ width: '100%' }} />
+                      </div>
+                      <div className="form-group">
+                        <label>Border style</label>
+                        <select name="borderStyle" className="form-control" style={{ width: '100%' }}>
+                          <option value="">Select...</option>
+                          <option value="solid">Solid</option>
+                          <option value="dotted">Dotted</option>
+                          <option value="dashed">Dashed</option>
+                          <option value="double">Double</option>
+                        </select>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <div className="btn-container" style={{ marginTop: '20px', justifyContent: 'flex-end', gap: '10px' }}>
+                  <button type="button" onClick={() => setShowImageModal(false)} style={{ background: '#F1F5F9', color: '#64748B', padding: '8px 16px', borderRadius: '6px', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>Cancel</button>
+                  <button type="submit" className="btn-save" style={{ padding: '8px 20px' }}>Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {showVideoModal && (
+          <div className="modal-overlay" onClick={() => setShowVideoModal(false)}>
+            <div className="modal-card" style={{ width: '500px', padding: '0', overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
+              <div style={{ padding: '15px 20px', borderBottom: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h4 style={{ margin: 0 }}>Insert/Edit Media</h4>
+                <X size={18} style={{ cursor: 'pointer' }} onClick={() => setShowVideoModal(false)} />
+              </div>
+
+              <div style={{ display: 'flex', borderBottom: '1px solid #E2E8F0', padding: '0 20px' }}>
+                <button onClick={() => setMediaModalTab('General')} style={{ padding: '10px 0', marginRight: '20px', background: 'none', border: 'none', borderBottom: mediaModalTab === 'General' ? '2px solid #3B82F6' : 'none', color: mediaModalTab === 'General' ? '#3B82F6' : '#64748B', fontWeight: 'bold', cursor: 'pointer' }}>General</button>
+                <button onClick={() => setMediaModalTab('Embed')} style={{ padding: '10px 0', marginRight: '20px', background: 'none', border: 'none', borderBottom: mediaModalTab === 'Embed' ? '2px solid #3B82F6' : 'none', color: mediaModalTab === 'Embed' ? '#3B82F6' : '#64748B', fontWeight: 'bold', cursor: 'pointer' }}>Embed</button>
+                <button onClick={() => setMediaModalTab('Advanced')} style={{ padding: '10px 0', background: 'none', border: 'none', borderBottom: mediaModalTab === 'Advanced' ? '2px solid #3B82F6' : 'none', color: mediaModalTab === 'Advanced' ? '#3B82F6' : '#64748B', fontWeight: 'bold', cursor: 'pointer' }}>Advanced</button>
+              </div>
+
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                let html = "";
+
+                if (mediaModalTab === 'Embed') {
+                  html = formData.get('embedCode');
+                } else {
+                  const src = formData.get('src');
+                  const width = formData.get('width');
+                  const height = formData.get('height');
+                  const poster = formData.get('poster');
+
+                  let style = "";
+                  if (width) style += `width: ${width}px; `;
+                  if (height) style += `height: ${height}px; `;
+
+                  html = `<video src="${src}" poster="${poster}" style="${style}" controls></video>`;
+                }
+                handleInsert(html, setShowVideoModal);
+              }} style={{ padding: '20px' }}>
+
+                {mediaModalTab === 'General' && (
+                  <>
+                    <div className="form-group"><label>Source</label><input name="src" type="url" className="form-control" style={{ width: '100%' }} /></div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '10px', alignItems: 'end' }}>
+                      <div className="form-group"><label>Width</label><input name="width" type="number" className="form-control" style={{ width: '100%' }} /></div>
+                      <div className="form-group"><label>Height</label><input name="height" type="number" className="form-control" style={{ width: '100%' }} /></div>
+                      <div style={{ paddingBottom: '10px' }}>🔒</div>
+                    </div>
+                  </>
+                )}
+
+                {mediaModalTab === 'Embed' && (
+                  <div className="form-group">
+                    <label>Paste your embed code below:</label>
+                    <textarea name="embedCode" className="form-control" style={{ width: '100%', height: '100px' }}></textarea>
+                  </div>
+                )}
+
+                {mediaModalTab === 'Advanced' && (
+                  <>
+                    <div className="form-group"><label>Alternative source URL</label><input name="altSource" type="url" className="form-control" style={{ width: '100%' }} /></div>
+                    <div className="form-group"><label>Media poster (Image URL)</label><input name="poster" type="url" className="form-control" style={{ width: '100%' }} /></div>
+                  </>
+                )}
+
+                <div className="btn-container" style={{ marginTop: '20px', justifyContent: 'flex-end', gap: '10px' }}>
+                  <button type="button" onClick={() => setShowVideoModal(false)} style={{ background: '#F1F5F9', color: '#64748B', padding: '8px 16px', borderRadius: '6px', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>Cancel</button>
+                  <button type="submit" className="btn-save" style={{ padding: '8px 20px' }}>Save</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {showLinkModal && (
+          <div className="modal-overlay" onClick={() => setShowLinkModal(false)}>
+            <div className="modal-card" style={{ width: '400px', padding: '0', overflow: 'hidden' }} onClick={e => e.stopPropagation()}>
+              <div style={{ padding: '15px 20px', borderBottom: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h4 style={{ margin: 0 }}>Insert/Edit Link</h4>
+                <X size={18} style={{ cursor: 'pointer' }} onClick={() => setShowLinkModal(false)} />
+              </div>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const url = formData.get('linkUrl');
+                const text = formData.get('linkText');
+                const title = formData.get('linkTitle');
+                const target = formData.get('linkTarget');
+
+                const targetAttr = target === '_blank' ? 'target="_blank"' : '';
+                const titleAttr = title ? `title="${title}"` : '';
+
+                const html = `<a href="${url}" ${targetAttr} ${titleAttr} style="color: blue; text-decoration: underline;">${text || url}</a>`;
+                handleInsert(html, setShowLinkModal);
+              }} style={{ padding: '20px' }}>
+                <div className="form-group">
+                  <label>URL</label>
+                  <input name="linkUrl" type="url" className="form-control" style={{ width: '100%' }} required />
+                </div>
+                <div className="form-group">
+                  <label>Text to display</label>
+                  <input name="linkText" type="text" className="form-control" style={{ width: '100%' }} />
+                </div>
+                <div className="form-group">
+                  <label>Title</label>
+                  <input name="linkTitle" type="text" className="form-control" style={{ width: '100%' }} />
+                </div>
+                <div className="form-group">
+                  <label>Open link in...</label>
+                  <select name="linkTarget" className="form-control" style={{ width: '100%' }}>
+                    <option value="_self">Current window</option>
+                    <option value="_blank">New window</option>
+                  </select>
+                </div>
+                <div className="btn-container" style={{ marginTop: '20px', justifyContent: 'flex-end', gap: '10px' }}>
+                  <button type="button" onClick={() => setShowLinkModal(false)} style={{ background: '#F1F5F9', color: '#64748B', padding: '8px 16px', borderRadius: '6px', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}>Cancel</button>
+                  <button type="submit" className="btn-save" style={{ padding: '8px 20px' }}>Save</button>
+                </div>
+              </form>
+            </div>
           </div>
         )}
       </main>
