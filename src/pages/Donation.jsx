@@ -1,14 +1,34 @@
-import React, {useEffect, useState, useRef} from "react";
+import React, { useEffect, useState } from "react";
+import { Helmet } from "react-helmet";
 
+// Importation des assets (Méthode propre de aze.jsx)
+import bouclier from "assets/images/donation/bouclier.svg";
 import cartedecredit from "assets/images/donation/carte-de-credit.svg";
 import ggpayapppay from "assets/images/donation/gg-pay-app-pay.svg";
 import lacroixrouge from "assets/images/donation/lacroix-rouge.webm";
 import logo from "assets/images/donation/Logo_Croix-Rouge_Française.svg";
 import paypal from "assets/images/donation/paypal.svg";
-import virementIcon from "assets/images/donation/paypal.svg";
-import SEO from "@/components/SEO.jsx";
+import virement from "assets/images/donation/virement.svg";
+
+// Configuration API (Méthode de message (1).txt)
+const API_URL = "http://localhost:8000/api";
+
+async function submitDonation(payload) {
+    const res = await fetch(`${API_URL}/donation.php`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+        throw new Error(data.error || "Erreur serveur");
+    }
+    return data;
+}
 
 export default function Donation() {
+    // --- ÉTATS (States) ---
     const [activeTab, setActiveTab] = useState("once");
     const [selectedAmount, setSelectedAmount] = useState(null);
     const [customAmount, setCustomAmount] = useState("");
@@ -19,9 +39,24 @@ export default function Donation() {
     const [donorText, setDonorText] = useState("");
     const [openAccordion, setOpenAccordion] = useState(null);
 
-    const [phoneCountry, setPhoneCountry] = useState("FR");
-    const [showCountryMenu, setShowCountryMenu] = useState(false);
+    // États du formulaire (Issu de message (1).txt)
+    const [email, setEmail] = useState("");
+    const [civilite, setCivilite] = useState("");
+    const [prenom, setPrenom] = useState("");
+    const [nom, setNom] = useState("");
+    const [telephone, setTelephone] = useState("");
+    const [adresse, setAdresse] = useState("");
+    const [showManualAddress, setShowManualAddress] = useState(false);
+    const [complementAdresse, setComplementAdresse] = useState("");
+    const [codePostal, setCodePostal] = useState("");
+    const [ville, setVille] = useState("");
+    const [pays, setPays] = useState("FRANCE");
+    const [dateNaissance, setDateNaissance] = useState("");
+    // const [recuFiscal, setRecuFiscal] = useState("email"); // Décommenter si besoin de gérer l'état
 
+    // --- LOGIQUE MÉTIER ---
+
+    // Calcul fiscal
     const calculerDeductionUnique = (montant) => {
         if (montant <= 1000) return montant * 0.75;
         const part75 = 1000 * 0.75;
@@ -32,9 +67,11 @@ export default function Donation() {
     const calculerDeductionMensuelle = (montant) => {
         const annuel = montant * 12;
         const deductionTotale = calculerDeductionUnique(annuel);
-        return (annuel - deductionTotale) / 12;
+        const mensuelApresDeduction = (annuel - deductionTotale) / 12;
+        return mensuelApresDeduction;
     };
 
+    // Ticker de donations
     useEffect(() => {
         const names = ["Claude", "Sophie", "Amine", "Léa", "Marc", "Emma", "Julien", "Nora", "Antoine", "Maya"];
         const amounts = [5, 10, 15, 20, 25, 50, 75, 100, 150, 200, 500];
@@ -56,6 +93,7 @@ export default function Donation() {
         return () => clearInterval(interval);
     }, []);
 
+    // Gestion des onglets
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSelectedAmount(null);
@@ -63,6 +101,7 @@ export default function Donation() {
         setShowInfo(false);
     };
 
+    // Sélection montant fixe
     const handleAmountSelect = (amount) => {
         setSelectedAmount(amount);
         setCustomAmount("");
@@ -73,6 +112,7 @@ export default function Donation() {
         setShowInfo(true);
     };
 
+    // Montant libre
     const handleCustomAmountChange = (value) => {
         setCustomAmount(value);
         setSelectedAmount(null);
@@ -88,830 +128,1316 @@ export default function Donation() {
         setShowInfo(true);
     };
 
+    // Paiement
     const handlePaymentChange = (method) => {
         setActivePayment(method);
         setShowVirement(method === "virement");
     };
 
-    const handleValidate = () => {
-        const amount = customAmount || selectedAmount || 0;
-        if (amount === 0) return alert("Veuillez sélectionner un montant.");
-        alert(`Merci pour votre don de ${amount}€ via ${activePayment} ❤️`);
+    // Validation avec appel API
+    const handleValidate = async () => {
+        const amount = Number(customAmount || selectedAmount || 0);
+
+        // Mini-check front
+        if (!amount || amount <= 0) {
+            alert("Veuillez choisir un montant.");
+            return;
+        }
+
+        // Payload (aligné SQL)
+        const payload = {
+            donateur: {
+                email,
+                civilite,
+                prenom,
+                nom,
+                telephone: telephone || null,
+                adresse,
+                complement_adresse: complementAdresse || null, // optionnel
+                code_postal: codePostal,
+                ville,
+                pays,
+                date_naissance: dateNaissance || null, // optionnel
+            },
+            don: {
+                montant: amount,
+                frequence: activeTab === "monthly" ? "monthly" : "once",
+                moyen_paiement: activePayment,
+            }
+        };
+
+        try {
+            const data = await submitDonation(payload);
+            // Message de succès
+            alert(`Merci pour votre don de ${amount}€ via ${activePayment} ❤️`);
+            console.log("Donation OK:", data);
+        } catch (err) {
+            console.error(err);
+            alert(err.message || "Erreur serveur");
+        }
     };
 
+    // Accordéon Footer
     const toggleAccordion = (index) => {
         setOpenAccordion(openAccordion === index ? null : index);
     };
 
-    const toggleCountryMenu = (e) => {
-        e.preventDefault();
-        setShowCountryMenu(!showCountryMenu);
-    };
-
-    const selectCountry = (code) => {
-        setPhoneCountry(code);
-        setShowCountryMenu(false);
-    };
-
     const displayAmount = customAmount || selectedAmount || 0;
-
-    const paymentMethods = [
-        { method: "card", label: "Carte bancaire", img: cartedecredit },
-        { method: "google-pay-apple-pay", label: "G-Pay / Apple Pay", img: ggpayapppay },
-        { method: "paypal", label: "PayPal", img: paypal },
-        { method: "virement", label: "Virement", img: virementIcon }
-    ];
-
-    const footerData = [
-        {
-            title: "Pourquoi donner ?",
-            items: [
-                "La Croix-Rouge française, c'est 160 ans d'histoire aux côtés des plus vulnérables.",
-                "Vos dons financent les missions prioritaires : urgences, santé, actions sociales.",
-                "Association reconnue d'intérêt général : 75 % déductibles de l'IR (dans la limite légale)."
-            ]
-        },
-        {
-            title: "Traitement de vos données personnelles",
-            items: [
-                "Données utilisées pour la gestion du don (reçu fiscal, relation donateur, enquêtes).",
-                "Conformément à la réglementation, vous disposez de droits d'accès, de rectification et d'opposition.",
-                "Pour en savoir plus, consultez notre politique de protection des données."
-            ]
-        },
-        {
-            title: "Nous soutenir en toute confiance",
-            items: [
-                "Site 100 % sécurisé (chiffrement SSL/TLS, normes de l'industrie).",
-                "Une équipe donateurs est à votre écoute pour répondre à vos questions.",
-                "Vos informations de paiement ne sont pas conservées sur nos serveurs."
-            ]
-        }
-    ];
-
-    // Drapeaux simples pour la démo
-    const flags = {
-        FR: "🇫🇷",
-        BE: "🇧🇪",
-        CH: "🇨🇭",
-        CA: "🇨🇦"
-    };
 
     return (
         <>
-            <SEO
-                title="Soutenez la Croix-Rouge française"
-                description="Soutenez notre association en effectuant un don"
-                image="/crf_logo.png"
-            />
+            <Helmet>
+                <title>Soutenez la Croix-Rouge française</title>
+                <meta name="description" content="Soutenez notre association en effectuant un don" />
+                <meta property="og:title" content="Soutenez la Croix-Rouge française" />
+                <meta property="og:description" content="Soutenez notre association en effectuant un don" />
+            </Helmet>
 
+            {/* DÉBUT DU CSS INTÉGRÉ (Version corrigée issue de message (1).txt) */}
             <style>{`
-                /* --- VARIABLES --- */
+                /* Donation Bar */
                 :root {
-                    --primary-red: #e30219;
-                    --dark-red: #b80000;
-                    --bg-teal: #2d8f91;
-                    --text-grey: #555; /* Gris demandé */
-                    --text-dark: #333;
-                    --white: #ffffff;
-                    --border-color: #ccc;
+                    --bar-bg-1: #e30219;
+                    --bar-bg-2: #e30219;
+                    --text-color: #ffffff;
                 }
 
-                * { box-sizing: border-box; }
+                * {
+                    box-sizing: border-box;
+                }
 
                 body {
                     margin: 0;
-                    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Police plus neutre */
-                    background: transparent;
-                    font-size: 18px; 
-                    line-height: 1.5;
-                    color: var(--text-grey); /* Texte gris par défaut */
+                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                    background: #2d8f91;
                 }
 
-                /* --- ANIMATIONS --- */
-                @keyframes rollDown {
-                    0% { transform: translateY(-120%); opacity: 0; }
-                    20% { transform: translateY(10%); opacity: 1; }
-                    100% { transform: translateY(0); opacity: 1; }
+                /* video background */
+                .video-container {
+                    position: relative;
+                    width: 100%;
+                    min-height: 100vh; /* Permet de grandir si le contenu dépasse */
+                    overflow-x: hidden; /* On évite le scroll horizontal */
+                    padding-bottom: 50px;
                 }
 
-                @keyframes slideUpFade {
-                    from { transform: translateY(50px); opacity: 0; }
-                    to { transform: translateY(0); opacity: 1; }
-                }
-
-                /* --- VIDÉO FIXE --- */
                 #background-video {
-                    position: fixed; 
-                    top: 0; left: 0;
-                    width: 100vw; height: 100vh;
+                    position: fixed; /* Reste fixe pendant le scroll */
+                    top: 0;
+                    left: 0;
+                    width: 100vw;
+                    height: 100vh;
                     object-fit: cover;
                     z-index: -1;
+                    pointer-events: none;
                 }
 
-                /* --- WRAPPER PRINCIPAL --- */
-                .main-wrapper {
-                    min-height: 100vh;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: space-between; 
-                }
-
-                /* --- BARRES FIXES --- */
                 .donation-bar {
-                    position: fixed; top: 0; left: 0; right: 0;
-                    background: linear-gradient(var(--primary-red), var(--primary-red));
-                    color: var(--white);
-                    height: 50px;
-                    display: flex; align-items: center; justify-content: center;
-                    z-index: 1000;
-                    font-size: 1.1rem;
-                    font-weight: 500; /* Moins gras */
-                    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                }
-
-                .ticker-viewport { 
-                    height: 100%; 
-                    display: flex; 
-                    align-items: center; 
-                    overflow: hidden; 
-                    position: relative;
-                }
-                .ticker-text { 
-                    display: inline-block; 
-                    animation: rollDown 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; /* Effet rouleau */
-                }
-                
-                .logo-corner {
-                    position: fixed; 
-                    top: 70px; 
-                    left: 30px;
-                    z-index: 20;
-                }
-                .logo-img {
-                    width: 130px; 
-                    height: auto;
-                    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
-                    transition: transform 0.3s;
-                }
-                .logo-img:hover { transform: scale(1.05); }
-
-                /* --- CONTENU --- */
-                .content-container {
-                    padding-top: 130px; 
-                    flex-grow: 1; 
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    background: linear-gradient(var(--bar-bg-1), var(--bar-bg-2));
+                    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+                    padding: 8px 12px;
                     display: flex;
-                    flex-direction: column;
                     align-items: center;
+                    justify-content: center;
+                    gap: 16px;
+                    z-index: 1000;
+                    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
+                    height: 48px;
                 }
 
-                /* --- TITRE --- */
+                .donation-text {
+                    font-size: 14px;
+                    color: var(--text-color);
+                    white-space: nowrap;
+                }
+
+                .amount {
+                    font-weight: 700;
+                    margin-left: 0px;
+                }
+
+                .ticker {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    min-width: 360px;
+                    justify-content: center;
+                    overflow: hidden;
+                    height: 20px;
+                }
+
+                .item {
+                    display: inline-block;
+                    transform: translateY(0);
+                    transition: transform .4s ease, opacity .4s ease;
+                }
+
+                /*---- H1 ----*/
                 .header-donation {
-                    width: 100%;
-                    text-align: center;
-                    z-index: 10;
-                    margin-bottom: 30px; 
+                    position: relative;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px 0;
+                }
+
+                .logo-link {
+                    display: inline-block;
+                    text-decoration: none;
+                }
+
+                .logo {
+                    position: absolute;
+                    margin-top: -30px;
+                    left: 40px;
+                    width: 100px;
+                    height: auto;
                 }
 
                 .header-donation h1 {
-                    display: flex;
-                    flex-direction: row; 
-                    align-items: stretch;
-                    justify-content: center;
-                    gap: 0; 
-                    font-size: 3.5rem;
-                    text-transform: uppercase;
-                    margin: 0;
-                    line-height: 1;
-                    font-weight: 800; /* Le titre reste gras */
+                    font-size: 2.3rem;
+                    font-weight: 800;
+                    text-align: center;
+                    color: #111;
+                    letter-spacing: 0.5px;
+                    line-height: 1.3;
+                    margin-top: 60px;
+                    position: relative;
+                    z-index: 10;
+                    white-space: nowrap;
                 }
-                
-                .highlight {
+
+                .header-donation h1 .highlight {
                     background: linear-gradient(180deg, #d53c3c 0%, #b52c2c 100%);
                     color: #fff;
-                    padding: 15px 30px; 
-                    border-radius: 60px 0 0 60px;
-                    box-shadow: -5px 5px 10px rgba(0,0,0,0.2);
-                    display: flex; align-items: center;
-                }
-                
-                .whitebox {
-                    background: rgba(255,255,255,0.95);
-                    color: #000;
-                    padding: 15px 40px 15px 30px; 
-                    border-radius: 0 60px 60px 0;
-                    box-shadow: 5px 5px 10px rgba(0,0,0,0.2);
-                    display: flex; align-items: center;
+                    padding: 10px 22px;
+                    border-radius: 6px 0 0 6px;
+                    display: inline-block;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+                    transition: transform 0.25s ease, box-shadow 0.25s ease;
+                    margin: 0;
+                    vertical-align: middle;
                 }
 
-                /* --- SECTION CARTES (Compacte) --- */
+                .header-donation h1 .whitebox {
+                    background: rgba(255, 255, 255, 0.95);
+                    color: #000;
+                    padding: 10px 22px;
+                    border-radius: 0 6px 6px 0;
+                    display: inline-block;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+                    margin: 0;
+                    vertical-align: middle;
+                    transition: transform 0.25s ease, box-shadow 0.25s ease;
+                }
+
+                .header-donation h1 span:hover {
+                    transform: scale(1.04);
+                    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+                }
+
+                /*---- Mon soutien (LAYOUT CORRIGÉ) ----*/
                 .don-section {
                     display: flex;
-                    justify-content: center;
-                    align-items: flex-start;
-                    gap: 15px; /* Très peu d'espace */
-                    padding: 0 10px 60px 10px;
-                    max-width: 1700px;
-                    width: 100%;
+                    flex-direction: row; /* Aligne les 3 blocs côte à côte */
+                    align-items: flex-start; /* Important pour que chaque bloc garde sa propre hauteur */
+                    justify-content: center; /* Centrage horizontal des blocs */
+                    gap: 0px; /* On gère l'espacement via le scale/width */
+                    margin-top: 200px;
                     position: relative;
-                    z-index: 20; 
+                    z-index: 2;
                 }
 
-                /* --- CARDS --- */
-                .card-common {
+                /* --- BLOC 1 --- */
+                .don-module {
                     background: #fff;
-                    border-radius: 8px;
-                    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-                    overflow: visible; /* Important pour les selecteurs dropdown */
-                    width: 100%;
-                    max-width: 530px; 
-                    display: flex;
-                    flex-direction: column;
-                    animation: slideUpFade 0.8s ease-out;
+                    margin-top: -150px; /* Marge unifiée */
+                    border-radius: 10px;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                    width: 380px;
+                    transform: scale(0.85); /* Scale unifié */
+                    transform-origin: top center; /* Centrage unifié */
+                    overflow: hidden;
+                    position: relative;
                 }
 
-                .card-header {
-                    background: var(--primary-red);
-                    color: var(--white);
-                    padding: 10px; 
+                .don-container {
+                    background: #fff;
+                    border-radius: 10px;
+                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                    width: 380px;
+                    overflow: hidden;
+                }
+
+                .don-header {
+                    background: #d40000;
+                    color: #fff;
                     text-align: center;
-                }
-                .card-header h2 { 
-                    margin: 0; 
-                    font-size: 1.5rem; 
-                    font-weight: 600; /* Pas trop gras */
-                }
-                .card-body { padding: 15px; position: relative; } 
-
-                /* --- 1. SOUTIEN --- */
-                .don-tabs { display: flex; border: 1px solid #ddd; margin-bottom: 15px; border-radius: 4px; overflow: hidden;}
-                .tab {
-                    flex: 1;
-                    padding: 12px;
-                    border: none;
-                    background: #f9f9f9;
-                    cursor: pointer;
-                    font-weight: 500;
-                    font-size: 1.1rem;
-                    color: #555;
-                    transition: all 0.2s;
-                }
-                .tab.active { 
-                    background: var(--primary-red); 
-                    color: white; 
-                    font-weight: 600;
+                    padding: 12px 0;
                 }
 
-                .don-amounts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-                .amount-don {
-                    padding: 15px;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                    background: white;
-                    cursor: pointer;
-                    font-weight: 500;
-                    color: #555;
-                    font-size: 1.4rem; 
-                    transition: 0.2s;
-                }
-                .amount-don:hover { border-color: var(--primary-red); color: var(--primary-red); }
-                .amount-don.active {
-                    background: white;
-                    color: var(--text-dark);
-                    border: 2px solid var(--primary-red); /* Style de l'image : bordure rouge texte noir */
+                .don-header h2 {
+                    margin: 0;
+                    font-size: 1rem;
                     font-weight: 700;
                 }
 
-                /* Custom amount centrée et symétrique */
+                .don-tabs {
+                    display: flex;
+                    justify-content: space-between;
+                    border-bottom: 1px solid #eee;
+                }
+
+                .tab {
+                    flex: 1;
+                    padding: 12px 0;
+                    border: none;
+                    background: #fff;
+                    font-weight: 600;
+                    cursor: pointer;
+                    border-bottom: 3px solid transparent;
+                    transition: all 0.2s ease;
+                }
+
+                .tab.active {
+                    background: #d40000;
+                    color: #fff;
+                    border-bottom: 3px solid #d40000;
+                    position: relative;
+                }
+
+                .tab.active::after {
+                    content: "";
+                    position: absolute;
+                    bottom: -6px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 0;
+                    height: 0;
+                    border-left: 8px solid transparent;
+                    border-right: 8px solid transparent;
+                    border-top: 8px solid #d40000;
+                }
+
+                .heart {
+                    color: #d40000;
+                    margin-right: 6px;
+                }
+
+                .don-amounts {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 6px;
+                    padding: 10px;
+                }
+
+                .amount-don {
+                    padding: 6px 8px;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    background: #fff;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    font-size: 0.85rem;
+                }
+
+                .amount-don:hover {
+                    border-color: #d40000;
+                }
+
+                .amount-don.active {
+                    background: #d40000;
+                    color: #fff;
+                    border-color: #d40000;
+                    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+                    transform: translateY(-1px);
+                }
+
                 .custom-amount-box {
                     display: flex;
                     align-items: center;
-                    justify-content: center;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                    margin-top: 10px;
-                    padding: 0;
-                    height: 55px;
-                    background: #fcfcfc;
-                    position: relative;
-                }
-                .custom-amount-input { 
-                    border: none; 
-                    width: 100%; 
-                    height: 100%; 
-                    outline: none; 
-                    font-size: 1.2rem; 
-                    text-align: center;
-                    background: transparent;
-                    color: #555;
-                }
-                /* Symbole euro absolu à droite */
-                .currency-symbol {
-                    position: absolute;
-                    right: 15px;
-                    font-size: 1.2rem;
-                    color: #555;
+                    gap: 6px;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    padding: 6px 8px;
+                    margin-top: 8px;
+                    background: #fff;
+                    transition: border 0.2s ease;
                 }
 
-                .don-info { margin-top: 10px; font-size: 1rem; background: #fff3f3; padding: 10px; border-radius: 4px; color: var(--dark-red); }
-
-                /* --- 2. FORMULAIRE STYLE MATERIAL (FLOATING LABELS) --- */
-                .form-group-material {
-                    position: relative;
-                    margin-bottom: 20px; /* Espace pour le label flottant */
+                .custom-amount-box:hover,
+                .custom-amount-box:focus-within {
+                    border-color: #d40000;
                 }
-                
-                .form-control {
-                    width: 100%;
-                    height: 50px;
-                    padding: 15px 12px 5px 12px; /* Padding top pour laisser place au label */
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                    font-size: 1.1rem;
+
+                .euro-symbol {
+                    color: #555;
+                    font-weight: 600;
+                    font-size: 0.85rem;
+                }
+
+                .custom-amount-input {
+                    border: none;
                     outline: none;
-                    background: white;
+                    font-size: 0.85rem;
+                    flex: 1;
                     color: #333;
-                    transition: border-color 0.2s;
+                    background: transparent;
                 }
-                
-                .form-control:focus {
-                    border-color: var(--primary-red);
+
+                .custom-amount-input::placeholder {
+                    color: #666;
                 }
-                
-                /* Le label qui flotte */
-                .floating-label {
-                    position: absolute;
-                    top: 14px;
-                    left: 10px;
-                    pointer-events: none;
-                    transition: 0.2s ease all;
-                    color: #777;
-                    font-size: 1.1rem;
-                    background: white;
-                    padding: 0 5px;
-                }
-                
-                /* Quand input focus ou rempli (valid) */
-                .form-control:focus ~ .floating-label,
-                .form-control:not(:placeholder-shown) ~ .floating-label,
-                .form-control:valid ~ .floating-label {
-                    top: -10px;
-                    left: 10px;
+
+                .don-info {
+                    border-top: 1px solid #eee;
+                    padding: 12px;
                     font-size: 0.85rem;
                     color: #333;
-                    font-weight: 600;
+                    line-height: 1.4;
                 }
-                
-                .form-group-donation-inline { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; font-size: 1rem; color: #555; }
-                
-                .form-row { display: flex; gap: 10px; }
-                .form-row .half { flex: 1; }
-                
-                .manual-address { display: block; margin-top: 5px; font-size: 0.9rem; text-decoration: underline; color: #333; cursor: pointer; }
-                
-                /* TELEPHONE AVEC DRAPEAU */
-                .phone-container {
-                    display: flex;
-                    position: relative;
+
+                .don-info strong {
+                    color: #d40000;
                 }
-                .flag-selector {
+
+                /* --- BLOC 2 --- */
+                .don-coordonnees {
                     display: flex;
-                    align-items: center;
                     justify-content: center;
-                    width: 60px;
-                    border: 1px solid #ccc;
-                    border-right: none;
-                    border-radius: 4px 0 0 4px;
-                    background: #f1f1f1;
-                    cursor: pointer;
-                    font-size: 1.5rem;
+                    margin-top: -150px; /* Marge unifiée */
+                    padding: 0; /* Plus de padding parasite */
+                    background: transparent;
                 }
-                .flag-menu {
-                    position: absolute;
-                    top: 100%;
-                    left: 0;
-                    background: white;
-                    border: 1px solid #ccc;
-                    z-index: 50;
-                    width: 60px;
+
+                .coordonnees-card {
+                    width: 400px;
+                    height: auto; 
+                    overflow: visible; 
+                    transform: scale(0.85); /* Scale unifié */
+                    transform-origin: top center; /* Centrage unifié */
+                    background: #fff;
+                    border-radius: 7px;
+                    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+                }
+
+                .card-header {
+                    background: #d40000;
+                    color: #fff;
+                    padding: 8px 12px;
                     text-align: center;
                 }
-                .flag-option { padding: 5px; cursor: pointer; font-size: 1.5rem; }
-                .flag-option:hover { background: #eee; }
-                
-                .phone-input-field {
+
+                .card-header h2 {
+                    margin: 0;
+                    font-size: 1rem;
+                    font-weight: 700;
+                }
+
+                .card-body {
+                    padding: 14px;
+                    height: auto;
+                }
+
+                .form-group-donation {
+                    display: flex;
+                    flex-direction: column;
+                    margin-bottom: 10px;
+                }
+
+                .form-row {
+                    display: flex;
+                    gap: 6px;
+                }
+
+                .form-group-donation.half {
                     flex: 1;
-                    height: 50px;
-                    padding: 10px;
-                    border: 1px solid #ccc;
-                    border-radius: 0 4px 4px 0;
-                    font-size: 1.1rem;
+                }
+
+                input, select {
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    padding: 6px;
+                    font-size: 0.85rem;
+                    transition: border-color 0.2s;
+                }
+
+                input:focus, select:focus {
+                    border-color: #d40000;
                     outline: none;
                 }
 
-                fieldset { border: none; padding: 0; margin: 20px 0 0 0; }
-                legend { font-size: 1.1rem; font-weight: 500; color: #333; margin-bottom: 10px; }
-                .radio-label { display: flex; align-items: center; gap: 8px; font-size: 1.1rem; margin-bottom: 8px; cursor: pointer; color: #555; }
-                .radio-custom { accent-color: var(--primary-red); width: 20px; height: 20px; }
-                .form-note { font-size: 0.9rem; color: #555; font-style: italic; margin-top: 10px; }
-
-                /* --- 3. PAIEMENT --- */
-                .payment-methods { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 20px;}
-                .payment-option {
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                    padding: 10px 5px;
-                    text-align: center;
-                    cursor: pointer;
-                    background: white;
-                    transition: all 0.2s;
-                    flex: 1;
+                .form-group-donation-inline {
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    margin-bottom: 10px;
                 }
-                .payment-option:hover { border-color: #999; }
-                .payment-option.active { border: 2px solid var(--primary-red); position: relative; }
+
+                .manual-address {
+                    font-size: 0.85rem;
+                    color: #000;
+                    text-decoration: underline;
+                }
                 
-                /* Petit check rouge si actif (comme sur l'image) */
+                /* Accordéon adresse manuelle */
+                .address-details-accordion {
+                    max-height: 0;
+                    overflow: hidden;
+                    transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
+                    opacity: 0;
+                }
+
+                .address-details-accordion.open {
+                    max-height: 500px;
+                    transition: max-height 0.4s ease-in-out;
+                    opacity: 1;
+                    margin-bottom: 10px;
+                }
+
+                .phone-input {
+                    display: flex;
+                    align-items: center;
+                    border: 1px solid #ddd;
+                    border-radius: 5px;
+                    padding: 6px;
+                }
+
+                .flag {
+                    font-size: 1.1rem;
+                    margin-right: 6px;
+                }
+
+                fieldset {
+                    border: none;
+                    margin-top: 10px;
+                }
+
+                legend {
+                    color: #0056b3;
+                    font-weight: 600;
+                    margin-bottom: 5px;
+                }
+
+                .form-note {
+                    font-size: 0.8rem;
+                    color: #333;
+                    margin-top: 8px;
+                }
+
+                /* --- BLOC 3 --- */
+                .don-reglement {
+                    display: flex;
+                    justify-content: center;
+                    margin-top: -150px; /* Marge unifiée */
+                    margin-left: 0; /* Reset */
+                    background: transparent;
+                    transform: none; /* On déplace le scale sur la card */
+                }
+
+                .reglement-card {
+                    width: 400px;
+                    background: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15);
+                    overflow: hidden;
+                    transform: scale(0.85); /* Scale unifié */
+                    transform-origin: top center; /* Centrage unifié */
+                }
+
+                .reglement-card .card-header {
+                    background: #d40000;
+                    color: #fff;
+                    text-align: center;
+                    padding: 10px 0;
+                }
+
+                .payment-methods {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 16px;
+                    padding: 20px;
+                }
+
+                .payment-option {
+                    border: 2px solid #ddd;
+                    border-radius: 8px;
+                    background: #fff;
+                    padding: 16px;
+                    text-align: center;
+                    font-weight: 600;
+                    color: #444;
+                    cursor: pointer;
+                    transition: all 0.25s ease;
+                    position: relative;
+                }
+
+                .payment-option.active {
+                    border-color: #d40000;
+                    color: #d40000;
+                }
+
                 .payment-option.active::after {
                     content: "✔";
                     position: absolute;
-                    top: -8px; right: -8px;
-                    background: var(--primary-red);
-                    color: white;
-                    border-radius: 50%;
-                    width: 20px; height: 20px;
-                    font-size: 0.8rem;
-                    display: flex; align-items: center; justify-content: center;
+                    top: 8px;
+                    right: 10px;
+                    color: #d40000;
+                    font-size: 1.1rem;
+                    font-weight: bold;
                 }
 
-                .payment-option .icon { height: 35px; display: block; margin: 0 auto 5px; object-fit: contain; }
-                .payment-option span { font-size: 0.8rem; font-weight: 600; display: block; color: #555; text-transform: uppercase;}
+                .payment-option:hover {
+                    border-color: #d40000;
+                }
 
-                /* Logos CB */
-                .cb-logos { text-align: center; margin: 10px 0; }
-                .cb-icon { height: 25px; margin: 0 5px; vertical-align: middle; }
+                .icon {
+                    display: block;
+                    width: 40px;
+                    height: 40px;
+                    margin: 0 auto 6px;
+                    object-fit: contain;
+                }
 
-                .validate-donation {
+                [data-method="google-pay-apple-pay"] .icon {
+                    width: 150px;
+                    margin-top: 5px;
+                }
+
+                .virement-box {
+                    padding: 0 20px 20px 20px;
+                }
+
+                .virement-box .bank-select {
+                    margin-bottom: 12px;
+                }
+
+                .virement-box select {
                     width: 100%;
-                    background: var(--primary-red);
-                    color: white;
-                    border: none;
-                    padding: 20px; 
-                    border-radius: 6px;
-                    font-size: 1.4rem;
-                    font-weight: 700;
-                    margin-top: 10px;
-                    cursor: pointer;
-                    box-shadow: 0 4px 10px rgba(227, 2, 25, 0.3);
-                    transition: background 0.3s;
-                    display: flex; justify-content: center; align-items: center; gap: 10px;
+                    padding: 8px;
+                    border-radius: 5px;
+                    border: 1px solid #ddd;
                 }
-                .validate-donation:hover { background: var(--dark-red); }
-                .arrow-circle { border: 2px solid white; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+
+                .virement-infos {
+                    font-size: 0.9rem;
+                    color: #333;
+                    line-height: 1.4;
+                }
+
+                /* Bouton principal */
+                .validate-donation {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    background: #d40000;
+                    color: #fff;
+                    font-weight: 700;
+                    font-size: 1rem;
+                    border: none;
+                    border-radius: 6px;
+                    padding: 14px;
+                    width: calc(100% - 40px);
+                    margin: 10px auto 20px auto;
+                    cursor: pointer;
+                    transition: background 0.25s ease;
+                }
+
+                .validate-donation:hover {
+                    background: #b80000;
+                }
+
+                .arrow {
+                    margin-left: 8px;
+                    font-size: 1.2rem;
+                }
 
                 .secure-box {
                     display: flex;
                     align-items: flex-start;
-                    gap: 15px;
-                    margin-top: 20px;
-                    font-size: 0.95rem;
-                    color: #555;
-                    line-height: 1.3;
+                    gap: 10px;
+                    padding: 0 20px 20px 20px;
+                    font-size: 0.85rem;
+                    color: #333;
                 }
-                .lock-icon { width: 35px; height: 35px; border: 2px solid #28a745; border-radius: 50%; padding: 5px; } /* Style cadenas vert image */
 
-                /* --- FOOTER (Plein écran, pas de décalage) --- */
-                .don-footer {
-                    background: #247577;
-                    padding: 30px 0 80px 0; 
-                    color: white;
-                    position: relative;
-                    z-index: 100;
-                    width: 100%;
+                .lock {
+                    flex-shrink: 0;
                 }
-                .footer-inner {
-                    max-width: 1600px;
+
+                .lock-icon {
+                    width: 24px;
+                    height: 24px;
+                    display: block;
+                    margin-top: 20px;
+                }
+
+                /* ===== Footer Accordéon ===== */
+                .don-footer {
+                    background: #2d8f91;
+                    color: #ffffff;
+                    margin-top: 50px; /* Corrigé */
+                    padding: 10px 0;
+                    position: relative;
+                    z-index: 2;
+                    clear: both;
+                }
+
+                .don-footer .footer-inner {
+                    max-width: 1100px;
                     margin: 0 auto;
+                    padding: 0 24px;
                     display: grid;
                     grid-template-columns: repeat(3, 1fr);
-                    gap: 30px; 
-                    padding: 0 20px;
+                    gap: 28px;
+                    align-items: start;
                 }
 
-                .acc { position: relative; }
-                
-                .acc-header {
-                    background: rgba(255,255,255,0.1);
-                    border: 1px solid rgba(255,255,255,0.2);
-                    padding: 15px; 
-                    border-radius: 8px;
-                    cursor: pointer;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    width: 100%;
-                    color: white;
-                    font-weight: 700;
-                    font-size: 1.4rem; 
-                    transition: background 0.3s;
+                .don-footer .acc {
+                    background: rgba(255, 255, 255, 0.04);
+                    border: 1px solid rgba(255, 255, 255, 0.12);
+                    border-radius: 10px;
+                    overflow: hidden;
+                    transition: box-shadow 0.3s ease, border-color 0.3s ease;
                 }
-                .acc-header:hover { background: rgba(255,255,255,0.2); }
+
+                .acc-header {
+                    width: 100%;
+                    text-align: left;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 12px;
+                    padding: 16px 18px;
+                    background: transparent;
+                    color: #fff;
+                    font-weight: 700;
+                    border: none;
+                    cursor: pointer;
+                    transition: background 0.25s ease;
+                }
+
+                .acc-header:hover {
+                    background: rgba(255, 255, 255, 0.06);
+                }
+
+                .acc-caret {
+                    transition: transform 0.25s ease;
+                }
 
                 .acc-body {
-                    position: absolute;
-                    bottom: 100%;
-                    left: 0;
-                    right: 0;
-                    background: #1d5f61;
-                    padding: 20px; 
-                    border-radius: 8px;
-                    box-shadow: 0 -10px 40px rgba(0,0,0,0.4);
-                    margin-bottom: 10px;
+                    padding: 0 18px 0;
+                    max-height: 0;
+                    overflow: hidden;
                     opacity: 0;
-                    visibility: hidden;
-                    transform: translateY(20px);
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    pointer-events: none;
-                    z-index: 200;
-                    font-size: 1.2rem; 
+                    transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
+                }
+
+                .acc.open .acc-body {
+                    max-height: 500px;
+                    opacity: 1;
+                    padding: 0 18px 16px;
+                }
+
+                .acc-list {
+                    margin: 11px 0 0;
+                    padding-left: 20px;
+                }
+
+                .acc-list li {
+                    margin: 8px 0;
                     line-height: 1.5;
                 }
-                .acc.open .acc-body { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
-                .acc.open .acc-body::after {
-                    content: ''; position: absolute; bottom: -8px; left: 40px;
-                    width: 0; height: 0; 
-                    border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 10px solid #1d5f61;
-                }
-                .acc-list { list-style: none; padding: 0; margin: 0; }
-                .acc-list li { margin-bottom: 10px; }
-                .acc-caret { transition: transform 0.3s; font-size: 1.5rem; }
-                .acc.open .acc-caret { transform: rotate(180deg); }
 
-                /* --- RESPONSIVE --- */
-                
-                @media (max-width: 1350px) {
-                    /* Colonne unique dès 1350px pour tout garder gros */
-                    .don-section { 
-                        flex-direction: column; 
-                        align-items: center; 
-                        margin-top: 20px; 
+                .acc-logos {
+                    display: flex;
+                    align-items: center;
+                    gap: 16px;
+                    margin-top: 10px;
+                }
+
+                .acc-logos img {
+                    height: 40px;
+                    width: auto;
+                    display: block;
+                }
+
+                .acc.open {
+                    border-color: rgba(255, 255, 255, 0.25);
+                    box-shadow: 0 0 12px rgba(255, 255, 255, 0.15);
+                }
+
+                .acc.open .acc-header .acc-caret {
+                    transform: rotate(180deg);
+                }
+
+                /* ===== MEDIA QUERIES ===== */
+                @media (max-width: 1024px) {
+                    .header-donation h1 {
+                        font-size: 1.8rem;
+                        margin-top: 50px;
                     }
-                    .card-common { max-width: 600px; width: 100%; } 
-                    .footer-inner { grid-template-columns: 1fr; }
-                    .acc-body { position: relative; bottom: auto; margin-bottom: 10px; background: rgba(0,0,0,0.2); box-shadow: none; display: none; }
-                    .acc.open .acc-body { display: block; animation: slideUpFade 0.3s; }
-                    .acc.open .acc-body::after { display: none; }
-                    .logo-corner { left: 20px; top: 60px; }
-                    .header-donation { margin-bottom: 20px; }
+                    .logo {
+                        left: 20px;
+                        width: 80px;
+                        margin-top: 10px;
+                    }
+                    
+                    /* Passage en colonne pour tablette et mobile */
+                    .don-section {
+                        flex-direction: column;
+                        align-items: center;
+                        margin-top: 60px;
+                        gap: 40px;
+                        margin-left: 0;
+                        padding-bottom: 40px;
+                    }
+
+                    /* Reset des positions desktop "artistiques" */
+                    .don-module, .don-coordonnees, .don-reglement {
+                        margin-top: 0;
+                        margin-left: 0;
+                        margin-right: 0;
+                        transform: none; /* Important: On enlève le scale(0.8) */
+                    }
+                    
+                    .don-module, 
+                    .coordonnees-card, 
+                    .reglement-card {
+                        width: 100%;
+                        max-width: 500px; /* Plus large pour la lisibilité sur tablette */
+                        transform: none;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                        border-radius: 12px;
+                    }
+
+                    .don-module {
+                        /* Le module avait un margin-top négatif sur desktop, on le reset */
+                        margin-top: 0;
+                    }
+
+                    .don-coordonnees {
+                        /* Le conteneur doit aussi être reset */
+                        margin-top: 0;
+                        padding: 0;
+                        width: 100%;
+                        display: flex;
+                        justify-content: center;
+                    }
+                    
+                    .don-reglement {
+                         margin-top: 0;
+                         margin-left: 0;
+                         width: 100%;
+                         justify-content: center; /* Centrage */
+                         background: transparent;
+                         transform: none;
+                    }
+
+                    .don-footer .footer-inner {
+                        grid-template-columns: repeat(2, 1fr);
+                        gap: 20px;
+                    }
                 }
 
                 @media (max-width: 768px) {
-                    .header-donation h1 { flex-direction: column; font-size: 2.8rem; gap: 5px; }
-                    .highlight { border-radius: 40px; padding: 10px 20px; width: 100%; justify-content: center; }
-                    .whitebox { border-radius: 40px; padding: 10px 20px; width: 100%; justify-content: center; }
-                    .logo-corner { position: absolute; top: 55px; left: 50%; transform: translateX(-50%); }
-                    .content-container { padding-top: 140px; }
-                    .payment-methods { flex-direction: column; } /* Paiement en colonne sur mobile */
+                    .donation-bar {
+                        padding: 6px 8px;
+                        height: 40px;
+                        gap: 8px;
+                    }
+                    .ticker { min-width: 280px; }
+                    .donation-text { font-size: 12px; }
+
+                    .header-donation {
+                        flex-direction: column;
+                        padding: 15px 0;
+                    }
+                    .header-donation h1 {
+                        font-size: 1.5rem;
+                        margin-top: 60px;
+                        white-space: normal;
+                        text-align: center;
+                        padding: 0 15px;
+                    }
+                    .logo {
+                        position: relative;
+                        left: auto;
+                        margin-top: 10px;
+                        margin-bottom: 10px;
+                    }
+
+                    .don-section {
+                        margin-top: 30px;
+                        gap: 30px;
+                        padding: 0 15px;
+                    }
+                    
+                    .don-module, .don-container, .coordonnees-card, .reglement-card {
+                        width: 100%;
+                        max-width: 100%; /* Pleine largeur mobile */
+                    }
+
+                    .payment-methods {
+                        grid-template-columns: 1fr;
+                        gap: 12px;
+                    }
+                    
+                    .don-footer {
+                        margin-top: 30px;
+                        padding: 30px 0;
+                    }
+                    .don-footer .footer-inner {
+                        grid-template-columns: 1fr;
+                        gap: 15px;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .header-donation h1 {
+                        font-size: 1.3rem;
+                        margin-top: 50px;
+                    }
+                    .don-tabs { flex-direction: column; }
+                    .tab { padding: 10px; }
+                    .don-amounts { grid-template-columns: 1fr; }
+                    .form-row {
+                        flex-direction: column;
+                        gap: 10px;
+                    }
+                    [data-method="google-pay-apple-pay"] .icon { width: 120px; }
+                    .acc-header { padding: 12px 15px; }
                 }
             `}</style>
+            {/* FIN DU CSS INTÉGRÉ */}
 
-            {/* VIDÉO FIXE */}
-            <div className="video-container"></div>
-            <video autoPlay muted loop playsInline id="background-video">
-                <source src={lacroixrouge} type="video/webm"/>
-            </video>
+            <div className="video-container">
+                {/* Vidéo utilisant l'import JS au lieu de l'URL hardcodée */}
+                <video autoPlay muted loop playsInline id="background-video">
+                    <source src={lacroixrouge} type="video/webm" />
+                </video>
 
-            {/* Barre haute */}
-            <div className="donation-bar">
-                <div className="ticker-viewport">
-                    <span key={donorText} className="ticker-text">{donorText}</span>
-                </div>
-            </div>
-
-            {/* Logo */}
-            <div className="logo-corner">
-                <a href="/">
-                    <img src={logo} alt="Logo Croix-Rouge" className="logo-img"/>
-                </a>
-            </div>
-
-            {/* WRAPPER SCROLL */}
-            <div className="main-wrapper">
-
-                <div className="content-container">
-
-                    {/* Titre */}
-                    <div className="header-donation">
-                        <h1>
-                            <span className="highlight">Votre Générosité</span>
-                            <span className="whitebox">sauve des vies</span>
-                        </h1>
-                    </div>
-
-                    {/* SECTION CARTES */}
-                    <div className="don-section">
-
-                        {/* 1. SOUTIEN */}
-                        <div className="don-module card-common">
-                            <div className="card-header">
-                                <h2>1. Mon soutien</h2>
+                {/* Barre de donations */}
+                <div className="donation-bar">
+                    <div className="ticker">
+                        <div className="donation-text">
+                            <div className="item donation-text" id="donorText">
+                                {donorText}
                             </div>
-                            <div className="card-body">
-                                <div className="don-tabs">
-                                    <button className={`tab ${activeTab === "once" ? "active" : ""}`} onClick={() => handleTabChange("once")}>
-                                        Je donne une fois
+                        </div>
+                    </div>
+                </div>
+
+                {/* Header */}
+                <div className="header-donation">
+                    <a href="/">
+                        <img src={logo} alt="Logo Croix-Rouge Française" className="logo" />
+                    </a>
+                    <h1>
+                        <span className="highlight">Votre Générosité</span>
+                        <span className="whitebox">sauve des vies</span>
+                    </h1>
+                </div>
+
+                {/* Section principale */}
+                <section className="don-section">
+                    {/* Bloc 1: Mon soutien */}
+                    <section className="don-module">
+                        <div className="don-header">
+                            <h2>1. Mon soutien</h2>
+                        </div>
+
+                        <div className="don-tabs">
+                            <button
+                                className={`tab ${activeTab === "once" ? "active" : ""}`}
+                                onClick={() => handleTabChange("once")}
+                            >
+                                Je donne une fois
+                            </button>
+                            <button
+                                className={`tab ${activeTab === "monthly" ? "active" : ""}`}
+                                onClick={() => handleTabChange("monthly")}
+                            >
+                                <span className="heart">❤</span> Je donne tous les mois
+                            </button>
+                        </div>
+
+                        {activeTab === "once" && (
+                            <div className="don-amounts">
+                                {[90, 130, 150, 200].map(amount => (
+                                    <button
+                                        key={amount}
+                                        className={`amount-don ${selectedAmount === amount ? "active" : ""}`}
+                                        onClick={() => handleAmountSelect(amount)}
+                                    >
+                                        {amount} €
                                     </button>
-                                    <button className={`tab ${activeTab === "monthly" ? "active" : ""}`} onClick={() => handleTabChange("monthly")}>
-                                        Je donne tous les mois
-                                    </button>
-                                </div>
-                                <div className="don-amounts">
-                                    {(activeTab === "once" ? [90, 130, 150, 200] : [10, 15, 20, 30]).map(amount => (
-                                        <button
-                                            key={amount}
-                                            className={`amount-don ${selectedAmount === amount ? "active" : ""}`}
-                                            onClick={() => handleAmountSelect(amount)}
-                                        >
-                                            {amount} €
-                                        </button>
-                                    ))}
-                                </div>
+                                ))}
                                 <div className="custom-amount-box">
+                                    <span className="euro-symbol">€</span>
                                     <input
                                         type="number"
                                         className="custom-amount-input"
                                         placeholder="Montant libre"
+                                        min="1"
                                         value={customAmount}
                                         onChange={(e) => handleCustomAmountChange(e.target.value)}
                                     />
-                                    {/* Symbole euro symétrique à droite */}
-                                    {customAmount && <span className="currency-symbol">€</span>}
                                 </div>
                             </div>
-                        </div>
+                        )}
 
-                        {/* 2. COORDONNÉES */}
-                        <div className="don-coordonnees card-common">
+                        {activeTab === "monthly" && (
+                            <div className="don-amounts">
+                                {[10, 15, 20, 30].map(amount => (
+                                    <button
+                                        key={amount}
+                                        className={`amount-don ${selectedAmount === amount ? "active" : ""}`}
+                                        onClick={() => handleAmountSelect(amount)}
+                                    >
+                                        {amount} € par mois
+                                    </button>
+                                ))}
+                                <div className="custom-amount-box">
+                                    <span className="euro-symbol">€</span>
+                                    <input
+                                        type="number"
+                                        className="custom-amount-input"
+                                        placeholder="Montant libre (€/mois)"
+                                        min="1"
+                                        value={customAmount}
+                                        onChange={(e) => handleCustomAmountChange(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+                        )}
+
+                        {showInfo && (
+                            <div className="don-info">
+                                <p>Soit <strong>{deduction} €</strong> après déduction fiscale</p>
+                                <p>La Croix-Rouge française utilisera les fonds collectés pour ses missions prioritaires.</p>
+                            </div>
+                        )}
+                    </section>
+
+                    {/* Bloc 2: Mes coordonnées */}
+                    <section className="don-coordonnees">
+                        <div className="coordonnees-card">
                             <div className="card-header">
                                 <h2>2. Mes coordonnées</h2>
                             </div>
+
                             <form className="card-body">
-                                {/* EMAIL Style Material avec Label Flottant */}
-                                <div className="form-group-material">
-                                    <input type="email" id="email" className="form-control" placeholder=" " required />
-                                    <label htmlFor="email" className="floating-label">Email *</label>
-                                    {/* Simulation erreur comme sur l'image */}
-                                    <div style={{color: '#e30219', fontSize: '0.8rem', marginTop: '4px', display: 'none'}}>Vous devez saisir une adresse email valide</div>
+                                <div className="form-group-donation">
+                                    <label htmlFor="email">Email *</label>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                        placeholder="Votre adresse email"
+                                        required
+                                    />
                                 </div>
 
                                 <div className="form-group-donation-inline">
-                                    <input type="checkbox" id="is-company" className="radio-custom"/>
+                                    <input type="checkbox" id="is-company" />
                                     <label htmlFor="is-company">Cochez cette case si vous êtes une entreprise</label>
                                 </div>
 
-                                <div className="form-group-material">
-                                    <select id="civility" className="form-control" required style={{background: 'white'}}>
-                                        <option value=""></option>
+                                <div className="form-group-donation">
+                                    <label htmlFor="civility">Civilité *</label>
+                                    <select
+                                        id="civility"
+                                        value={civilite}
+                                        onChange={(e) => setCivilite(e.target.value)}
+                                        required
+                                    >
+                                        <option value="">Sélectionnez</option>
                                         <option value="Mme">Madame</option>
                                         <option value="M.">Monsieur</option>
+                                        <option value="Autre">Autre</option>
                                     </select>
-                                    <label htmlFor="civility" className="floating-label">Civilité *</label>
                                 </div>
 
                                 <div className="form-row">
-                                    <div className="half form-group-material">
-                                        <input type="text" id="firstname" className="form-control" placeholder=" " required/>
-                                        <label htmlFor="firstname" className="floating-label">Prénom *</label>
+                                    <div className="form-group-donation half">
+                                        <label htmlFor="firstname">Prénom *</label>
+                                        <input
+                                            type="text"
+                                            id="firstname"
+                                            value={prenom}
+                                            onChange={(e) => setPrenom(e.target.value)}
+                                            required
+                                        />
                                     </div>
-                                    <div className="half form-group-material">
-                                        <input type="text" id="lastname" className="form-control" placeholder=" " required/>
-                                        <label htmlFor="lastname" className="floating-label">Nom *</label>
+                                    <div className="form-group-donation half">
+                                        <label htmlFor="lastname">Nom *</label>
+                                        <input
+                                            type="text"
+                                            id="lastname"
+                                            value={nom}
+                                            onChange={(e) => setNom(e.target.value)}
+                                            required
+                                        />
                                     </div>
                                 </div>
 
-                                <div className="form-group-material">
-                                    <select id="country" className="form-control" required>
+                                <div className="form-group-donation">
+                                    <label htmlFor="country">Pays *</label>
+                                    <select
+                                        id="country"
+                                        value={pays}
+                                        onChange={(e) => setPays(e.target.value)}
+                                        required
+                                    >
                                         <option value="France">FRANCE</option>
                                         <option value="Belgique">BELGIQUE</option>
                                         <option value="Suisse">SUISSE</option>
                                         <option value="Canada">CANADA</option>
+                                        <option value="Autre">AUTRE</option>
                                     </select>
-                                    <label htmlFor="country" className="floating-label" style={{top: '-10px', fontSize: '0.85rem'}}>Pays *</label>
                                 </div>
 
-                                <div className="form-group-material">
-                                    <input type="text" id="address" className="form-control" placeholder=" " required/>
-                                    <label htmlFor="address" className="floating-label">Commencez à taper votre adresse... *</label>
-                                    <span className="manual-address">Cliquez ici pour saisir votre adresse manuellement</span>
+                                <div className="form-group-donation">
+                                    <label htmlFor="address">Adresse *</label>
+                                    <input
+                                        type="text"
+                                        id="address"
+                                        value={adresse}
+                                        onChange={(e) => setAdresse(e.target.value)}
+                                        placeholder="Commencez à taper votre adresse..."
+                                        required
+                                    />
+                                    {/* Bouton pour basculer l'adresse manuelle */}
+                                    {!showManualAddress && (
+                                        <a
+                                            href="#!"
+                                            className="manual-address"
+                                            onClick={(e) => { e.preventDefault(); setShowManualAddress(true); }}
+                                        >
+                                            Cliquez ici pour saisir votre adresse manuellement
+                                        </a>
+                                    )}
                                 </div>
 
-                                {/* TELEPHONE AVEC DRAPEAU */}
-                                <div className="form-group-material">
-                                    <div className="phone-container">
-                                        <div className="flag-selector" onClick={toggleCountryMenu}>
-                                            {flags[phoneCountry]}
-                                        </div>
-                                        {showCountryMenu && (
-                                            <div className="flag-menu">
-                                                {Object.keys(flags).map(code => (
-                                                    <div key={code} className="flag-option" onClick={() => selectCountry(code)}>
-                                                        {flags[code]}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                        <input type="tel" className="phone-input-field" placeholder="06 12 34 56 78"/>
+                                {/* Bloc adresse détaillée qui se déroule */}
+                                <div className={`address-details-accordion ${showManualAddress ? 'open' : ''}`}>
+                                    <div className="form-group-donation">
+                                        <label htmlFor="complement">Complément d'adresse</label>
+                                        <input
+                                            type="text"
+                                            id="complement"
+                                            value={complementAdresse}
+                                            onChange={(e) => setComplementAdresse(e.target.value)}
+                                            placeholder="Appartement, étage, bâtiment..."
+                                        />
                                     </div>
-                                    <label className="floating-label" style={{top: '-10px', fontSize: '0.85rem', left: '0'}}>TÉLÉPHONE</label>
+
+                                    <div className="form-row">
+                                        <div className="form-group-donation half">
+                                            <label htmlFor="zipcode">Code Postal *</label>
+                                            <input
+                                                type="text"
+                                                id="zipcode"
+                                                value={codePostal}
+                                                onChange={(e) => setCodePostal(e.target.value)}
+                                                required={showManualAddress}
+                                            />
+                                        </div>
+                                        <div className="form-group-donation half">
+                                            <label htmlFor="city">Ville *</label>
+                                            <input
+                                                type="text"
+                                                id="city"
+                                                value={ville}
+                                                onChange={(e) => setVille(e.target.value)}
+                                                required={showManualAddress}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="form-group-material">
-                                    <input type="text" id="birthdate" className="form-control" placeholder="jj/mm/aaaa"/>
-                                    <label htmlFor="birthdate" className="floating-label" style={{top: '-10px', fontSize: '0.85rem'}}>DATE DE NAISSANCE</label>
+                                <div className="form-group-donation">
+                                    <label htmlFor="phone">Téléphone *</label>
+                                    <div className="phone-input">
+                                        <span className="flag">🇫🇷</span>
+                                        <input
+                                            type="tel"
+                                            id="phone"
+                                            value={telephone}
+                                            onChange={(e) => setTelephone(e.target.value)}
+                                            placeholder="06 12 34 56 78"
+                                        />
+                                    </div>
                                 </div>
 
-                                <fieldset>
+                                <div className="form-group-donation">
+                                    <label htmlFor="birthdate">Date de naissance *</label>
+                                    <input
+                                        type="text"
+                                        id="birthdate"
+                                        value={dateNaissance}
+                                        onChange={(e) => setDateNaissance(e.target.value)}
+                                        placeholder="jj/mm/aaaa"
+                                        maxLength="10"
+                                    />
+                                </div>
+
+                                <fieldset className="form-group-donation-donation">
                                     <legend>Je souhaite mon reçu fiscal : *</legend>
-                                    <label className="radio-label">
-                                        <input type="radio" name="receipt" value="email" className="radio-custom" defaultChecked/>
-                                        Par email
-                                    </label>
-                                    <label className="radio-label">
-                                        <input type="radio" name="receipt" value="courrier" className="radio-custom"/>
-                                        Par courrier
+                                    <label>
+                                        <input type="radio" name="receipt" value="email" defaultChecked /> Par email
+                                    </label><br />
+                                    <label>
+                                        <input type="radio" name="receipt" value="courrier" /> Par courrier
                                     </label>
                                 </fieldset>
 
-                                <p className="form-note">* Champs obligatoires (ces informations sont indispensables pour bénéficier de votre réduction fiscale)</p>
+                                <p className="form-note">
+                                    * Champs obligatoires (ces informations sont indispensables pour bénéficier de votre réduction fiscale)
+                                </p>
                             </form>
                         </div>
+                    </section>
 
-                        {/* 3. RÈGLEMENT */}
-                        <div className="don-reglement card-common">
+                    {/* Bloc 3: Mon règlement */}
+                    <section className="don-reglement">
+                        <div className="reglement-card">
                             <div className="card-header">
                                 <h2>3. Mon règlement</h2>
                             </div>
-                            <div className="card-body">
-                                <div className="payment-methods">
-                                    {paymentMethods.map(({method, label, img}) => (
-                                        <div
-                                            key={method}
-                                            className={`payment-option ${activePayment === method ? "active" : ""}`}
-                                            onClick={() => handlePaymentChange(method)}
-                                        >
-                                            <img src={img} alt={label} className="icon"/>
-                                            <span>{label}</span>
-                                        </div>
-                                    ))}
-                                </div>
 
-                                {/* Logos CB en bas comme sur l'image */}
-                                <div className="cb-logos">
-                                    {/* Simulation des logos CB/Visa/Mastercard */}
-                                    <span style={{border: '1px solid #ddd', padding: '2px', borderRadius: '4px', marginRight: '5px'}}>💳 Mastercard</span>
-                                    <span style={{border: '1px solid #ddd', padding: '2px', borderRadius: '4px'}}>💳 Visa</span>
-                                </div>
+                            <div className="payment-methods">
+                                {[
+                                    {
+                                        method: "card",
+                                        label: "Carte bancaire",
+                                        img: cartedecredit // Utilisation de l'import
+                                    },
+                                    {
+                                        method: "google-pay-apple-pay",
+                                        label: "Google Pay / Apple Pay",
+                                        img: ggpayapppay // Utilisation de l'import
+                                    },
+                                    {
+                                        method: "paypal",
+                                        label: "PayPal",
+                                        img: paypal // Utilisation de l'import
+                                    },
+                                    {
+                                        method: "virement",
+                                        label: "Virement instantané",
+                                        img: virement // Utilisation de l'import
+                                    }
+                                ].map(({ method, label, img }) => (
+                                    <button
+                                        key={method}
+                                        className={`payment-option ${activePayment === method ? "active" : ""}`}
+                                        onClick={() => handlePaymentChange(method)}
+                                        data-method={method}
+                                    >
+                                        <img src={img} alt={label} className="icon" />
+                                        <span>{label}</span>
+                                    </button>
+                                ))}
+                            </div>
 
-                                {showVirement && (
-                                    <div style={{marginTop: '15px', fontSize: '1.2rem', padding: '15px', background: '#eef', borderRadius: '5px', color: '#333'}}>
-                                        Vous pourrez sélectionner votre banque à l'étape suivante (virement instantané).
+                            {showVirement && (
+                                <div className="virement-box">
+                                    <div className="bank-select">
+                                        <label htmlFor="bank">Banque :</label>
+                                        <select id="bank">
+                                            <option value="">Sélectionnez votre banque</option>
+                                            <option value="allianz">Allianz Banque</option>
+                                            <option value="socgen">Société Générale</option>
+                                            <option value="credit-agricole">Crédit Agricole</option>
+                                            <option value="banque-populaire">Banque Populaire</option>
+                                        </select>
                                     </div>
-                                )}
 
-                                <button className="validate-donation" onClick={handleValidate}>
-                                    JE VALIDE MON DON DE {displayAmount > 0 ? `${displayAmount} €` : "0 €"} <div className="arrow-circle">➜</div>
-                                </button>
-
-                                <div className="secure-box">
-                                    {/* Icône de cadenas vert */}
-                                    <div style={{color: '#28a745', fontSize: '2rem'}}>🔒</div>
-                                    <span style={{fontSize: '0.9rem', color: '#666'}}>Paiements sécurisés avec les derniers protocoles de chiffrement, conçus pour respecter les normes les plus élevées de l'industrie.</span>
+                                    <div className="virement-infos">
+                                        <p><strong>Simple et rapide (sans IBAN ni carte bancaire) :</strong></p>
+                                        <ol>
+                                            <li>Sélectionnez votre banque</li>
+                                            <li>Entrez vos identifiants bancaires</li>
+                                            <li>Validez la notification dans votre application</li>
+                                        </ol>
+                                    </div>
                                 </div>
+                            )}
+
+                            <button className="validate-donation" onClick={handleValidate}>
+                                JE VALIDE MON DON DE&nbsp;<span>{displayAmount} €</span>
+                            </button>
+
+                            <div className="secure-box">
+                                <img src={bouclier} alt="Lock" className="lock-icon" />
+                                <p>
+                                    Paiements sécurisés avec les derniers protocoles de chiffrement, conçus pour
+                                    respecter les normes les plus élevées de l'industrie.
+                                </p>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                {/* Footer */}
-                <footer className="don-footer">
-                    <div className="footer-inner">
-                        {footerData.map((section, idx) => (
-                            <div key={idx} className={`acc ${openAccordion === idx ? "open" : ""}`}>
-                                <div className="acc-body">
-                                    <ul className="acc-list">
-                                        {section.items.map((item, i) => (
-                                            <li key={i}>{item}</li>
-                                        ))}
-                                    </ul>
-                                </div>
-                                <button className="acc-header" onClick={() => toggleAccordion(idx)}>
-                                    <span>{section.title}</span>
-                                    <span className="acc-caret">▲</span>
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </footer>
+                    </section>
+                </section>
             </div>
+
+            {/* Footer Accordéon */}
+            <footer className="don-footer">
+                <div className="footer-inner">
+                    {[
+                        {
+                            title: "Pourquoi donner ?",
+                            items: [
+                                "La Croix-Rouge française, c'est 160 ans d'histoire aux côtés des plus vulnérables.",
+                                "Vos dons financent les missions prioritaires : urgences, santé, actions sociales.",
+                                "Association reconnue d'intérêt général : 75 % déductibles de l'IR (dans la limite légale)."
+                            ]
+                        },
+                        {
+                            title: "Traitement de vos données personnelles",
+                            items: [
+                                "Données utilisées pour la gestion du don (reçu fiscal, relation donateur, enquêtes).",
+                                "Conformément à la réglementation, vous disposez de droits d'accès, de rectification et d'opposition.",
+                                "Pour en savoir plus, consultez notre politique de protection des données."
+                            ]
+                        },
+                        {
+                            title: "Nous soutenir en toute confiance",
+                            items: [
+                                "Site 100 % sécurisé (chiffrement SSL/TLS, normes de l'industrie).",
+                                "Une équipe donateurs est à votre écoute pour répondre à vos questions.",
+                                "Vos informations de paiement ne sont pas conservées sur nos serveurs."
+                            ]
+                        }
+                    ].map((section, index) => (
+                        <section key={index} className={`acc ${openAccordion === index ? "open" : ""}`}>
+                            <button
+                                className="acc-header"
+                                onClick={() => toggleAccordion(index)}
+                                aria-expanded={openAccordion === index}
+                            >
+                                <span>{section.title}</span>
+                                <span className="acc-caret">▾</span>
+                            </button>
+                            <div className="acc-body">
+                                <ul className="acc-list">
+                                    {section.items.map((item, i) => (
+                                        <li key={i}
+                                            dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                                    ))}
+                                </ul>
+                            </div>
+                        </section>
+                    ))}
+                </div>
+            </footer>
         </>
     );
 }
