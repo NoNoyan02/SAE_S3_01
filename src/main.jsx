@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
 import { ErrorBoundary } from 'react-error-boundary'
 
 import App from './App.jsx'
@@ -34,13 +34,13 @@ if (!rootElement) {
 
 ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
-            <ErrorBoundary FallbackComponent={ErrorFallback}>
-                <QueryClientProvider client={queryClient}>
-                    <BrowserRouter>
-                        <App />
-                    </BrowserRouter>
-                    <ReactQueryDevtools initialIsOpen={false} position="bottom-right" />
-                </QueryClientProvider>
-            </ErrorBoundary>
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+            <QueryClientProvider client={queryClient}>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
+
+            </QueryClientProvider>
+        </ErrorBoundary>
     </React.StrictMode>,
 )

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import { Heart, Handshake, GraduationCap } from 'lucide-react';
 
 const PageIntrouvable = () => {
     return (
@@ -447,7 +448,9 @@ const PageIntrouvable = () => {
                     <ul className="error-cards">
                         <li className="error-card">
                             <Link to="/faire-un-don/~mon-don" className="error-card__link">
-                                {/* Note : Vous pourrez ajouter ici un <div className="error-card__image"><img src="..." /></div> si vous souhaitez une image de fond comme dans le CSS */}
+                                <div className="error-card__image" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#FEE2E2' }}>
+                                    <Heart size={80} color="#EF4444" strokeWidth={1.5} />
+                                </div>
                                 <div className="error-card__content">
                                     <span className="error-card__title">Je fais un don</span>
                                     <span className="error-btn error-btn--primary">Soutenir</span>
@@ -457,6 +460,9 @@ const PageIntrouvable = () => {
 
                         <li className="error-card">
                             <Link to="/je-deviens-benevole" className="error-card__link">
+                                <div className="error-card__image" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#DCFCE7' }}>
+                                    <Handshake size={80} color="#22C55E" strokeWidth={1.5} />
+                                </div>
                                 <div className="error-card__content">
                                     <span className="error-card__title">Je deviens bénévole</span>
                                     <span className="error-btn error-btn--primary">Agir</span>
@@ -466,6 +472,9 @@ const PageIntrouvable = () => {
 
                         <li className="error-card">
                             <Link to="/formations" className="error-card__link">
+                                <div className="error-card__image" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#DBEAFE' }}>
+                                    <GraduationCap size={80} color="#3B82F6" strokeWidth={1.5} />
+                                </div>
                                 <div className="error-card__content">
                                     <span className="error-card__title">Je me forme</span>
                                     <span className="error-btn error-btn--primary">Apprendre</span>

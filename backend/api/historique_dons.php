@@ -1,23 +1,22 @@
 <?php
 // backend/api/historique_dons.php
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET");
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-header("Cache-Control: no-cache, no-store, must-revalidate");
-header("Pragma: no-cache");
-header("Expires: 0");
+require_once __DIR__ . "/security_headers.php";
+require_once __DIR__ . "/../config/db.php";
+require_once __DIR__ . "/auth_middleware.php"; // Pour récupérer la session
 
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-    http_response_code(200);
-    exit();
+header("Content-Type: application/json; charset=UTF-8");
+
+// Vérif Auth (soit Admin, soit User connecté)
+if (!isset($_SESSION['user'])) {
+    http_response_code(401);
+    echo json_encode(["error" => "Non autorisé"]);
+    exit;
 }
 
-require_once __DIR__ . "/../config/db.php";
+$userRole = $_SESSION['user']['role'] ?? '';
+$donateurId = $_SESSION['user']['donateur_id'] ?? null;
 
 try {
-    // Jointure entre la table 'donateur' et 'dons'
-    // On suppose que la clé étrangère est 'id_donateur' dans la table 'dons'
     $sql = "SELECT 
                 d.id as donateur_id, 
                 d.nom, 
@@ -36,10 +35,28 @@ try {
                 do.moyen_paiement,
                 do.created_at as date_don 
             FROM donateurs d 
-            JOIN dons do ON d.id = do.donateur_id 
-            ORDER BY do.created_at DESC";
+            JOIN dons do ON d.id = do.donateur_id ";
 
-    $stmt = $pdo->query($sql);
+    // Si pas admin, on filtre sur le donateur lié
+    if ($userRole !== 'Admin') {
+        if (!$donateurId) {
+            // User sans profil donateur ? Rien à afficher
+            echo json_encode([]);
+            exit;
+        }
+        $sql .= " WHERE d.id = :donateur_id ";
+    }
+
+    $sql .= " ORDER BY do.created_at DESC";
+
+    $stmt = $pdo->prepare($sql);
+
+    if ($userRole !== 'Admin') {
+        $stmt->execute([':donateur_id' => $donateurId]);
+    } else {
+        $stmt->execute();
+    }
+
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     echo json_encode($data);

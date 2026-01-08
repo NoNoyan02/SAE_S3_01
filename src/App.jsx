@@ -13,6 +13,10 @@ import Formations from './pages/Formations.jsx';
 import Donation from './pages/Donation.jsx';
 import PageIntrouvable from './pages/Page-introuvable.jsx';
 import Dashboard from "./pages/Dashboard.jsx";
+import AdminLogin from "./pages/AdminLogin.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 
 const MainLayout = () => {
     return (
@@ -28,22 +32,29 @@ const MainLayout = () => {
 
 function App() {
 
-  return (
-      <>
-          <ScrollToTop />
-          <Routes>
-              <Route element={<MainLayout />}>
-                  <Route path="/" element={<Accueil/>}/>
-                  <Route path="/je-deviens-benevole" element={<JeDeviens/>}/>
-                  <Route path="/je-donne" element={<JeDonne/>}/>
-                  <Route path="/formations" element={<Formations/>}/>
-                  <Route path="*" element={<PageIntrouvable/>}/>
-              </Route>
-              <Route path="/faire-un-don/~mon-don" element={<Donation/>}/>
-              <Route path="/admin/dashboard" element={<Dashboard/>}/>
-          </Routes>
-      </>
-  );
+    return (
+        <>
+            <ScrollToTop />
+            <Routes>
+                <Route element={<MainLayout />}>
+                    <Route path="/" element={<Accueil />} />
+                    <Route path="/je-deviens-benevole" element={<JeDeviens />} />
+                    <Route path="/je-donne" element={<JeDonne />} />
+                    <Route path="/formations" element={<Formations />} />
+                    <Route path="*" element={<PageIntrouvable />} />
+                </Route>
+                <Route path="/faire-un-don/~mon-don" element={<Donation />} />
+                <Route path="/admin" element={<AdminLogin />} />
+                <Route path="/admin/dashboard" element={
+                    <ProtectedRoute role="Admin">
+                        <Dashboard />
+                    </ProtectedRoute>
+                } />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+            </Routes>
+        </>
+    );
 }
 
 export default App
