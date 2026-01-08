@@ -87,11 +87,14 @@ const Dashboard = () => {
   // 6. CSRF TOKEN
   const [csrfToken, setCsrfToken] = useState("");
 
+  // 7. ARTICLES
+  const [articles, setArticles] = useState([]);
+
   // CHARGEMENT DES DONNÉES DEPUIS L'API
   const fetchData = async () => {
     try {
       const opts = { credentials: 'include' }; // IMPORTANT : Envoi du Cookie Session
-      const [resBen, resEvt, resEnt, resSub, resDons, resAdmins, resNews, resUsers, resCsrf] = await Promise.all([
+      const [resBen, resEvt, resEnt, resSub, resDons, resAdmins, resNews, resUsers, resCsrf, resArts] = await Promise.all([
         fetch('http://localhost:8000/api/benevoles.php', opts).then(r => r.json()),
         fetch('http://localhost:8000/api/evenements.php', opts).then(r => r.json()),
         fetch('http://localhost:8000/api/entreprises.php', opts).then(r => r.json()),
@@ -100,12 +103,15 @@ const Dashboard = () => {
         fetch('http://localhost:8000/api/admins.php', opts).then(r => r.json()),
         fetch('http://localhost:8000/api/newsletter.php', opts).then(r => r.json()),
         fetch('http://localhost:8000/api/users.php', opts).then(r => r.json()),
-        fetch('http://localhost:8000/api/csrf_token.php', opts).then(r => r.json())
+        fetch('http://localhost:8000/api/csrf_token.php', opts).then(r => r.json()),
+        fetch('http://localhost:8000/api/articles.php', opts).then(r => r.json())
       ]);
 
       if (resCsrf && resCsrf.csrf_token) {
         setCsrfToken(resCsrf.csrf_token);
       }
+
+      setArticles(Array.isArray(resArts) ? resArts : []);
       setBenevoles((Array.isArray(resBen) ? resBen : []).map(b => ({
         ...b,
         dateNaissance: b.date_naissance,
@@ -400,6 +406,36 @@ const Dashboard = () => {
     } catch (e) {
       alert("Erreur serveur");
     }
+  };
+
+  // GESTION DES ARTICLES
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormArticle({ ...formArticle, image: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleArticleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formArticle.titre || !formArticle.contenu) {
+      alert("Veuillez remplir le titre et le contenu.");
+      return;
+    }
+    await fetch('http://localhost:8000/api/articles.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+      body: JSON.stringify(formArticle)
+    });
+    setFormArticle({ titre: '', contenu: '', image: null });
+    // Reset editor content if needed (manual via DOM or state ref)
+    document.getElementById('article-content').value = "";
+    fetchData();
+    alert("Article publié avec succès !");
   };
 
 
@@ -2232,22 +2268,22 @@ const Dashboard = () => {
                 <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 800, fontFamily: 'Outfit, sans-serif' }}>Créer un nouvel article</h3>
               </div>
 
-              <form style={{ display: 'grid', gap: '20px' }}>
+              <form onSubmit={handleArticleSubmit} style={{ display: 'grid', gap: '20px' }}>
                 <div className="form-group">
                   <label style={{ fontWeight: 'bold' }}>Titre de l'article *</label>
-                  <input type="text" placeholder="Entrez le titre de l'article..." required />
+                  <input type="text" value={formArticle.titre} onChange={e => setFormArticle({ ...formArticle, titre: e.target.value })} placeholder="Entrez le titre de l'article..." required />
                   <span style={{ fontSize: '11px', color: '#718096' }}>Maximum 200 caractères</span>
                 </div>
 
                 <div className="form-group">
                   <label style={{ fontWeight: 'bold' }}>Image de l'article *</label>
-                  <input type="file" accept="image/*" style={{ padding: '8px', fontSize: '12px' }} required />
+                  <input type="file" accept="image/*" onChange={handleImageChange} style={{ padding: '8px', fontSize: '12px' }} required />
                   <span style={{ fontSize: '11px', color: '#718096' }}>Sélectionnez un fichier (jpg, png, gif)</span>
                 </div>
 
                 <div className="form-group">
                   <label style={{ fontWeight: 'bold' }}>Contributeurs</label>
-                  <input type="text" placeholder="Prénom1, Prénom2..." />
+                  <input type="text" value={formArticle.author || ''} onChange={e => setFormArticle({ ...formArticle, author: e.target.value })} placeholder="Prénom1, Prénom2..." />
                   <span style={{ fontSize: '11px', color: '#718096' }}>Séparez les prénoms par des virgules.</span>
                 </div>
 
