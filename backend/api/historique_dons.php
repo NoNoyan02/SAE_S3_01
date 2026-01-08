@@ -24,11 +24,10 @@ try {
                 d.ville, 
                 do.id as don_id, 
                 do.montant, 
-                do.date_don, 
-                do.message 
-            FROM donateur d 
-            JOIN dons do ON d.id = do.id_donateur 
-            ORDER BY do.date_don DESC";
+                do.created_at as date_don 
+            FROM donateurs d 
+            JOIN dons do ON d.id = do.donateur_id 
+            ORDER BY do.created_at DESC";
 
     $stmt = $pdo->query($sql);
     $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
