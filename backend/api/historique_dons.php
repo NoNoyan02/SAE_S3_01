@@ -4,6 +4,9 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+header("Cache-Control: no-cache, no-store, must-revalidate");
+header("Pragma: no-cache");
+header("Expires: 0");
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
@@ -24,6 +27,13 @@ try {
                 d.ville, 
                 do.id as don_id, 
                 do.montant, 
+                d.donor_number,
+                d.civilite,
+                d.adresse,
+                d.code_postal,
+                d.pays,
+                do.frequence,
+                do.moyen_paiement,
                 do.created_at as date_don 
             FROM donateurs d 
             JOIN dons do ON d.id = do.donateur_id 

@@ -125,16 +125,20 @@ const Dashboard = () => {
 
       setDonateursData((Array.isArray(resDons) ? resDons : []).map((d, index) => ({
         id: d.don_id || index,
-        donor_number: `DON-${d.don_id}`,
-        civilite: 'M./Mme',
+        donor_number: d.donor_number || `DON-${d.don_id}`,
+        civilite: d.civilite || '',
         prenom: d.prenom,
         nom: d.nom,
         email: d.email,
         telephone: d.telephone,
-        montant: Number(d.montant), // Assure le format nombre
-        frequence: 'Ponctuel',
-        date_don: d.date_don,
-        ville: d.ville
+        adresse: d.adresse,
+        code_postal: d.code_postal,
+        ville: d.ville,
+        pays: d.pays,
+        montant: Number(d.montant),
+        frequence: d.frequence,
+        moyen_paiement: d.moyen_paiement,
+        date_don: d.date_don
       })));
 
       if (resAdmins && resAdmins.nbAdmins) {
@@ -1341,8 +1345,43 @@ const Dashboard = () => {
                     </div>
                   </div>
                 ) : activeTab === 'analyse' ? (
-                  <div className="placeholder-chart">
-                    <p>Remontée des données PHP pour graphiques dynamiques</p>
+                  <div className="chart-container" style={{ height: '300px', display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', paddingTop: '20px' }}>
+                    {/* Calcul des données par mois */}
+                    {(() => {
+                      const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+                      const currentYear = new Date().getFullYear();
+
+                      // Initialiser les totaux par mois
+                      const monthlyTotals = new Array(12).fill(0);
+
+                      donateursData.forEach(d => {
+                        const date = new Date(d.date_don);
+                        // On prend tout, ou seulement l'année en cours ? Prenons tout pour l'exemple ou filtrons sur 2026/2025
+                        // Pour la démo, on prend tout ce qui rentre dans les mois
+                        if (!isNaN(date.getMonth())) {
+                          monthlyTotals[date.getMonth()] += d.montant;
+                        }
+                      });
+
+                      const maxVal = Math.max(...monthlyTotals, 1); // Eviter division par 0
+
+                      return monthlyTotals.map((total, index) => (
+                        <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                          <div
+                            className="bar"
+                            style={{
+                              height: `${(total / maxVal) * 200}px`,
+                              width: '12px',
+                              backgroundColor: total > 0 ? '#ED1B24' : '#E2E8F0',
+                              borderRadius: '4px 4px 0 0',
+                              transition: 'height 0.5s ease'
+                            }}
+                            title={`${total} €`}
+                          ></div>
+                          <span style={{ fontSize: '10px', color: '#718096', marginTop: '10px' }}>{months[index]}</span>
+                        </div>
+                      ));
+                    })()}
                   </div>
                 ) : null}
               </div>
@@ -1918,7 +1957,7 @@ const Dashboard = () => {
                   </div>
                   <button
                     className="btn-details"
-                    onClick={() => openViewModal(donateur)}
+                    onClick={() => openViewModal({ ...donateur, viewType: 'donateur' })}
                     style={{ background: '#F4F7F9', border: 'none', padding: '5px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 'bold', cursor: 'pointer' }}
                   >
                     DÉTAILS
@@ -2359,6 +2398,87 @@ const Dashboard = () => {
                   <button type="submit" className="btn-save" style={{ padding: '8px 20px' }}>Save</button>
                 </div>
               </form>
+            </div>
+          </div>
+        )}
+
+        {showViewModal && selectedItem && selectedItem.viewType === 'donateur' && (
+          <div className="modal-overlay">
+            <div className="modal-card">
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #EEE', paddingBottom: 15, marginBottom: 20 }}>
+                <div>
+                  <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1A1C23', margin: 0 }}>
+                    Fiche Donateur : {selectedItem.civilite} {selectedItem.prenom} {selectedItem.nom}
+                  </h2>
+                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginTop: '5px' }}>
+                    <span style={{
+                      fontSize: '11px',
+                      background: '#E2E8F0',
+                      color: '#4A5568',
+                      padding: '2px 8px',
+                      borderRadius: '12px',
+                      fontWeight: 'bold'
+                    }}>
+                      ID REF : {selectedItem.donor_number || 'Génération...'}
+                    </span>
+                    <span style={{ fontSize: '12px', color: '#718096' }}>
+                      Don effectué le : <strong>{selectedItem.date_don || "Date inconnue"}</strong>
+                    </span>
+                  </div>
+                </div>
+                <X onClick={() => setShowViewModal(false)} style={{ cursor: 'pointer', color: '#6B7280' }} />
+              </div>
+
+              <div className="info-grid">
+                {/* Ligne Date et ID */}
+                <div className="info-item" style={{ borderLeft: '4px solid #ED1B24' }}>
+                  <div className="info-label">Date & Heure du don</div>
+                  <div className="info-value" style={{ color: '#1A1C23', fontWeight: 'bold' }}>
+                    {selectedItem.date_don || "Non spécifiée"}
+                  </div>
+                </div>
+
+                <div className="info-item">
+                  <div className="info-label">Numéro Donateur (SQL)</div>
+                  <div className="info-value" style={{ fontWeight: 'bold' }}>{selectedItem.donor_number || "Automatique"}</div>
+                </div>
+
+                <div className="info-item" style={{ background: '#F0FFF4', borderColor: '#68D391' }}>
+                  <div className="info-label" style={{ color: '#2F855A' }}>Montant & Fréquence</div>
+                  <div className="info-value" style={{ color: '#2F855A', fontWeight: 'bold' }}>
+                    {selectedItem.montant} € ({selectedItem.frequence === 'monthly' ? 'Mensuel' : 'Ponctuel'})
+                  </div>
+                </div>
+
+                <div className="info-item">
+                  <div className="info-label">Moyen de Paiement</div>
+                  <div className="info-value" style={{ textTransform: 'uppercase' }}>{selectedItem.moyen_paiement}</div>
+                </div>
+
+                <div className="info-item full-width">
+                  <div className="info-label">Adresse de facturation</div>
+                  <div className="info-value">
+                    {selectedItem.adresse ? (
+                      <>
+                        {selectedItem.adresse} {selectedItem.complement_adresse && `- ${selectedItem.complement_adresse}`}<br />
+                        {[selectedItem.code_postal, selectedItem.ville, selectedItem.pays].filter(Boolean).join(' ')}
+                      </>
+                    ) : (
+                      <span style={{ fontStyle: 'italic', color: '#A0AEC0' }}>Aucune adresse renseignée</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="info-item">
+                  <div className="info-label">Email de contact</div>
+                  <div className="info-value">{selectedItem.email}</div>
+                </div>
+
+                <div className="info-item">
+                  <div className="info-label">Téléphone</div>
+                  <div className="info-value">{selectedItem.telephone || "N/A"}</div>
+                </div>
+              </div>
             </div>
           </div>
         )}
