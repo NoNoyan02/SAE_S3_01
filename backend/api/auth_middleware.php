@@ -15,4 +15,20 @@ function checkAdminAuth()
         exit();
     }
 }
+
+function verifyCsrfToken()
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    $headers = apache_request_headers();
+    $token = $headers['X-Csrf-Token'] ?? $headers['X-CSRF-TOKEN'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? null;
+
+    if (!$token || empty($_SESSION['csrf_token']) || $token !== $_SESSION['csrf_token']) {
+        http_response_code(403);
+        echo json_encode(["error" => "Échec de la validation CSRF. Veuillez actualiser la page."]);
+        exit();
+    }
+}
 ?>

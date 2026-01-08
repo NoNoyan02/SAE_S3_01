@@ -23,6 +23,7 @@ switch ($method) {
         break;
 
     case 'POST':
+        verifyCsrfToken();
         $data = json_decode(file_get_contents("php://input"), true);
 
         if (!$data) {
@@ -57,6 +58,7 @@ switch ($method) {
         break;
 
     case 'DELETE':
+        verifyCsrfToken();
         $id = $_GET['id'] ?? null;
         if (!$id) {
             http_response_code(400);

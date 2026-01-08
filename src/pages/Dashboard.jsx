@@ -84,11 +84,14 @@ const Dashboard = () => {
   // 5. GESTION DES UTILISATEURS (ADMIN)
   const [users, setUsers] = useState([]);
 
+  // 6. CSRF TOKEN
+  const [csrfToken, setCsrfToken] = useState("");
+
   // CHARGEMENT DES DONNÉES DEPUIS L'API
   const fetchData = async () => {
     try {
       const opts = { credentials: 'include' }; // IMPORTANT : Envoi du Cookie Session
-      const [resBen, resEvt, resEnt, resSub, resDons, resAdmins, resNews, resUsers] = await Promise.all([
+      const [resBen, resEvt, resEnt, resSub, resDons, resAdmins, resNews, resUsers, resCsrf] = await Promise.all([
         fetch('http://localhost:8000/api/benevoles.php', opts).then(r => r.json()),
         fetch('http://localhost:8000/api/evenements.php', opts).then(r => r.json()),
         fetch('http://localhost:8000/api/entreprises.php', opts).then(r => r.json()),
@@ -96,8 +99,13 @@ const Dashboard = () => {
         fetch('http://localhost:8000/api/historique_dons.php', opts).then(r => r.json()),
         fetch('http://localhost:8000/api/admins.php', opts).then(r => r.json()),
         fetch('http://localhost:8000/api/newsletter.php', opts).then(r => r.json()),
-        fetch('http://localhost:8000/api/users.php', opts).then(r => r.json())
+        fetch('http://localhost:8000/api/users.php', opts).then(r => r.json()),
+        fetch('http://localhost:8000/api/csrf_token.php', opts).then(r => r.json())
       ]);
+
+      if (resCsrf && resCsrf.csrf_token) {
+        setCsrfToken(resCsrf.csrf_token);
+      }
       setBenevoles((Array.isArray(resBen) ? resBen : []).map(b => ({
         ...b,
         dateNaissance: b.date_naissance,
@@ -279,7 +287,7 @@ const Dashboard = () => {
     // Pas de suppression user pour l'instant via dashboard classique
 
     if (url) {
-      await fetch(url, { method: 'DELETE' });
+      await fetch(url, { method: 'DELETE', headers: { 'X-CSRF-Token': csrfToken } });
       fetchData(); // Rafraichir
     }
   };
@@ -308,7 +316,7 @@ const Dashboard = () => {
     e.preventDefault();
     await fetch('http://localhost:8000/api/benevoles.php', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
       body: JSON.stringify(formBenevole)
     });
     fetchData();
@@ -320,7 +328,7 @@ const Dashboard = () => {
     e.preventDefault();
     await fetch('http://localhost:8000/api/evenements.php', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
       body: JSON.stringify(formEvent)
     });
     fetchData();
@@ -332,7 +340,7 @@ const Dashboard = () => {
     e.preventDefault();
     await fetch('http://localhost:8000/api/entreprises.php', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
       body: JSON.stringify(formEntreprise)
     });
     fetchData(); // Reload API
@@ -345,7 +353,7 @@ const Dashboard = () => {
     e.preventDefault();
     await fetch('http://localhost:8000/api/subventions.php', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
       body: JSON.stringify(formSubvention)
     });
     fetchData();
@@ -357,7 +365,7 @@ const Dashboard = () => {
     e.preventDefault();
     await fetch('http://localhost:8000/api/newsletter.php', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
       body: JSON.stringify({
         ...formNewsletter,
         id: isEditing ? currentId : null,
@@ -378,7 +386,7 @@ const Dashboard = () => {
     try {
       const res = await fetch('http://localhost:8000/api/users.php', {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
         body: JSON.stringify({ id: userId, role_id: newRoleId }),
         credentials: 'include'
       });

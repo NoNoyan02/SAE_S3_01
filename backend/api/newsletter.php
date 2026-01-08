@@ -12,6 +12,7 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'POST':
+        verifyCsrfToken();
         // 1. Récupération des données
         $data = json_decode(file_get_contents("php://input"), true);
         $email = $data['email'] ?? '';
@@ -70,6 +71,7 @@ switch ($method) {
         break;
 
     case 'DELETE':
+        verifyCsrfToken();
         $id = $_GET['id'] ?? null;
         if (!$id) {
             http_response_code(400);

@@ -4,6 +4,10 @@ require_once __DIR__ . "/security_headers.php";
 require_once __DIR__ . "/../config/db.php";
 require_once __DIR__ . "/auth_middleware.php"; // Pour récupérer la session
 
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 header("Content-Type: application/json; charset=UTF-8");
 
 // Vérif Auth (soit Admin, soit User connecté)

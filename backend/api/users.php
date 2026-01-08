@@ -30,6 +30,7 @@ switch ($method) {
         break;
 
     case 'PUT':
+        verifyCsrfToken();
         // Modifier le rôle d'un utilisateur
         $input = json_decode(file_get_contents("php://input"), true);
         $userId = $input['id'] ?? null;
