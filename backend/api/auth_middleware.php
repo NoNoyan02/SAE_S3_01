@@ -49,4 +49,39 @@ function verifyCsrfToken()
         exit();
     }
 }
+
+/**
+ * Enregistre une activité dans la table activity_logs
+ */
+function logActivity($action_type, $entity_type = null, $entity_id = null, $details = null)
+{
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    $userId = $_SESSION['user']['id'] ?? null;
+    if (!$userId)
+        return false;
+
+    global $pdo;
+    if (!$pdo) {
+        require_once __DIR__ . '/../config/db.php';
+    }
+
+    try {
+        $stmt = $pdo->prepare("INSERT INTO activity_logs (user_id, action_type, entity_type, entity_id, details) 
+                                VALUES (:user_id, :action_type, :entity_type, :entity_id, :details)");
+        $stmt->execute([
+            ':user_id' => $userId,
+            ':action_type' => $action_type,
+            ':entity_type' => $entity_type,
+            ':entity_id' => $entity_id,
+            ':details' => $details
+        ]);
+        return true;
+    } catch (PDOException $e) {
+        // On ne bloque pas l'exécution pour une erreur de log
+        return false;
+    }
+}
 ?>

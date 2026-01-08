@@ -43,7 +43,10 @@ switch ($method) {
                 ':montant' => $data['montant']
             ]);
 
-            echo json_encode(["message" => "Subvention ajoutée avec succès", "id" => $pdo->lastInsertId()]);
+            $newId = $pdo->lastInsertId();
+            logActivity('CREATE', 'subvention', $newId, "Création de la subvention : " . ($data['nom'] ?? ''));
+
+            echo json_encode(["message" => "Subvention ajoutée avec succès", "id" => $newId]);
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(["error" => "Erreur lors de l'ajout : " . $e->getMessage()]);
@@ -70,11 +73,13 @@ switch ($method) {
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
-                ':nom_aide' => $data['nom'] ?? ($data['nom_aide'] ?? null),
-                ':organisme' => $data['organisme'] ?? null,
-                ':montant' => $data['montant'] ?? null,
+                ':nom_aide' => $data['nom'] ?? ($data['nom_aide'] ?? ''),
+                ':organisme' => $data['organisme'] ?? '',
+                ':montant' => !empty($data['montant']) ? $data['montant'] : 0,
                 ':id' => $id
             ]);
+
+            logActivity('UPDATE', 'subvention', $id, "Mise à jour de la subvention : " . ($data['nom'] ?? ''));
 
             echo json_encode(["message" => "Subvention mise à jour avec succès"]);
         } catch (PDOException $e) {
@@ -95,6 +100,9 @@ switch ($method) {
         try {
             $stmt = $pdo->prepare("DELETE FROM subvention WHERE id = :id");
             $stmt->execute([':id' => $id]);
+
+            logActivity('DELETE', 'subvention', $id, "Suppression de la subvention ID : " . $id);
+
             echo json_encode(["message" => "Subvention supprimée"]);
         } catch (PDOException $e) {
             http_response_code(500);

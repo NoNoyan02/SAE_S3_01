@@ -110,6 +110,10 @@ try {
     "role" => $user["role"] ?? 'Donateur'
   ];
 
+  // LOG de connexion
+  require_once __DIR__ . "/auth_middleware.php";
+  logActivity('LOGIN', 'user', $user['id'], "Connexion réussie de " . $user['full_name']);
+
   echo json_encode([
     "ok" => true,
     "user" => $_SESSION['user']

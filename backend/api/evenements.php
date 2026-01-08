@@ -50,7 +50,10 @@ switch ($method) {
                 ':notes' => $data['infos'] ?? $data['notes']
             ]);
 
-            echo json_encode(["message" => "Événement ajouté avec succès", "id" => $pdo->lastInsertId()]);
+            $newId = $pdo->lastInsertId();
+            logActivity('CREATE', 'evenement', $newId, "Création de l'élément : " . $data['titre']);
+
+            echo json_encode(["message" => "Événement ajouté avec succès", "id" => $newId]);
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(["error" => "Erreur lors de l'ajout : " . $e->getMessage()]);
@@ -59,7 +62,8 @@ switch ($method) {
 
     case 'PUT':
         verifyCsrfToken();
-        $data = json_decode(file_get_contents("php://input"), true);
+        $rawData = file_get_contents("php://input");
+        $data = json_decode($rawData, true);
         $id = $data['id'] ?? null;
 
         if (!$id) {
@@ -83,19 +87,34 @@ switch ($method) {
                     WHERE id = :id";
 
             $stmt = $pdo->prepare($sql);
+
+            // On s'assure de prendre les bonnes clés (camelCase ou snake_case)
+            $type = $data['type'] ?? ($data['type_element'] ?? 'Événement');
+            $titre = $data['titre'] ?? ($data['nom_element'] ?? '');
+            $dateDebut = $data['dateDebut'] ?? ($data['date_debut'] ?? null);
+            $dateFin = $data['dateFin'] ?? ($data['date_fin'] ?? null);
+            $lieu = $data['lieu'] ?? null;
+            $budget = !empty($data['budget']) ? $data['budget'] : null;
+            $materiel = $data['materiel'] ?? ($data['logistique_materiel'] ?? null);
+            $beneInscrits = $data['benevolesInscrits'] ?? ($data['benevoles_inscrits'] ?? null);
+            $docUrl = $data['documents'] ?? ($data['document_url'] ?? null);
+            $notes = $data['infos'] ?? ($data['notes'] ?? null);
+
             $stmt->execute([
-                ':type_element' => $data['type'] ?? ($data['type_element'] ?? null),
-                ':nom_element' => $data['titre'] ?? ($data['nom_element'] ?? null),
-                ':date_debut' => $data['dateDebut'] ?? ($data['date_debut'] ?? null),
-                ':date_fin' => $data['dateFin'] ?? ($data['date_fin'] ?? null),
-                ':lieu' => $data['lieu'] ?? null,
-                ':budget' => $data['budget'] ?? null,
-                ':logistique_materiel' => $data['materiel'] ?? ($data['logistique_materiel'] ?? null),
-                ':benevoles_inscrits' => $data['benevolesInscrits'] ?? ($data['benevoles_inscrits'] ?? null),
-                ':document_url' => $data['documents'] ?? ($data['document_url'] ?? null),
-                ':notes' => $data['infos'] ?? ($data['notes'] ?? null),
+                ':type_element' => $type,
+                ':nom_element' => $titre,
+                ':date_debut' => $dateDebut,
+                ':date_fin' => $dateFin,
+                ':lieu' => $lieu,
+                ':budget' => $budget,
+                ':logistique_materiel' => $materiel,
+                ':benevoles_inscrits' => $beneInscrits,
+                ':document_url' => $docUrl,
+                ':notes' => $notes,
                 ':id' => $id
             ]);
+
+            logActivity('UPDATE', 'evenement', $id, "Mise à jour de l'élément : " . $titre);
 
             echo json_encode(["message" => "Événement mis à jour avec succès"]);
         } catch (PDOException $e) {
@@ -116,6 +135,9 @@ switch ($method) {
         try {
             $stmt = $pdo->prepare("DELETE FROM evenements WHERE id = :id");
             $stmt->execute([':id' => $id]);
+
+            logActivity('DELETE', 'evenement', $id, "Suppression de l'élément ID : " . $id);
+
             echo json_encode(["message" => "Événement supprimé"]);
         } catch (PDOException $e) {
             http_response_code(500);

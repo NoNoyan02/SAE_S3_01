@@ -44,7 +44,10 @@ switch ($method) {
                 ':telephone' => $data['telephone']
             ]);
 
-            echo json_encode(["message" => "Entreprise ajoutée avec succès", "id" => $pdo->lastInsertId()]);
+            $newId = $pdo->lastInsertId();
+            logActivity('CREATE', 'entreprise', $newId, "Création de l'entreprise : " . ($data['nom'] ?? ''));
+
+            echo json_encode(["message" => "Entreprise ajoutée avec succès", "id" => $newId]);
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(["error" => "Erreur lors de l'ajout : " . $e->getMessage()]);
@@ -72,12 +75,14 @@ switch ($method) {
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
-                ':nom_entreprise' => $data['nom'] ?? ($data['nom_entreprise'] ?? null),
-                ':contact_nom_prenom' => $data['contact'] ?? ($data['contact_nom_prenom'] ?? null),
-                ':email' => $data['email'] ?? null,
-                ':telephone' => $data['telephone'] ?? null,
+                ':nom_entreprise' => $data['nom'] ?? ($data['nom_entreprise'] ?? ''),
+                ':contact_nom_prenom' => $data['contact'] ?? ($data['contact_nom_prenom'] ?? ''),
+                ':email' => $data['email'] ?? '',
+                ':telephone' => $data['telephone'] ?? '',
                 ':id' => $id
             ]);
+
+            logActivity('UPDATE', 'entreprise', $id, "Mise à jour de l'entreprise : " . ($data['nom'] ?? ''));
 
             echo json_encode(["message" => "Entreprise mise à jour avec succès"]);
         } catch (PDOException $e) {
@@ -98,6 +103,9 @@ switch ($method) {
         try {
             $stmt = $pdo->prepare("DELETE FROM entreprise WHERE id = :id");
             $stmt->execute([':id' => $id]);
+
+            logActivity('DELETE', 'entreprise', $id, "Suppression de l'entreprise ID : " . $id);
+
             echo json_encode(["message" => "Entreprise supprimée"]);
         } catch (PDOException $e) {
             http_response_code(500);

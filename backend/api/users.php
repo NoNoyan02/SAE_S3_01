@@ -66,7 +66,10 @@ switch ($method) {
                 ':role_id' => $roleId
             ]);
 
-            echo json_encode(["message" => "Utilisateur créé avec succès", "id" => $pdo->lastInsertId()]);
+            $newId = $pdo->lastInsertId();
+            logActivity('CREATE', 'user', $newId, "Création du compte staff : " . $fullName . " (" . $email . ")");
+
+            echo json_encode(["message" => "Utilisateur créé avec succès", "id" => $newId]);
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(["error" => $e->getMessage()]);
@@ -97,6 +100,8 @@ switch ($method) {
 
             $stmt = $pdo->prepare("UPDATE users SET role_id = :role_id WHERE id = :id");
             $stmt->execute([':role_id' => $newRoleId, ':id' => $userId]);
+
+            logActivity('UPDATE', 'user', $userId, "Modification du rôle vers ID : " . $newRoleId);
 
             echo json_encode(["message" => "Rôle mis à jour avec succès"]);
         } catch (PDOException $e) {

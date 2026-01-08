@@ -88,6 +88,7 @@ const Dashboard = () => {
 
   // 5. GESTION DES UTILISATEURS (ADMIN)
   const [users, setUsers] = useState([]);
+  const [logs, setLogs] = useState([]);
 
   // 6. CSRF TOKEN
   const [csrfToken, setCsrfToken] = useState("");
@@ -180,8 +181,13 @@ const Dashboard = () => {
 
 
       // FETCH STATS
-      const resStats = await fetch('http://localhost:8000/api/stats.php', { credentials: 'include' }).then(r => r.json());
       setStats(resStats);
+
+      // FETCH LOGS (Admin uniquement)
+      if (userRole === 'Admin') {
+        const resLogs = await fetch('http://localhost:8000/api/logs.php', { credentials: 'include' }).then(r => r.json());
+        setLogs(Array.isArray(resLogs) ? resLogs : []);
+      }
 
 
     } catch (error) {
@@ -298,7 +304,11 @@ const Dashboard = () => {
     // Pas de suppression user pour l'instant via dashboard classique
 
     if (url) {
-      await fetch(url, { method: 'DELETE', headers: { 'X-CSRF-Token': csrfToken } });
+      await fetch(url, {
+        method: 'DELETE',
+        headers: { 'X-CSRF-Token': csrfToken },
+        credentials: 'include'
+      });
       fetchData(); // Rafraichir
     }
   };
@@ -313,38 +323,38 @@ const Dashboard = () => {
         prenom: item.prenom || '',
         email: item.email || '',
         telephone: item.telephone || '',
-        dateNaissance: item.date_naissance || '',
+        dateNaissance: item.dateNaissance || item.date_naissance || '',
         ville: item.ville || '',
         profession: item.profession || '',
         cotisation: item.cotisation || '',
-        dispo: item.disponibilite || '',
-        regime: item.regime_alimentaire || '',
-        sante: item.restrictions_sante || '',
-        infos: item.champs_complementaires || ''
+        dispo: item.dispo || item.disponibilite || '',
+        regime: item.regime || item.regime_alimentaire || '',
+        sante: item.sante || item.restrictions_sante || '',
+        infos: item.infos || item.champs_complementaires || ''
       });
       setShowBenevoleModal(true);
     }
 
     if (activeTab === 'evenements' || activeTab === 'calendrier') {
       setFormEvent({
-        type: item.type_element || 'Événement',
-        titre: item.nom_element || '',
-        dateDebut: item.date_debut || '',
-        dateFin: item.date_fin || '',
+        type: item.type || item.type_element || 'Événement',
+        titre: item.titre || item.nom_element || '',
+        dateDebut: item.dateDebut || (item.date_debut ? item.date_debut.split(' ')[0] : ''),
+        dateFin: item.dateFin || (item.date_fin ? item.date_fin.split(' ')[0] : ''),
         lieu: item.lieu || '',
         budget: item.budget || '',
-        materiel: item.logistique_materiel || '',
-        benevolesInscrits: item.benevoles_inscrits || '',
-        documents: item.document_url || '',
-        infos: item.notes || ''
+        materiel: item.materiel || item.logistique_materiel || '',
+        benevolesInscrits: item.benevolesInscrits || item.benevoles_inscrits || '',
+        documents: item.documents || item.document_url || '',
+        infos: item.infos || item.notes || ''
       });
       setShowEventModal(true);
     }
 
     if (activeTab === 'entreprises') {
       setFormEntreprise({
-        nom: item.nom_entreprise || '',
-        contact: item.contact_nom_prenom || '',
+        nom: item.nom || item.nom_entreprise || '',
+        contact: item.contact || item.contact_nom_prenom || '',
         email: item.email || '',
         telephone: item.telephone || ''
       });
@@ -353,7 +363,7 @@ const Dashboard = () => {
 
     if (activeTab === 'subventions') {
       setFormSubvention({
-        nom: item.nom_aide || '',
+        nom: item.nom || item.nom_aide || '',
         organisme: item.organisme || '',
         montant: item.montant || '',
         status: item.status || 'Reçue'
@@ -384,6 +394,7 @@ const Dashboard = () => {
     await fetch('http://localhost:8000/api/benevoles.php', {
       method: method,
       headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+      credentials: 'include',
       body: JSON.stringify(payload)
     });
     fetchData();
@@ -399,6 +410,7 @@ const Dashboard = () => {
     await fetch('http://localhost:8000/api/evenements.php', {
       method: method,
       headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+      credentials: 'include',
       body: JSON.stringify(payload)
     });
     fetchData();
@@ -414,6 +426,7 @@ const Dashboard = () => {
     await fetch('http://localhost:8000/api/entreprises.php', {
       method: method,
       headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+      credentials: 'include',
       body: JSON.stringify(payload)
     });
     fetchData(); // Reload API
@@ -431,6 +444,7 @@ const Dashboard = () => {
     await fetch('http://localhost:8000/api/subventions.php', {
       method: method,
       headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+      credentials: 'include',
       body: JSON.stringify(payload)
     });
     fetchData();
@@ -447,6 +461,7 @@ const Dashboard = () => {
     await fetch('http://localhost:8000/api/newsletter.php', {
       method: method,
       headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
+      credentials: 'include',
       body: JSON.stringify(payload)
     });
     fetchData();
@@ -719,7 +734,7 @@ const Dashboard = () => {
   const closeModals = () => {
     setShowBenevoleModal(false); setShowEventModal(false); setShowViewModal(false); setIsEditing(false); setShowNewsletterModal(false); setShowUserModal(false);
     setFormBenevole({ nom: '', prenom: '', email: '', telephone: '', ville: '', dateNaissance: '', profession: '', regime: '', sante: '', infos: '', dispo: 'Semaine', cotisation: 'À jour' });
-    setFormEvent({ titre: '', date: '', lieu: '', budget: '', materiel: '', benevolesInscrits: '', documents: '' });
+    setFormEvent({ titre: '', dateDebut: '', dateFin: '', lieu: '', budget: '', materiel: '', benevolesInscrits: '', documents: '', infos: '' });
     setFormNewsletter({ email: '', acceptConditions: true, offre_entreprise: false });
     setFormUser({ full_name: '', email: '', password: '', role_id: '2', phone: '' });
   };
@@ -731,6 +746,7 @@ const Dashboard = () => {
     { id: 'evenements', label: 'Événements & Missions', icon: <Calendar size={20} />, roles: ['Admin', 'Responsable Événements'] },
     { id: 'communication', label: 'Communication & Contenus', icon: <Package size={20} />, roles: ['Admin', 'Responsable Communication'] },
     { id: 'users', label: 'Utilisateurs & Droits', icon: <ShieldCheck size={20} />, roles: ['Admin'] },
+    { id: 'logs', label: "Journal d'activité", icon: <FileText size={20} />, roles: ['Admin'] },
   ];
 
   const menuItems = allMenuItems.filter(item => userRole === 'Admin' || (item.roles && item.roles.includes(userRole)));
@@ -1503,8 +1519,8 @@ const Dashboard = () => {
                   ? 'Gestion des évènements & missions'
                   : activeTab === 'partenaires'
                     ? 'Partenaires & Donateurs'
-                    : activeTab === 'users'
-                      ? 'Gestion des Utilisateurs'
+                    : activeTab === 'dashboard-view'
+                      ? 'Statistiques & Analyses'
                       : activeTab.replace('-', ' ')
               }
             </h2>
@@ -1538,17 +1554,19 @@ const Dashboard = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <button className="btn-add" onClick={() => {
-                setIsEditing(false);
-                if (activeTab === 'benevoles') setShowBenevoleModal(true);
-                if (activeTab === 'evenements') setShowEventModal(true);
-                if (activeTab === 'users') {
-                  setFormUser({ full_name: '', email: '', password: '', role_id: '2', phone: '' });
-                  setShowUserModal(true);
-                }
-              }}>
-                <Plus size={18} /> NOUVEAU
-              </button>
+              {activeTab !== 'logs' && (
+                <button className="btn-add" onClick={() => {
+                  setIsEditing(false);
+                  if (activeTab === 'benevoles') setShowBenevoleModal(true);
+                  if (activeTab === 'evenements') setShowEventModal(true);
+                  if (activeTab === 'users') {
+                    setFormUser({ full_name: '', email: '', password: '', role_id: '2', phone: '' });
+                    setShowUserModal(true);
+                  }
+                }}>
+                  <Plus size={18} /> NOUVEAU
+                </button>
+              )}
             </div>
           )}
         </header>
@@ -3115,6 +3133,59 @@ const Dashboard = () => {
               <div style={{ marginTop: '30px', padding: '20px', background: '#FFFAF0', border: '1px solid #FBD38D', borderRadius: '8px', color: '#744210' }}>
                 <strong>Note de sécurité :</strong> Seuls les Administrateurs peuvent accéder à cette page.
                 Attention, donner les droits Admin à un utilisateur lui donne accès à tout le Dashboard.
+              </div>
+            </div>
+          )
+        }
+
+        {
+          activeTab === 'logs' && (
+            <div>
+              <div className="table-container">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Utilisateur</th>
+                      <th>Action</th>
+                      <th>Entité</th>
+                      <th>Détails</th>
+                      <th>Date & Heure</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {logs
+                      .filter(log =>
+                        (log.user_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        (log.action_type || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        (log.entity_type || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        (log.details || '').toLowerCase().includes(searchQuery.toLowerCase())
+                      )
+                      .map(log => (
+                        <tr key={log.id}>
+                          <td>
+                            <div style={{ fontWeight: 'bold' }}>{log.user_name || 'Inconnu'}</div>
+                            <div style={{ fontSize: '11px', color: '#718096' }}>ID User: {log.user_id}</div>
+                          </td>
+                          <td>
+                            <span className={`status-badge`} style={{
+                              background: log.action_type === 'DELETE' ? '#FED7D7' : (log.action_type === 'CREATE' ? '#C6F6D5' : '#E2E8F0'),
+                              color: log.action_type === 'DELETE' ? '#9B2C2C' : (log.action_type === 'CREATE' ? '#22543D' : '#4A5568')
+                            }}>
+                              {log.action_type}
+                            </span>
+                          </td>
+                          <td>{log.entity_type || '-'} <span style={{ fontSize: '11px', color: '#A0AEC0' }}>({log.entity_id || 'N/A'})</span></td>
+                          <td style={{ maxWidth: '300px', fontSize: '13px' }}>{log.details}</td>
+                          <td style={{ fontSize: '12px', color: '#4A5568' }}>
+                            {new Date(log.created_at).toLocaleString('fr-FR')}
+                          </td>
+                        </tr>
+                      ))}
+                    {logs.length === 0 && (
+                      <tr><td colSpan="5" style={{ textAlign: 'center', padding: '30px' }}>Aucun log trouvé.</td></tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           )
