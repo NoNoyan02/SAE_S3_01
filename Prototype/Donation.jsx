@@ -2,12 +2,12 @@ import React, {useEffect, useState} from "react";
 import SEO from "@/components/SEO.jsx";
 
 // Import des assets (Assure-toi que les chemins sont corrects)
-import cartedecredit from "assets/images/donation/carte-de-credit.svg";
-import ggpayapppay from "assets/images/donation/gg-pay-app-pay.svg";
+import cartedecredit from "assets/images/donation/payment/carte-de-credit.svg";
+import ggpayapppay from "assets/images/donation/payment/gg-pay-app-pay.svg";
 import lacroixrouge from "assets/images/donation/lacroix-rouge.webm";
 import logo from "assets/images/donation/Logo_Croix-Rouge_Française.svg";
-import paypal from "assets/images/donation/paypal.svg";
-import virementIcon from "assets/images/donation/paypal.svg"; // Vérifier icône virement
+import paypal from "assets/images/donation/payment/paypal.svg";
+import virementIcon from "assets/images/donation/payment/paypal.svg"; // Vérifier icône virement
 
 export default function Donation() {
     // --- ÉTATS ---
