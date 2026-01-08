@@ -93,11 +93,11 @@ try {
   if (session_status() === PHP_SESSION_NONE) {
     // Configuration des cookies de session (HttpOnly, Secure, SameSite)
     session_set_cookie_params([
-      'lifetime' => 0, // Jusqu'à fermeture du navigateur
+      'lifetime' => 0,
       'path' => '/',
-      'domain' => '', // Domaine courant
-      'secure' => false, // Mettre à true si HTTPS activé
-      'httponly' => true, // Empêche le vol par JS
+      'domain' => 'localhost',
+      'secure' => false,
+      'httponly' => true,
       'samesite' => 'Lax'
     ]);
     session_start();

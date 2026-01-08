@@ -99,19 +99,41 @@ const Dashboard = () => {
   // CHARGEMENT DES DONNÉES DEPUIS L'API
   const fetchData = async () => {
     try {
-      const opts = { credentials: 'include' }; // IMPORTANT : Envoi du Cookie Session
-      const [resBen, resEvt, resEnt, resSub, resDons, resAdmins, resNews, resUsers, resCsrf, resArts] = await Promise.all([
-        fetch('http://localhost:8000/api/benevoles.php', opts).then(r => r.json()),
-        fetch('http://localhost:8000/api/evenements.php', opts).then(r => r.json()),
-        fetch('http://localhost:8000/api/entreprises.php', opts).then(r => r.json()),
-        fetch('http://localhost:8000/api/subventions.php', opts).then(r => r.json()),
-        fetch('http://localhost:8000/api/historique_dons.php', opts).then(r => r.json()),
-        fetch('http://localhost:8000/api/admins.php', opts).then(r => r.json()),
-        fetch('http://localhost:8000/api/newsletter.php', opts).then(r => r.json()),
-        fetch('http://localhost:8000/api/users.php', opts).then(r => r.json()),
-        fetch('http://localhost:8000/api/csrf_token.php', opts).then(r => r.json()),
-        fetch('http://localhost:8000/api/articles.php', opts).then(r => r.json())
-      ]);
+      const opts = { credentials: 'include' };
+      const storedUser = JSON.parse(localStorage.getItem('user'));
+      const role = storedUser?.role || 'Donateur';
+
+      const fetches = {
+        resDons: fetch('http://localhost:8000/api/historique_dons.php', opts).then(r => r.json()),
+        resCsrf: fetch('http://localhost:8000/api/csrf_token.php', opts).then(r => r.json()),
+        resStats: fetch('http://localhost:8000/api/stats.php', opts).then(r => r.json())
+      };
+
+      if (['Admin', 'Responsable Bénévoles'].includes(role)) {
+        fetches.resBen = fetch('http://localhost:8000/api/benevoles.php', opts).then(r => r.json());
+      }
+      if (['Admin', 'Responsable Événements'].includes(role)) {
+        fetches.resEvt = fetch('http://localhost:8000/api/evenements.php', opts).then(r => r.json());
+      }
+      if (['Admin', 'Responsable Partenaires'].includes(role)) {
+        fetches.resEnt = fetch('http://localhost:8000/api/entreprises.php', opts).then(r => r.json());
+        fetches.resSub = fetch('http://localhost:8000/api/subventions.php', opts).then(r => r.json());
+      }
+      if (role === 'Admin') {
+        fetches.resAdmins = fetch('http://localhost:8000/api/admins.php', opts).then(r => r.json());
+        fetches.resUsers = fetch('http://localhost:8000/api/users.php', opts).then(r => r.json());
+        fetches.resNews = fetch('http://localhost:8000/api/newsletter.php', opts).then(r => r.json());
+      }
+      if (['Admin', 'Responsable Communication'].includes(role)) {
+        fetches.resArts = fetch('http://localhost:8000/api/articles.php', opts).then(r => r.json());
+      }
+
+      const keys = Object.keys(fetches);
+      const results = await Promise.all(Object.values(fetches));
+      const res = {};
+      keys.forEach((key, i) => res[key] = results[i]);
+
+      const { resBen, resEvt, resEnt, resSub, resDons, resAdmins, resNews, resUsers, resCsrf, resArts, resStats } = res;
 
       if (resCsrf && resCsrf.csrf_token) {
         setCsrfToken(resCsrf.csrf_token);
