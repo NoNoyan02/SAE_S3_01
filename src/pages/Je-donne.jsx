@@ -116,6 +116,12 @@ export default function JeDonne() {
                 .bloc-don {
                     min-height: 500px;
                 }
+                
+                .patrimoine {
+                
+                padding:20px;
+                    text-align: center;
+                    }
                 .section-hero {
                     position: relative;
                     z-index: 2;
@@ -233,6 +239,7 @@ export default function JeDonne() {
                 .stats h2 { font-size: 2.5rem; margin-bottom: 10px; }
                 .stats p { font-size: 1.5rem; margin-bottom: 40px; }
                 .chiffres {
+                font-weight: bold;
                     display: flex;
                     justify-content: center;
                     flex-wrap: wrap;
@@ -266,7 +273,7 @@ export default function JeDonne() {
                     margin-top: 30px;
                 }
                 .nous-soutenir li {
-                    font-size: 1.2rem;
+                    font-size: 1.5rem;
                     margin-bottom: 15px;
                     padding-left: 15px;
                     border-left: 4px solid #e30613;
@@ -314,7 +321,7 @@ export default function JeDonne() {
                 .deduction-fiscale {
                     background: linear-gradient(135deg, #f0f7f9 0%, #eef6f8 100%);
                     padding: 50px 20px;
-                    margin: 50px auto;
+                    margin: auto;
                     max-width: 1000px;
                     text-align: center;
                     border-radius: 8px;
@@ -451,7 +458,7 @@ export default function JeDonne() {
                 {/* 2. Stats */}
                 <div className="stats">
                     <div className="texte">
-                        <h2><span className="surligne">Chiffres clés</span></h2>
+                        <h2 className="titre"><span className="surligne">Chiffres clés</span></h2>
                         <p>Chaque jour, nos volontaires agissent près de chez vous, grâce à vous !</p>
                     </div>
                     <div className="chiffres">
@@ -466,7 +473,7 @@ export default function JeDonne() {
                     <h2 className="titre">Comment <span className="surligne">nous soutenir</span> ?</h2>
                     <p className="texte1">En soutenant notre action, vous vous engagez auprès de nos 70 000 bénévoles, à apporter une aide inconditionnelle aux personnes vulnérables.</p>
                     <ul className="exemples">
-                        <li>Transformez votre IFI en projets solidaires</li>
+                        <li><p>Transformez votre IFI en projets solidaires</p></li>
                         <li>Vous n'avez pas utilisé tous vos titres restaurant ? Faites-en don à notre association</li>
                         <li>Contribuez à financer des projets près de chez vous !</li>
                         <li>Devenez ambassadeur de la Croix-Rouge en créant votre cagnotte solidaire</li>
@@ -496,7 +503,7 @@ export default function JeDonne() {
 
                 {/* 5. Déduction */}
                 <section className="deduction-fiscale">
-                    <h2>Bénéficiez d'une <span className="surligne">déduction fiscale de 75% !</span></h2>
+                    <h2 className="titre">Bénéficiez d'une <span className="surligne">déduction fiscale de 75% !</span></h2>
                     <p>Faire un don à la Croix-Rouge vous permet de bénéficier d'une déduction fiscale de 75% sur votre impôt sur le revenu.</p>
                     <p className="important">Un don de 100€ ne vous coûte donc que 25€.</p>
                 </section>
@@ -553,8 +560,8 @@ export default function JeDonne() {
                 </section>
 
                 {/* 8. Patrimoine */}
-                <section className="stats patrimoine" style={{ background: 'white' }}>
-                    <h2 style={{color: 'black'}}><span className="surligne">Transmission</span> de patrimoine !</h2>
+                <section className="patrimoine" style={{ background: 'white' }}>
+                    <h2 className="titre"><span className="surligne">Transmission</span> de patrimoine !</h2>
                     <p>Votre générosité est la source de notre efficacité et de notre pérennité.</p>
                 </section>
 
@@ -582,36 +589,236 @@ export default function JeDonne() {
                 </div>
 
                 {/* 10. FAQ */}
-                <section className="question-frequente">
-                    <h2 className="titre">Le <span className="surligne">don</span> à la Croix-Rouge</h2>
-                    <div className="questions">
-                        <div className="section-question">
-                            <div className="question" onClick={() => toggleFaq(0)}>
-                                <span>Si je fais un don, quel sera le montant de ma déduction fiscale ?</span>
-                                <span className={`fleche ${faqOpen === 0 ? 'ouverte' : ''}`}>▼</span>
+                {/* 10. FAQ */}
+                <section className="fqs-wrapper">
+                    <style>{`
+                    .fqs-wrapper {
+                        margin-bottom: 64px;
+                        padding-left: 24px;
+                        padding-right: 24px;
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+                    }
+
+                    .fqs-container {
+                        width: 100%;
+                        max-width: 1170px;
+                        margin-left: auto;
+                        margin-right: auto;
+                        padding: 0;
+                    }
+
+                    .fqs-container-medium {
+                        max-width: 970px;
+                        margin-left: auto;
+                        margin-right: auto;
+                    }
+
+                    .fqs-section-head {
+                        margin-bottom: 3rem;
+                        text-align: center;
+                    }
+
+                    .fqs-section-title {
+                        margin: 0 0 1rem 0;
+                        font-size: 2rem;
+                        font-weight: 700;
+                        line-height: 1.2;
+                    }
+
+                    .fqs-section-mark {
+                        padding: 2px 8px;
+                        border-radius: 2px;
+                        color: #fff;
+                        background-color: #075c68;
+                        box-decoration-break: clone;
+                        -webkit-box-decoration-break: clone;
+                        line-height: 1.5;
+                    }
+
+                    .fqs-accordion {
+                        margin-bottom: 8px;
+                        border: 1px solid #cdcdcd;
+                        border-radius: 4px;
+                        padding: 12px;
+                        transition: border-color 0.2s linear;
+                        background: white;
+                    }
+
+                    .fqs-accordion:hover {
+                        border-color: #e3001b;
+                    }
+
+                    .fqs-accordion-header {
+                        position: relative;
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        gap: 16px;
+                        cursor: pointer;
+                    }
+
+                    .fqs-accordion-title {
+                        font-size: 1.8rem;
+                        font-weight: 600;
+                        transition: color 0.2s linear;
+                        margin: 0;
+                        text-align: left;
+                    }
+
+                    .fqs-accordion-header:hover .fqs-accordion-title {
+                        color: #e3001b;
+                    }
+
+                    .fqs-accordion-btn {
+                        width: 24px;
+                        height: 24px;
+                        min-width: 24px;
+                        font-size: 2.4rem;
+                        color: #e3001b;
+                        background: none;
+                        border: none;
+                        cursor: pointer;
+                        padding: 0;
+                        transition: transform 0.3s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .fqs-accordion-btn.open {
+                        transform: rotate(180deg);
+                    }
+
+                    .fqs-accordion-icon {
+                        width: 24px;
+                        height: 24px;
+                        fill: currentColor;
+                    }
+
+                    .fqs-accordion-content {
+                        margin-top: 12px;
+                        overflow: hidden;
+                        transition: max-height 0.3s ease, opacity 0.3s ease;
+                    }
+
+                    .fqs-accordion-content.closed {
+                        max-height: 0;
+                        opacity: 0;
+                        margin-top: 0;
+                    }
+
+                    .fqs-accordion-content.open {
+                        max-height: 1000px;
+                        opacity: 1;
+                    }
+
+                    .fqs-rich-text {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 24px;
+                        text-align: left;
+                        font-size: 1.6rem;
+                    }
+                    `}</style>
+                    <div className="fqs-container">
+                        <header className="fqs-section-head">
+                            <h2 className="titre">
+                                Le <span className="fqs-section-mark">don</span> à la Croix-Rouge
+                            </h2>
+                        </header>
+                    </div>
+                    <div className="fqs-container fqs-container-medium">
+                        
+                        {/* Question 1 */}
+                        <article className="fqs-accordion">
+                            <div
+                                className="fqs-accordion-header"
+                                onClick={() => toggleFaq(0)}
+                                role="button"
+                                aria-expanded={faqOpen === 0}
+                            >
+                                <h3 className="fqs-accordion-title">Si je fais un don, quel sera le montant de ma déduction fiscale ?</h3>
+                                <button
+                                    className={`fqs-accordion-btn ${faqOpen === 0 ? 'open' : ''}`}
+                                    aria-label={faqOpen === 0 ? "Fermer" : "Ouvrir"}
+                                    tabIndex="-1"
+                                >
+                                    <svg
+                                        className="fqs-accordion-icon"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path d="M7.41 8.58 12 13.17l4.59-4.59L18 10l-6 6-6-6 1.41-1.42Z"></path>
+                                    </svg>
+                                </button>
                             </div>
-                            <div className={`reponse ${faqOpen === 0 ? 'ouverte' : ''}`}>
-                                <p>Si vous êtes redevable de l'impôt sur le revenu, vous bénéficiez d’une réduction d’impôts de 75%.</p>
+                            <div className={`fqs-accordion-content ${faqOpen === 0 ? 'open' : 'closed'}`}>
+                                <div className="fqs-rich-text">
+                                    <p>Si vous êtes redevable de l'impôt sur le revenu, vous bénéficiez d’une réduction d’impôts de 75%.</p>
+                                </div>
                             </div>
-                        </div>
-                        <div className="section-question">
-                            <div className="question" onClick={() => toggleFaq(1)}>
-                                <span>Comment obtenir mon reçu fiscal ?</span>
-                                <span className={`fleche ${faqOpen === 1 ? 'ouverte' : ''}`}>▼</span>
+                        </article>
+
+                        {/* Question 2 */}
+                        <article className="fqs-accordion">
+                            <div
+                                className="fqs-accordion-header"
+                                onClick={() => toggleFaq(1)}
+                                role="button"
+                                aria-expanded={faqOpen === 1}
+                            >
+                                <h3 className="fqs-accordion-title">Comment obtenir mon reçu fiscal ?</h3>
+                                <button
+                                    className={`fqs-accordion-btn ${faqOpen === 1 ? 'open' : ''}`}
+                                    aria-label={faqOpen === 1 ? "Fermer" : "Ouvrir"}
+                                    tabIndex="-1"
+                                >
+                                    <svg
+                                        className="fqs-accordion-icon"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path d="M7.41 8.58 12 13.17l4.59-4.59L18 10l-6 6-6-6 1.41-1.42Z"></path>
+                                    </svg>
+                                </button>
                             </div>
-                            <div className={`reponse ${faqOpen === 1 ? 'ouverte' : ''}`}>
-                                <p>Le reçu fiscal est envoyé dans les 10 jours par courrier ou 48h par email pour un don ponctuel.</p>
+                            <div className={`fqs-accordion-content ${faqOpen === 1 ? 'open' : 'closed'}`}>
+                                <div className="fqs-rich-text">
+                                    <p>Le reçu fiscal est envoyé dans les 10 jours par courrier ou 48h par email pour un don ponctuel.</p>
+                                </div>
                             </div>
-                        </div>
-                        <div className="section-question">
-                            <div className="question" onClick={() => toggleFaq(2)}>
-                                <span>A quoi servent les dons ?</span>
-                                <span className={`fleche ${faqOpen === 2 ? 'ouverte' : ''}`}>▼</span>
+                        </article>
+
+                        {/* Question 3 */}
+                        <article className="fqs-accordion">
+                            <div
+                                className="fqs-accordion-header"
+                                onClick={() => toggleFaq(2)}
+                                role="button"
+                                aria-expanded={faqOpen === 2}
+                            >
+                                <h3 className="fqs-accordion-title">A quoi servent les dons ?</h3>
+                                <button
+                                    className={`fqs-accordion-btn ${faqOpen === 2 ? 'open' : ''}`}
+                                    aria-label={faqOpen === 2 ? "Fermer" : "Ouvrir"}
+                                    tabIndex="-1"
+                                >
+                                    <svg
+                                        className="fqs-accordion-icon"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path d="M7.41 8.58 12 13.17l4.59-4.59L18 10l-6 6-6-6 1.41-1.42Z"></path>
+                                    </svg>
+                                </button>
                             </div>
-                            <div className={`reponse ${faqOpen === 2 ? 'ouverte' : ''}`}>
-                                <p>Vos dons financent l'aide alimentaire, les maraudes, la lutte contre l'isolement, etc.</p>
+                            <div className={`fqs-accordion-content ${faqOpen === 2 ? 'open' : 'closed'}`}>
+                                <div className="fqs-rich-text">
+                                    <p>Vos dons financent l'aide alimentaire, les maraudes, la lutte contre l'isolement, etc.</p>
+                                </div>
                             </div>
-                        </div>
+                        </article>
+
                     </div>
                 </section>
 
