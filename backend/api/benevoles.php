@@ -33,23 +33,26 @@ switch ($method) {
         }
 
         try {
+            $nom = $data['nom'] ?? '';
+            $prenom = $data['prenom'] ?? '';
+
             $sql = "INSERT INTO benevoles (nom, prenom, email, telephone, date_naissance, ville, profession, cotisation, disponibilite, regime_alimentaire, restrictions_sante, champs_complementaires) 
                     VALUES (:nom, :prenom, :email, :telephone, :date_naissance, :ville, :profession, :cotisation, :disponibilite, :regime_alimentaire, :restrictions_sante, :champs_complementaires)";
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
-                ':nom' => $data['nom'],
-                ':prenom' => $data['prenom'],
+                ':nom' => $nom,
+                ':prenom' => $prenom,
                 ':email' => $data['email'],
                 ':telephone' => $data['telephone'],
-                ':date_naissance' => $data['dateNaissance'] ?? $data['date_naissance'],
+                ':date_naissance' => $data['dateNaissance'] ?? ($data['date_naissance'] ?? null),
                 ':ville' => $data['ville'],
                 ':profession' => $data['profession'],
                 ':cotisation' => $data['cotisation'],
-                ':disponibilite' => $data['dispo'] ?? $data['disponibilite'],
-                ':regime_alimentaire' => $data['regime'] ?? $data['regime_alimentaire'],
-                ':restrictions_sante' => $data['sante'] ?? $data['restrictions_sante'],
-                ':champs_complementaires' => $data['infos'] ?? $data['champs_complementaires']
+                ':disponibilite' => $data['dispo'] ?? ($data['disponibilite'] ?? 'Semaine'),
+                ':regime_alimentaire' => $data['regime'] ?? ($data['regime_alimentaire'] ?? null),
+                ':restrictions_sante' => $data['sante'] ?? ($data['restrictions_sante'] ?? null),
+                ':champs_complementaires' => $data['infos'] ?? ($data['champs_complementaires'] ?? null)
             ]);
 
             $newId = $pdo->lastInsertId();

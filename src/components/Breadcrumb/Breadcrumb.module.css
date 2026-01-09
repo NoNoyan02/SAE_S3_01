@@ -1,0 +1,40 @@
+.breadcrumb {
+    padding: 12px 40px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #e0e0e0;
+    font-family: 'Inter', sans-serif;
+}
+
+.breadcrumb ol {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+    padding: 0;
+}
+
+.breadcrumb li {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+}
+
+.breadcrumb a {
+    text-decoration: none;
+    color: black;
+    transition: color 0.2s;
+}
+
+.breadcrumb a:hover,
+.breadcrumb a:focus {
+    color: #e30613;
+    outline: none;
+}
+
+.breadcrumb li:not(:last-child)::after {
+    content: ">";
+    margin: 0 8px;
+    color: #666;
+    font-weight: bold;
+}

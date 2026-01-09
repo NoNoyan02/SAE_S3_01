@@ -34,6 +34,9 @@ export default function SearchBar() {
                     padding: 0 24px;
                     transition: background-size 0.2s ease-out;
                     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                    margin-top: -30px;
+                    position: relative;
+                    z-index: 10;
                 }
 
                 @media (min-width: 1100px) {

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import api from '@/api/axios';
 
 const NewsletterSection = () => {
     const [email, setEmail] = useState('');
@@ -16,24 +17,17 @@ const NewsletterSection = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8000/api/newsletter.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, acceptConditions, acceptEntreprise })
-            });
-            const data = await response.json();
+            const response = await api.post('/newsletter.php', { email, acceptConditions, acceptEntreprise });
+            const data = response.data;
 
-            if (response.ok) {
-                alert(data.message || "Inscription réussie !");
-                setEmail('');
-                setAcceptConditions(false);
-                setAcceptEntreprise(false);
-            } else {
-                alert(data.error || "Une erreur est survenue.");
-            }
+            alert(data.message || "Inscription réussie !");
+            setEmail('');
+            setAcceptConditions(false);
+            setAcceptEntreprise(false);
         } catch (error) {
             console.error("Erreur inscription:", error);
-            alert("Impossible de communiquer avec le serveur.");
+            const errorMessage = error.response?.data?.error || "Impossible de communiquer avec le serveur.";
+            alert(errorMessage);
         }
     };
 

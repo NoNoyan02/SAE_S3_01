@@ -43,6 +43,7 @@ export default function DonationFormVertical() {
             color: #000;
             background-color: #fff;
             box-shadow: 0 8px 24px rgba(0, 0, 0, .35);
+    border-radius: 8px;
         }
 
             @media (min-width: 700px) {

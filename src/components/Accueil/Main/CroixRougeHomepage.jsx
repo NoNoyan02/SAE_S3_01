@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import api from '@/api/axios';
 
 export default function CroixRougeHomepage() {
     const [searchType, setSearchType] = useState('Toutes');
@@ -9,10 +10,9 @@ export default function CroixRougeHomepage() {
     const articlesCarouselRef = useRef(null);
 
     useEffect(() => {
-        fetch('http://localhost:8000/api/articles.php')
-            .then(res => res.json())
-            .then(data => {
-                if (Array.isArray(data)) setArticles(data);
+        api.get('/articles.php')
+            .then(res => {
+                if (Array.isArray(res.data)) setArticles(res.data);
             })
             .catch(err => console.error(err));
     }, []);
@@ -504,35 +504,35 @@ export default function CroixRougeHomepage() {
                     position: absolute;
                     top: 50%;
                     transform: translateY(-50%);
-                    width: 44px;
-                    height: 44px;
+                    width: 50px;
+                    height: 50px;
                     border-radius: 50%;
-                    background-color: #fff;
-                    border: 2px solid #e3001b;
+                    background-color: rgba(255, 255, 255, 0.9);
+                    border: none;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 18px;
+                    font-size: 2rem;
                     font-weight: bold;
                     color: #e3001b;
                     cursor: pointer;
                     transition: all 0.3s ease;
                     z-index: 10;
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
                 }
 
                 .carousel-nav:hover {
                     background-color: #e3001b;
                     color: #fff;
-                    transform: translateY(-50%) scale(1.05);
+                    transform: translateY(-50%) scale(1.1);
                 }
 
                 .carousel-nav-left {
-                    left: 10px;
+                    left: 0;
                 }
 
                 .carousel-nav-right {
-                    right: 10px;
+                    right: 0;
                 }
 
 
@@ -559,7 +559,7 @@ export default function CroixRougeHomepage() {
                     will-change: transform;
                     gap: 20px;
                     scroll-behavior: smooth;
-                    overflow-x: auto;
+                    overflow-x: hidden;
                     justify-content: start;
                 }
 
@@ -764,7 +764,7 @@ export default function CroixRougeHomepage() {
                 .dossiers-carousel {
                     display: flex;
                     gap: 20px;
-                    overflow-x: auto;
+                    overflow-x: hidden;
                     scroll-snap-type: x mandatory;
                     scroll-behavior: smooth;
                     scrollbar-width: none;
@@ -878,7 +878,19 @@ export default function CroixRougeHomepage() {
                     background-color: #cdcdcd;
                 }
 
+                .folder-line {
+                    flex: 1;
+                    height: 1px;
+                    background-color: #cdcdcd;
+                }
+
                 /*responsive*/
+                @media (max-width: 1024px) {
+                    .ssr-carousel-track,
+                    .dossiers-carousel {
+                        overflow-x: auto;
+                    }
+                }
 
                 @media (max-width: 699px) {
                     .section-head {
@@ -1064,11 +1076,6 @@ export default function CroixRougeHomepage() {
                         width: 32px;
                         height: 32px;
                     }
-
-                    .carousel-wrapper {
-                        padding: 0 55px;
-                    }
-
                     .ssr-carousel-slide,
                     .folder-card {
                         width: 300px;

@@ -13,6 +13,7 @@ try {
     // On suppose qu'un user est un donateur si donateur_id n'est pas NULL
     $totalDonateurs = $pdo->query("SELECT COUNT(*) FROM donateurs")->fetchColumn();
     $totalUsers = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
+    $nbAdmins = $pdo->query("SELECT COUNT(*) FROM users WHERE role_id = 1")->fetchColumn();
     // Ou peut-être 'Users qui sont donateurs' = SELECT COUNT(*) FROM users WHERE donateur_id IS NOT NULL
 
     // 2. Dons par semaine (Weekly Donation Amount)
@@ -40,6 +41,7 @@ try {
     $response = [
         "donateurs_count" => (int) $totalDonateurs,
         "users_count" => (int) $totalUsers,
+        "nbAdmins" => (int) $nbAdmins,
         "weekly_donations" => $weeklyStats,
         "events_stats" => $eventStats
     ];

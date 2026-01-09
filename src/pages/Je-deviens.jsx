@@ -5,6 +5,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import Hero from "../components/Je-deviens/Main/Hero/Hero.jsx";
 import SearchBar from "../components/Je-deviens/Main/SearchBar/SearchBar.jsx";
 import SEO from "@/components/SEO.jsx";
+import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.jsx";
 
 const MissionCard = ({href, imageSrc, imageAlt, title}) => (
     <li className="block-cta-list__item">
@@ -248,8 +249,10 @@ export default function JeDeviens() {
                 image="/crf_logo.png"
             />
 
+            <Breadcrumb paths={[{ label: 'Accueil', url: '/' }, { label: 'Je deviens bénévole' }]} />
             <Hero/>
             <SearchBar/>
+
             <section className="volunteer-section">
                 {/* DÉBUT DU CSS INTÉGRÉ */}
                 <style>{`.volunteer-section {
@@ -259,7 +262,6 @@ export default function JeDeviens() {
   padding-right: 64px;
   transition: background-size 0.2s ease-out;
   color: rgb(16, 16, 16);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
   line-height: 22.4px;
   background-color: rgb(255, 255, 255);
@@ -377,7 +379,6 @@ export default function JeDeviens() {
   padding-right: 64px;
   transition: background-size 0.2s ease-out;
   color: rgb(16, 16, 16);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
   line-height: 22.4px;
   background-color: rgb(255, 255, 255);
@@ -493,7 +494,6 @@ export default function JeDeviens() {
   margin-bottom: 64px;
   padding: 0 24px;
   transition: background-size 0.2s ease-out;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .block-content-simple__container {
@@ -608,7 +608,6 @@ export default function JeDeviens() {
 
 .block-content-richtext__wrapper {
   margin-bottom: 88px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .container--shrink {
@@ -653,7 +652,6 @@ export default function JeDeviens() {
   padding-left: 24px;
   padding-right: 24px;
   transition: background-size 0.2s ease-out;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 
 .wrapper .container {

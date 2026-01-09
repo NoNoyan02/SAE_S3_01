@@ -16,6 +16,7 @@ export default function Header() {
     // ------------------------------------------------------------
 
     const [loginOverlayOpen, setLoginOverlayOpen] = useState(false);
+    const [isMouseDownOnBackdrop, setIsMouseDownOnBackdrop] = useState(false);
     const [isLoginMode, setIsLoginMode] = useState(true);
     const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem('user'));
     const [userName, setUserName] = useState(() => {
@@ -90,6 +91,21 @@ export default function Header() {
 
     const toggleSearch = () => {
         setSearchExpanded(!searchExpanded);
+    };
+
+    const handleBackdropMouseDown = (e) => {
+        if (e.target === e.currentTarget) {
+            setIsMouseDownOnBackdrop(true);
+        } else {
+            setIsMouseDownOnBackdrop(false);
+        }
+    };
+
+    const handleBackdropMouseUp = (e) => {
+        if (e.target === e.currentTarget && isMouseDownOnBackdrop) {
+            setLoginOverlayOpen(false);
+        }
+        setIsMouseDownOnBackdrop(false);
     };
 
 
@@ -194,37 +210,36 @@ export default function Header() {
                                         />
                                     </div>
                                     <button
+                                        type="button"
                                         className={styles.searchToggleButton}
                                         aria-label={searchExpanded ? "Fermer la recherche" : "Ouvrir la recherche"}
                                         onClick={toggleSearch}
                                     >
-                                        {searchExpanded ?
-                                            <X className={styles.searchIcon} /> :
-                                            <Search className={styles.searchIcon} />
-                                        }
+                                        <Search className={`${styles.searchIcon} ${styles.searchIconMagnifier}`} />
+                                        <X className={`${styles.searchIcon} ${styles.searchIconClose}`} />
                                     </button>
                                 </div>
                                 {/* ------------------------------------- */}
 
                                 {!isLoggedIn ? (
-                                    <button onClick={() => setLoginOverlayOpen(true)} className={`${styles.donorSpaceButton} ${styles.donorSpaceDesktop}`}>
+                                    <button type="button" onClick={() => setLoginOverlayOpen(true)} className={`${styles.donorSpaceButton} ${styles.donorSpaceDesktop}`}>
                                         <User className={styles.donorIcon} /> <span>Espace donateur</span>
                                     </button>
                                 ) : (
                                     <div className={styles.userProfileDesktop}>
                                         <User className={styles.donorIcon} />
                                         <span className={styles.userName}>{userName}</span>
-                                        <button onClick={handleLogout} className={styles.logoutBtn}>Déconnexion</button>
+                                        <button type="button" onClick={handleLogout} className={styles.logoutBtn}>Déconnexion</button>
                                     </div>
                                 )}
 
                                 {!isLoggedIn && (
-                                    <button onClick={() => setLoginOverlayOpen(true)} className={`${styles.donorSpaceButton} ${styles.donorSpaceMobileTablet}`}>
+                                    <button type="button" onClick={() => setLoginOverlayOpen(true)} className={`${styles.donorSpaceButton} ${styles.donorSpaceMobileTablet}`}>
                                         <User className={styles.donorIcon} /> <span>Espace donateur</span>
                                     </button>
                                 )}
 
-                                <a href="faire-un-don/~mon-don" className={styles.donationButton}>
+                                <a href="/faire-un-don/~mon-don" className={styles.donationButton}>
                                     <span className={styles.donationTextSmall}>Pour soutenir la Croix-Rouge</span>
                                     <span className={styles.donationTextLarge}>Je fais un don</span>
                                 </a>
@@ -232,6 +247,7 @@ export default function Header() {
 
                             {/* Bouton Menu Mobile */}
                             <button
+                                type="button"
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                                 className={styles.mobileMenuButton}
                                 aria-label="Menu"
@@ -243,9 +259,13 @@ export default function Header() {
 
                     {/* Overlay Login (Identique à avant) */}
                     {loginOverlayOpen && (
-                        <div className={styles.loginOverlay} onClick={() => setLoginOverlayOpen(false)}>
-                            <div className={styles.loginModal} onClick={(e) => e.stopPropagation()}>
-                                <button className={styles.closeModal} onClick={() => setLoginOverlayOpen(false)}>
+                        <div 
+                            className={styles.loginOverlay} 
+                            onMouseDown={handleBackdropMouseDown}
+                            onMouseUp={handleBackdropMouseUp}
+                        >
+                            <div className={styles.loginModal} onMouseDown={(e) => e.stopPropagation()} onMouseUp={(e) => e.stopPropagation()}>
+                                <button type="button" className={styles.closeModal} onClick={() => setLoginOverlayOpen(false)}>
                                     <X size={24} />
                                 </button>
                                 <div className={styles.loginHeader}>
@@ -298,7 +318,7 @@ export default function Header() {
                             <div className={styles.mobileMenuContent}>
                                 <div className={styles.searchWrapperMobile}>
                                     <input type="search" placeholder="Recherche ..." className={styles.searchInputMobile} />
-                                    <button className={styles.searchButtonMobile}>
+                                    <button type="button" className={styles.searchButtonMobile}>
                                         <Search className={styles.searchIconMobile} />
                                     </button>
                                 </div>
@@ -333,7 +353,7 @@ export default function Header() {
                                         <User className={styles.donorIconMobile} /> <span>Déconnexion</span>
                                     </div>
                                 )}
-                                <a href="faire-un-don/~mon-don" className={styles.donationButtonMobile}>
+                                <a href="/faire-un-don/~mon-don" className={styles.donationButtonMobile}>
                                     <span className={styles.donationTextSmallMobile}>Pour soutenir la Croix-Rouge</span>
                                     <span className={styles.donationTextLargeMobile}>Je fais un don</span>
                                 </a>

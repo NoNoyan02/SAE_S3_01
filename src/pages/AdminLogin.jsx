@@ -22,7 +22,7 @@ const AdminLogin = () => {
 
             // Succès
             localStorage.setItem('user', JSON.stringify(data.user));
-            window.location.href = '/admin/dashboard';
+            window.location.href = '/admin/Dashboard';
 
         } catch (err) {
             const msg = err.response?.data?.error || 'Erreur serveur. Veuillez réessayer.';

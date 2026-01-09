@@ -33,18 +33,20 @@ switch ($method) {
         }
 
         try {
-            $sql = "INSERT INTO subvention (nom_aide, organisme, montant) 
-                    VALUES (:nom_aide, :organisme, :montant)";
+            $nom = $data['nom'] ?? ($data['nom_aide'] ?? 'Sans nom');
+            $sql = "INSERT INTO subvention (nom_aide, organisme, montant, status) 
+                    VALUES (:nom_aide, :organisme, :montant, :status)";
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
-                ':nom_aide' => $data['nom'] ?? $data['nom_aide'],
-                ':organisme' => $data['organisme'],
-                ':montant' => $data['montant']
+                ':nom_aide' => $nom,
+                ':organisme' => $data['organisme'] ?? '',
+                ':montant' => $data['montant'] ?? 0,
+                ':status' => $data['status'] ?? 'Reçue'
             ]);
 
             $newId = $pdo->lastInsertId();
-            logActivity('CREATE', 'subvention', $newId, "Création de la subvention : " . ($data['nom'] ?? ''));
+            logActivity('CREATE', 'subvention', $newId, "Création de la subvention : " . $nom);
 
             echo json_encode(["message" => "Subvention ajoutée avec succès", "id" => $newId]);
         } catch (PDOException $e) {
@@ -68,18 +70,21 @@ switch ($method) {
             $sql = "UPDATE subvention SET 
                         nom_aide = :nom_aide,
                         organisme = :organisme,
-                        montant = :montant
+                        montant = :montant,
+                        status = :status
                     WHERE id = :id";
 
             $stmt = $pdo->prepare($sql);
+            $nom = $data['nom'] ?? ($data['nom_aide'] ?? '');
             $stmt->execute([
-                ':nom_aide' => $data['nom'] ?? ($data['nom_aide'] ?? ''),
+                ':nom_aide' => $nom,
                 ':organisme' => $data['organisme'] ?? '',
                 ':montant' => !empty($data['montant']) ? $data['montant'] : 0,
+                ':status' => $data['status'] ?? 'Reçue',
                 ':id' => $id
             ]);
 
-            logActivity('UPDATE', 'subvention', $id, "Mise à jour de la subvention : " . ($data['nom'] ?? ''));
+            logActivity('UPDATE', 'subvention', $id, "Mise à jour de la subvention : " . $nom);
 
             echo json_encode(["message" => "Subvention mise à jour avec succès"]);
         } catch (PDOException $e) {

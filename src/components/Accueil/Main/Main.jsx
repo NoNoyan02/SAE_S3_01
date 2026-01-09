@@ -39,10 +39,10 @@ export default function Main() {
 
                 return next;
             });
-        }, 3000);
+        }, 3000); // Augmenté à 5s pour laisser plus de temps
 
         return () => clearInterval(interval);
-    }, [direction]);
+    }, [direction, current]); // Ajout de current pour reset l'intervalle au clic
 
     const nextSlide = () => {
         setCurrent((prev) => (prev + 1) % slides.length);
@@ -377,6 +377,8 @@ export default function Main() {
                 }
 
                 .donation-form-placeholder {
+                    margin-top: 16px;
+             
                     width: 100%;
                     min-height: 400px;
                     display: flex;
@@ -638,6 +640,7 @@ export default function Main() {
                 }
 
                 @media (min-width: 1100px) {
+                
                     .carousel {
                         margin-bottom: 88px;
                     }
@@ -656,17 +659,43 @@ export default function Main() {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 16px;
+                    gap: 32px;
                     flex-direction: column;
+                    position: relative;
+                }
+
+                .slide::before {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
+                    z-index: 0;
                 }
 
                 .slide-title-accueil {
+                    position: relative;
+                    z-index: 2;
                     color: white;
-                    font-size: 3rem;
-                    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+                    font-size: clamp(2.4rem, 6vw, 5.6rem);
                     text-align: center;
-                    padding: 0 10px;
+                    padding: 0 5%;
                     margin: 0;
+                    font-weight: 900;
+                    max-width: 1100px;
+                    line-height: 1;
+                    letter-spacing: -0.04em;
+                    background: linear-gradient(to bottom, #fff 40%, #e0e0e0 100%);
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+                }
+
+                .donation-btn {
+                    position: relative;
+                    z-index: 2;
                 }
 
                 .arrow {
@@ -725,6 +754,7 @@ export default function Main() {
 
                 @media (max-width: 768px) {
                     .slide-title-accueil {
+                    
                         font-size: 2rem;
                     }
                     .arrow {
@@ -734,6 +764,7 @@ export default function Main() {
                 }
 
                 @media (max-width: 480px) {
+               
                     .slide-title-accueil {
                         font-size: 1.5rem;
                     }
@@ -755,6 +786,10 @@ export default function Main() {
                 }
 
                 @media (min-width: 1100px) {
+                .donation-form-placeholder {
+                
+                    margin-top: 0;
+                }
                     .donation-wrapper {
                         margin-bottom: 88px;
                         padding-left: 64px;

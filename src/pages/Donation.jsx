@@ -74,17 +74,19 @@ export default function Donation() {
 
             const handlePhoneInput = () => {
                  if (itiRef.current) {
-                     // Get the full number including country code
                      const fullNumber = itiRef.current.getNumber();
-                     setTelephone(fullNumber);
+                     const rawValue = phoneInputRef.current?.value || "";
+                     const finalValue = fullNumber || rawValue;
                      
-                     // Use functional update to avoid stale closure issues
-                     setErrors(prev => {
-                         if (prev.telephone) {
-                             return { ...prev, telephone: null };
-                         }
-                         return prev;
-                     });
+                     setTelephone(finalValue);
+                     
+                     if (finalValue.trim()) {
+                         setErrors(prev => {
+                             const newErrors = { ...prev };
+                             delete newErrors.telephone;
+                             return newErrors;
+                         });
+                     }
                  }
             };
             
@@ -270,7 +272,10 @@ export default function Donation() {
         if (!codePostal) newErrors.codePostal = "Vous devez saisir votre code postal";
         if (!ville) newErrors.ville = "Vous devez saisir votre ville";
         if (!pays) newErrors.pays = "Le pays est requis";
-        if (!telephone) newErrors.telephone = "Le téléphone est requis";
+        const combinedPhone = (phoneInputRef.current?.value || "") || (itiRef.current?.getNumber() || "") || telephone || "";
+        if (!combinedPhone.trim()) {
+            newErrors.telephone = "Le téléphone est requis";
+        }
         if (!dateNaissance) newErrors.dateNaissance = "La date de naissance est requise";
 
         if (activePayment === "card") {
@@ -319,8 +324,8 @@ export default function Donation() {
 
         try {
             const data = await submitDonation(payload);
-            // Message de succès
-            alert(`Merci pour votre don de ${amount}€ via ${activePayment} ❤️`);
+            // Message de succès avec numéro de donateur
+            alert(`Merci pour votre don de ${amount}€ via ${activePayment} ❤️\nVotre numéro de donateur est : ${data.donor_number}`);
             console.log("Donation OK:", data);
         } catch (err) {
             console.error(err);
@@ -1301,7 +1306,21 @@ export default function Donation() {
                                             id="phone" 
                                             ref={phoneInputRef}
                                             defaultValue={telephone}
-                                            onBlur={(e) => handleBlur('telephone', e.target.value)}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                setTelephone(val);
+                                                if (val.trim()) {
+                                                    setErrors(prev => {
+                                                        const n = { ...prev };
+                                                        delete n.telephone;
+                                                        return n;
+                                                    });
+                                                }
+                                            }}
+                                            onBlur={(e) => {
+                                                const val = e.target.value || (itiRef.current?.getNumber() || "");
+                                                handleBlur('telephone', val);
+                                            }}
                                             className={errors.telephone ? "error-input" : ""}
                                             style={{ width: '100%',paddingLeft: '75px' }}
                                         />

@@ -33,19 +33,20 @@ switch ($method) {
         }
 
         try {
+            $nom = $data['nom'] ?? ($data['nom_entreprise'] ?? 'Sans nom');
             $sql = "INSERT INTO entreprise (nom_entreprise, contact_nom_prenom, email, telephone) 
                     VALUES (:nom_entreprise, :contact_nom_prenom, :email, :telephone)";
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
-                ':nom_entreprise' => $data['nom'] ?? $data['nom_entreprise'],
-                ':contact_nom_prenom' => $data['contact'] ?? $data['contact_nom_prenom'],
-                ':email' => $data['email'],
-                ':telephone' => $data['telephone']
+                ':nom_entreprise' => $nom,
+                ':contact_nom_prenom' => $data['contact'] ?? ($data['contact_nom_prenom'] ?? ''),
+                ':email' => $data['email'] ?? '',
+                ':telephone' => $data['telephone'] ?? ''
             ]);
 
             $newId = $pdo->lastInsertId();
-            logActivity('CREATE', 'entreprise', $newId, "Création de l'entreprise : " . ($data['nom'] ?? ''));
+            logActivity('CREATE', 'entreprise', $newId, "Création de l'entreprise : " . $nom);
 
             echo json_encode(["message" => "Entreprise ajoutée avec succès", "id" => $newId]);
         } catch (PDOException $e) {
@@ -74,15 +75,16 @@ switch ($method) {
                     WHERE id = :id";
 
             $stmt = $pdo->prepare($sql);
+            $nom = $data['nom'] ?? ($data['nom_entreprise'] ?? '');
             $stmt->execute([
-                ':nom_entreprise' => $data['nom'] ?? ($data['nom_entreprise'] ?? ''),
+                ':nom_entreprise' => $nom,
                 ':contact_nom_prenom' => $data['contact'] ?? ($data['contact_nom_prenom'] ?? ''),
                 ':email' => $data['email'] ?? '',
                 ':telephone' => $data['telephone'] ?? '',
                 ':id' => $id
             ]);
 
-            logActivity('UPDATE', 'entreprise', $id, "Mise à jour de l'entreprise : " . ($data['nom'] ?? ''));
+            logActivity('UPDATE', 'entreprise', $id, "Mise à jour de l'entreprise : " . $nom);
 
             echo json_encode(["message" => "Entreprise mise à jour avec succès"]);
         } catch (PDOException $e) {

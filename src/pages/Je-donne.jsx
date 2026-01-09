@@ -15,6 +15,7 @@ import Page_carrefour_Don_titres_restaurant from "assets/images/je-donne/Page_ca
 import Page_carrefour_Don_vetements from "assets/images/je-donne/Page_carrefour_Don_vetements.webp";
 import Page_Carrefour_Je_donne from "assets/images/je-donne/Page_Carrefour_Je_donne.webp";
 import DonationFormVertical from "@/components/Form/DonationFormVertical.jsx";
+import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.jsx";
 
 
 export default function JeDonne() {
@@ -102,9 +103,7 @@ export default function JeDonne() {
 
             {/* CSS DE LA PAGE (Hero, Stats, Carrousel, FAQ) */}
             <style>{`
-                /* RESET & GLOBAL */
                 .page-je-donne {
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
                     color: #101010;
                     line-height: 1.5;
                 }
@@ -113,23 +112,9 @@ export default function JeDonne() {
                     margin-top: 0;
                 }
 
-                /* --- HERO --- */
+                /* --- HERO (Custom adjustments) --- */
                 .bloc-don {
-                    position: relative;
-                    width: 100%;
-                    min-height: 600px;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    overflow: hidden;
-                    background-color: #f0f0f0;
-                }
-                .bloc-don-image {
-                    position: absolute;
-                    top: 0; left: 0;
-                    width: 100%; height: 100%;
-                    object-fit: cover;
-                    z-index: 0;
+                    min-height: 500px;
                 }
                 .section-hero {
                     position: relative;
@@ -139,18 +124,11 @@ export default function JeDonne() {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    padding: 0 20px;
+                    padding: 0 40px;
                     flex-wrap: wrap;
                     gap: 40px;
                 }
-                .hero-title {
-                    font-size: 3.5rem;
-                    font-weight: 800;
-                    color: white;
-                    text-shadow: 0 4px 10px rgba(0,0,0,0.6);
-                    line-height: 1.2;
-                }
-                @media(max-width: 900px) {
+                @media(max-width: 1100px) {
                     .section-hero { justify-content: center; text-align: center; }
                     .formulaire-don-vertical { display: none; }
                 }
@@ -241,9 +219,8 @@ export default function JeDonne() {
                 }
                 .bouton-donation:hover { background-color: #b70b16; }
 
-                /* --- STATS --- */
                 .stats {
-                    background-color: #e8f0f1;
+                    background: linear-gradient(180deg, #f8fbfc 0%, #e8f0f1 100%);
                     padding: 60px 20px;
                     text-align: center;
                 }
@@ -304,7 +281,7 @@ export default function JeDonne() {
                     gap: 40px;
                     margin-top: 40px;
                 }
-                .sections-bloc { max-width: 400px; }
+                .sections-bloc { max-width: 550px; flex: 1 1 300px; }
                 .sections-bloc img {
                     width: 100%;
                     height: 250px;
@@ -334,14 +311,14 @@ export default function JeDonne() {
                 }
                 .btn-outline:hover { background: #d32f2f; color: white; }
 
-                /* --- DEDUCTION --- */
                 .deduction-fiscale {
-                    background-color: #eef6f8;
+                    background: linear-gradient(135deg, #f0f7f9 0%, #eef6f8 100%);
                     padding: 50px 20px;
                     margin: 50px auto;
                     max-width: 1000px;
                     text-align: center;
                     border-radius: 8px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
                 }
                 .important { color: #e60000; font-weight: bold; font-size: 1.5rem; margin: 20px 0; }
 
@@ -351,11 +328,11 @@ export default function JeDonne() {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    gap: 20px;
+                    gap: 50px;
                     margin-top: 30px;
                 }
                 .affichage-carrousel {
-                    width: 90%;
+                    width: 85%;
                     max-width: 1200px;
                     overflow: hidden;
                 }
@@ -368,15 +345,26 @@ export default function JeDonne() {
                     min-width: 350px;
                 }
                 .arrow {
-                    width: 40px; height: 40px;
+                    width: 50px; height: 50px;
+                    flex-shrink: 0;
                     border-radius: 50%;
                     border: none;
-                    background: #333;
-                    color: white;
-                    font-size: 1.5rem;
+                    background: rgba(255, 255, 255, 0.9);
+                    color: #e3001b;
+                    font-size: 2rem;
+                    font-weight: bold;
                     cursor: pointer;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    transition: all 0.3s ease;
                 }
-                .arrow:hover { background: black; }
+                .arrow:hover {
+                    background: #e3001b;
+                    color: #fff;
+                    transform: scale(1.1);
+                }
 
                 /* --- TRANSMETTRE --- */
                 .section-split {
@@ -394,6 +382,7 @@ export default function JeDonne() {
                 }
                 .col-img, .col-txt { flex: 1; min-width: 300px; }
                 .col-txt h2 { font-size: 2rem; margin-bottom: 20px; }
+                .col-txt p {  margin-bottom: 20px; }
                 .btn-solid {
                     display: inline-block;
                     background: #d32f2f;
@@ -442,14 +431,18 @@ export default function JeDonne() {
             `}</style>
 
             <main className="page-je-donne">
+                
+                <Breadcrumb paths={[{ label: 'Accueil', url: '/' }, { label: 'Je fais un don' }]} />
 
                 {/* 1. Hero Section */}
-                <div className="bloc-don">
-                    {/* Les images dans public/ s'appellent avec /assets/... */}
-                    <img className="bloc-don-image" src={Page_Carrefour_Je_donne} alt="Fond don" />
+                <div className="shared-hero bloc-don">
+                    <img className="shared-hero-bg" src={Page_Carrefour_Je_donne} alt="Fond don" />
+                    <div className="shared-hero-overlay"></div>
 
                     <div className="section-hero">
-                        <h1 className="hero-title">Grâce à vos dons nous<br/>pouvons agir</h1>
+                        <h1 className="shared-hero-title" style={{ textAlign: 'left', maxWidth: '600px' }}>
+                            Grâce à vos dons nous<br/>pouvons agir
+                        </h1>
 
                         <DonationFormVertical/>
                     </div>

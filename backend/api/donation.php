@@ -67,6 +67,7 @@ try {
 
     if ($existingDonateur) {
         $donateurId = $existingDonateur['id'];
+        $donorNumber = $existingDonateur['donor_number'];
         // Optionnel : Mettre à jour les infos du donateur
     } else {
         // 2. Créer le donateur
@@ -128,7 +129,8 @@ try {
     echo json_encode([
         "success" => true,
         "message" => "Don enregistré avec succès. Merci $firstname !",
-        "donation_id" => "DON-" . $donateurId // ou $donorNumber
+        "donation_id" => "DON-" . $donateurId,
+        "donor_number" => $donorNumber
     ]);
 
 } catch (Exception $e) {

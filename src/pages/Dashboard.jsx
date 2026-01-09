@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   LayoutDashboard, Users, Handshake, Calendar,
   BarChart3, LogOut, Plus, Search,
@@ -6,7 +7,7 @@ import {
   Undo2, Redo2, Bold, Italic, Underline, AlignLeft, AlignCenter, Outdent, Indent, List, ListOrdered,
   Omega, Smile, Image, PlaySquare, Link, MoreHorizontal, Maximize, Printer, AlignRight, ChevronDown, Type, Highlighter
 } from 'lucide-react';
-import StatCard from '../components/dashboard/StatCard';
+import StatCard from '../components/Dashboard/StatCard';
 import api from '@/api/axios';
 
 const Dashboard = () => {
@@ -18,9 +19,20 @@ const Dashboard = () => {
   const [showNewsletterModal, setShowNewsletterModal] = useState(false); // AJOUT
   const [showUserModal, setShowUserModal] = useState(false); // AJOUT
   const [showViewModal, setShowViewModal] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
-  const [stats, setStats] = useState(null); // STATS
+  const queryClient = useQueryClient();
+  const [isEditing, setIsEditing] = useState(false);
+
+  // AUTH CHECK
+  const [userData] = useState(() => {
+    const stored = localStorage.getItem('user');
+    return stored ? JSON.parse(stored) : null;
+  });
+
+  const [userRole] = useState(() => {
+    const stored = localStorage.getItem('user');
+    return stored ? (JSON.parse(stored).role || 'Donateur') : null;
+  });
 
   // États pour les filtres avancés
   const [filterVille, setFilterVille] = useState("");
@@ -53,9 +65,7 @@ const Dashboard = () => {
     full_name: '', email: '', password: '', role_id: '2', phone: ''
   });
 
-  // ÉTATS POUR LES DONATEURS DE PARTENAIRES ET SUBVENTIONS
-  // Données simulées basées sur le payload de Donation.jsx
-  const [donateursData, setDonateursData] = useState([]);
+
 
   // ÉTATS POUR L'ÉDITEUR D'ARTICLE (RICH TEXT)
   const [showSpecialCharModal, setShowSpecialCharModal] = useState(false);
@@ -68,178 +78,135 @@ const Dashboard = () => {
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [formArticle, setFormArticle] = useState({ titre: '', contenu: '', image: null });
 
-  // 2. DONNÉES DES BÉNÉVOLES (VIA API)
-  const [benevoles, setBenevoles] = useState([]);
-
-  // 3. DONNÉES DES ÉVÉNEMENTS (VIA API) 
-  const [events, setEvents] = useState([]);
-
-  // 4. DONNÉES DES PARTENAIRES (VIA API)
-  const [partenaires, setPartenaires] = useState([]);
-
-  // 4. DONNÉES DES SUBVENTIONS (VIA API)
-  // 4. DONNÉES DES SUBVENTIONS (VIA API)
-  const [subventions, setSubventions] = useState([]);
-
-  // Stats Admin
-  const [nbAdmins, setNbAdmins] = useState(0);
-
-  // NEWSLETTER
-  const [newsletters, setNewsletters] = useState([]);
-
-  // 5. GESTION DES UTILISATEURS (ADMIN)
-  const [users, setUsers] = useState([]);
-  const [logs, setLogs] = useState([]);
-
-  // 6. CSRF TOKEN
+  // 6. CSRF TOKEN (On garde useState car c'est un singleton global)
   const [csrfToken, setCsrfToken] = useState("");
 
-  // 7. ARTICLES
-  const [articles, setArticles] = useState([]);
+  // --- QUERIES TANSTACK ---
+  
+  // CSRF Token query (obligatoire pour les mutations)
+  useQuery({
+    queryKey: ['csrf'],
+    queryFn: () => api.get('/csrf_token.php').then(r => {
+      setCsrfToken(r.data.csrf_token);
+      return r.data.csrf_token;
+    }),
+    staleTime: Infinity
+  });
 
-  // CHARGEMENT DES DONNÉES DEPUIS L'API
-  const fetchData = async () => {
-    try {
-      const storedUser = JSON.parse(localStorage.getItem('user'));
-      const role = storedUser?.role || 'Donateur';
+  const { data: statsData } = useQuery({
+    queryKey: ['stats'],
+    queryFn: () => api.get('/stats.php').then(r => r.data)
+  });
 
-      const fetches = {
-        resDons: api.get('/historique_dons.php').then(r => r.data),
-        resCsrf: api.get('/csrf_token.php').then(r => r.data),
-        resStats: api.get('/stats.php').then(r => r.data)
-      };
+  const { data: benevolesData = [] } = useQuery({
+    queryKey: ['benevoles'],
+    queryFn: () => api.get('/benevoles.php').then(r => r.data.map(b => ({
+      ...b,
+      dateNaissance: b.date_naissance,
+      dispo: b.disponibilite,
+      regime: b.regime_alimentaire,
+      sante: b.restrictions_sante,
+      infos: b.champs_complementaires
+    }))),
+    enabled: ['Admin', 'Responsable Bénévoles'].includes(userRole)
+  });
 
-      if (['Admin', 'Responsable Bénévoles'].includes(role)) {
-        fetches.resBen = api.get('/benevoles.php').then(r => r.data);
-      }
-      if (['Admin', 'Responsable Événements'].includes(role)) {
-        fetches.resEvt = api.get('/evenements.php').then(r => r.data);
-      }
-      if (['Admin', 'Responsable Partenaires'].includes(role)) {
-        fetches.resEnt = api.get('/entreprises.php').then(r => r.data);
-        fetches.resSub = api.get('/subventions.php').then(r => r.data);
-      }
-      if (role === 'Admin') {
-        fetches.resAdmins = api.get('/admins.php').then(r => r.data);
-        fetches.resUsers = api.get('/users.php').then(r => r.data);
-        fetches.resNews = api.get('/newsletter.php').then(r => r.data);
-      }
-      if (['Admin', 'Responsable Communication'].includes(role)) {
-        fetches.resArts = api.get('/articles.php').then(r => r.data);
-      }
+  const { data: eventsData = [] } = useQuery({
+    queryKey: ['events'],
+    queryFn: () => api.get('/evenements.php').then(r => r.data.map(e => ({
+      ...e,
+      type: e.type_element,
+      titre: e.nom_element,
+      dateDebut: e.date_debut ? e.date_debut.split(' ')[0] : '',
+      dateFin: e.date_fin ? e.date_fin.split(' ')[0] : '',
+      materiel: e.logistique_materiel,
+      benevolesInscrits: e.benevoles_inscrits,
+      documents: e.document_url,
+      infos: e.notes
+    }))),
+    enabled: ['Admin', 'Responsable Événements'].includes(userRole)
+  });
 
-      const keys = Object.keys(fetches);
-      const results = await Promise.all(Object.values(fetches));
-      const res = {};
-      keys.forEach((key, i) => res[key] = results[i]);
+  const { data: partenairesData = [] } = useQuery({
+    queryKey: ['partenaires'],
+    queryFn: () => api.get('/entreprises.php').then(r => r.data.map(p => ({
+      ...p,
+      nom: p.nom_entreprise,
+      contact: p.contact_nom_prenom
+    }))),
+    enabled: ['Admin', 'Responsable Partenaires'].includes(userRole)
+  });
 
-      const { resBen, resEvt, resEnt, resSub, resDons, resAdmins, resNews, resUsers, resCsrf, resArts, resStats } = res;
+  const { data: subventionsData = [] } = useQuery({
+    queryKey: ['subventions'],
+    queryFn: () => api.get('/subventions.php').then(r => r.data.map(s => ({
+      ...s,
+      nom: s.nom_aide
+    }))),
+    enabled: ['Admin', 'Responsable Partenaires'].includes(userRole)
+  });
 
-      if (resCsrf && resCsrf.csrf_token) {
-        setCsrfToken(resCsrf.csrf_token);
-      }
+  const { data: donsData = [] } = useQuery({
+    queryKey: ['donations'],
+    queryFn: () => api.get('/historique_dons.php').then(r => r.data.map((d, index) => ({
+      id: d.don_id || index,
+      donor_number: d.donor_number || `DON-${d.don_id}`,
+      civilite: d.civilite || '',
+      prenom: d.prenom,
+      nom: d.nom,
+      email: d.email,
+      telephone: d.telephone,
+      adresse: d.adresse,
+      code_postal: d.code_postal,
+      ville: d.ville,
+      pays: d.pays,
+      montant: Number(d.montant),
+      frequence: d.frequence,
+      moyen_paiement: d.moyen_paiement,
+      date_don: d.date_don
+    })))
+  });
 
-      setArticles(Array.isArray(resArts) ? resArts : []);
-      setBenevoles((Array.isArray(resBen) ? resBen : []).map(b => ({
-        ...b,
-        dateNaissance: b.date_naissance,
-        dispo: b.disponibilite,
-        regime: b.regime_alimentaire,
-        sante: b.restrictions_sante,
-        infos: b.champs_complementaires
-      })));
+  const { data: usersData = [] } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => api.get('/users.php').then(r => r.data),
+    enabled: userRole === 'Admin'
+  });
 
-      setEvents((Array.isArray(resEvt) ? resEvt : []).map(e => ({
-        ...e,
-        type: e.type_element,
-        titre: e.nom_element,
-        dateDebut: e.date_debut ? e.date_debut.split(' ')[0] : '',
-        dateFin: e.date_fin ? e.date_fin.split(' ')[0] : '',
-        materiel: e.logistique_materiel,
-        benevolesInscrits: e.benevoles_inscrits,
-        documents: e.document_url,
-        infos: e.notes
-      })));
+  const { data: newslettersData = [] } = useQuery({
+    queryKey: ['newsletters'],
+    queryFn: () => api.get('/newsletter.php').then(r => r.data),
+    enabled: userRole === 'Admin'
+  });
 
-      setPartenaires((Array.isArray(resEnt) ? resEnt : []).map(p => ({
-        ...p,
-        nom: p.nom_entreprise,
-        contact: p.contact_nom_prenom
-      })));
+  const { data: logsData = [] } = useQuery({
+    queryKey: ['logs'],
+    queryFn: () => api.get('/admin_history.php').then(r => r.data),
+    enabled: userRole === 'Admin'
+  });
 
-      setSubventions((Array.isArray(resSub) ? resSub : []).map(s => ({
-        ...s,
-        nom: s.nom_aide
-      })));
-
-      setDonateursData((Array.isArray(resDons) ? resDons : []).map((d, index) => ({
-        id: d.don_id || index,
-        donor_number: d.donor_number || `DON-${d.don_id}`,
-        civilite: d.civilite || '',
-        prenom: d.prenom,
-        nom: d.nom,
-        email: d.email,
-        telephone: d.telephone,
-        adresse: d.adresse,
-        code_postal: d.code_postal,
-        ville: d.ville,
-        pays: d.pays,
-        montant: Number(d.montant),
-        frequence: d.frequence,
-        moyen_paiement: d.moyen_paiement,
-        date_don: d.date_don
-      })));
-
-      if (resAdmins && resAdmins.nbAdmins) {
-        setNbAdmins(resAdmins.nbAdmins);
-      }
-
-      // Gestion safe du retour newsletter
-      setNewsletters(Array.isArray(resNews) ? resNews : []);
-
-      // Gestion users
-      // Correction: resUsers est déjà déstructuré du Promise.all plus haut
-      setUsers(Array.isArray(resUsers) ? resUsers : []);
-
-
-      // FETCH STATS
-      setStats(resStats);
-
-      if (role === 'Admin') {
-        const resLogs = await api.get('/admin_history.php').then(r => r.data);
-        if (Array.isArray(resLogs)) {
-          setLogs(resLogs);
-        } else {
-          console.error("Logs API Error:", resLogs);
-          setLogs([]);
-        }
-      }
+  const { data: articlesData = [] } = useQuery({
+    queryKey: ['articles'],
+    queryFn: () => api.get('/articles.php').then(r => r.data),
+    enabled: ['Admin', 'Responsable Communication'].includes(userRole)
+  });
 
 
-    } catch (error) {
-      console.error("Erreur chargement API:", error);
-    }
-  };
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchData();
-  }, []);
 
   // État pour le sens du tri (desc = plus gros dons en premier)
   const [sortOrder, setSortOrder] = useState('desc');
 
   // Fonction pour trier les données
-  const sortedDonateurs = [...donateursData].sort((a, b) => {
+  const sortedDonateurs = [...donsData].sort((a, b) => {
     return sortOrder === 'desc' ? b.montant - a.montant : a.montant - b.montant;
   });
 
   // Calcul du total des dons
-  const totalDons = donateursData.reduce((acc, curr) => acc + curr.montant, 0);
+  const totalDons = donsData.reduce((acc, curr) => acc + curr.montant, 0);
 
   const exportToCSV = () => {
     const headers = ["ID_Donateur", "Civilite", "Prenom", "Nom", "Email", "Tel", "Montant", "Frequence", "Date_Don", "Ville"];
-    const rows = donateursData.map(d => [
+    const rows = donsData.map(d => [
       d.donor_number, d.civilite, d.prenom, d.nom, d.email, d.telephone, d.montant, d.frequence, d.date_don, d.ville
     ]);
 
@@ -267,7 +234,7 @@ const Dashboard = () => {
   const getFilteredData = () => {
     const q = searchQuery.toLowerCase();
     if (activeTab === 'benevoles') {
-      return benevoles.filter(b => {
+      return benevolesData.filter(b => {
         // Recherche textuelle (Nom, Prénom, Ville)
         const matchesSearch =
           (b.nom || "").toLowerCase().includes(q) ||
@@ -284,7 +251,7 @@ const Dashboard = () => {
     }
     if (activeTab === 'evenements') {
       // MODIFICATION : Filtre spécifique pour l'onglet événements (Titre ou Lieu)
-      return events.filter(e => (e.titre || "").toLowerCase().includes(q) || (e.lieu || "").toLowerCase().includes(q));
+      return eventsData.filter(e => (e.titre || "").toLowerCase().includes(q) || (e.lieu || "").toLowerCase().includes(q));
     }
     return [];
   };
@@ -317,23 +284,47 @@ const Dashboard = () => {
 
   // 5. FONCTIONS DE GESTION
   // 5. FONCTIONS DE GESTION
-  const handleDelete = async (id, type) => {
-    if (!window.confirm("Supprimer cet élément ?")) return;
-
-    let endpoint = "";
-    if (type === 'benevoles') endpoint = `/benevoles.php?id=${id}`;
-    if (type === 'evenements') endpoint = `/evenements.php?id=${id}`;
-    if (type === 'entreprises') endpoint = `/entreprises.php?id=${id}`;
-    if (type === 'subventions') endpoint = `/subventions.php?id=${id}`;
-    if (type === 'newsletter') endpoint = `/newsletter.php?id=${id}`;
-    // Pas de suppression user pour l'instant via dashboard classique
-
-    if (endpoint) {
-      await api.delete(endpoint, {
-        headers: { 'X-CSRF-Token': csrfToken }
-      });
-      fetchData(); // Rafraichir
+  // --- MUTATIONS ---
+  const deleteMutation = useMutation({
+    mutationFn: ({ id, type }) => {
+      let endpoint = "";
+      if (type === 'benevoles') endpoint = `/benevoles.php?id=${id}`;
+      if (type === 'evenements') endpoint = `/evenements.php?id=${id}`;
+      if (type === 'entreprises') endpoint = `/entreprises.php?id=${id}`;
+      if (type === 'subventions') endpoint = `/subventions.php?id=${id}`;
+      if (type === 'newsletter') endpoint = `/newsletter.php?id=${id}`;
+      return api.delete(endpoint, { headers: { 'X-CSRF-Token': csrfToken } });
+    },
+    onSuccess: (_, variables) => {
+      const keyMap = {
+        'benevoles': 'benevoles',
+        'evenements': 'events',
+        'entreprises': 'partenaires',
+        'subventions': 'subventions',
+        'newsletter': 'newsletters'
+      };
+      queryClient.invalidateQueries({ queryKey: [keyMap[variables.type]] });
     }
+  });
+
+  const genericMutation = useMutation({
+    mutationFn: ({ url, method, data }) => api({ method, url, data, headers: { 'X-CSRF-Token': csrfToken } }),
+    onSuccess: (_, variables) => {
+      // Invalider les queries selon l'URL
+      if (variables.url.includes('benevoles')) queryClient.invalidateQueries({ queryKey: ['benevoles'] });
+      if (variables.url.includes('evenements')) queryClient.invalidateQueries({ queryKey: ['events'] });
+      if (variables.url.includes('entreprises')) queryClient.invalidateQueries({ queryKey: ['partenaires'] });
+      if (variables.url.includes('subventions')) queryClient.invalidateQueries({ queryKey: ['subventions'] });
+      if (variables.url.includes('newsletter')) queryClient.invalidateQueries({ queryKey: ['newsletters'] });
+      if (variables.url.includes('users')) queryClient.invalidateQueries({ queryKey: ['users'] });
+      if (variables.url.includes('articles')) queryClient.invalidateQueries({ queryKey: ['articles'] });
+      closeModals();
+    }
+  });
+
+  const handleDelete = (id, type) => {
+    if (!window.confirm("Supprimer cet élément ?")) return;
+    deleteMutation.mutate({ id, type });
   };
 
   const openEdit = (item) => {
@@ -409,118 +400,49 @@ const Dashboard = () => {
     setShowViewModal(true);
   };
 
-  const handleBenevoleSubmit = async (e) => {
+  const handleBenevoleSubmit = (e) => {
     e.preventDefault();
     const method = isEditing ? 'put' : 'post';
-    const payload = isEditing ? { ...formBenevole, id: currentId } : formBenevole;
-
-    await api({
-      method,
-      url: '/benevoles.php',
-      data: payload,
-      headers: { 'X-CSRF-Token': csrfToken }
-    });
-    fetchData();
-    closeModals();
+    const data = isEditing ? { ...formBenevole, id: currentId } : formBenevole;
+    genericMutation.mutate({ url: '/benevoles.php', method, data });
   };
 
-  // MODIF : Nouvelle fonction pour enregistrer une mission
-  const handleEventSubmit = async (e) => {
+  const handleEventSubmit = (e) => {
     e.preventDefault();
     const method = isEditing ? 'put' : 'post';
-    const payload = isEditing ? { ...formEvent, id: currentId } : formEvent;
-
-    await api({
-      method,
-      url: '/evenements.php',
-      data: payload,
-      headers: { 'X-CSRF-Token': csrfToken }
-    });
-    fetchData();
-    closeModals();
+    const data = isEditing ? { ...formEvent, id: currentId } : formEvent;
+    genericMutation.mutate({ url: '/evenements.php', method, data });
   };
 
-  // Gestion des Entreprises - CORRIGÉ
-  const handleEntrepriseSubmit = async (e) => {
+  const handleEntrepriseSubmit = (e) => {
     e.preventDefault();
     const method = isEditing ? 'put' : 'post';
-    const payload = isEditing ? { ...formEntreprise, id: currentId } : formEntreprise;
-
-    await api({
-      method,
-      url: '/entreprises.php',
-      data: payload,
-      headers: { 'X-CSRF-Token': csrfToken }
-    });
-    fetchData(); // Reload API
-    setShowEntrepriseModal(false);
-    setIsEditing(false);
-    setCurrentId(null);
+    const data = isEditing ? { ...formEntreprise, id: currentId } : formEntreprise;
+    genericMutation.mutate({ url: '/entreprises.php', method, data });
   };
 
-  // Gestion des Subventions - CORRIGÉ
-  const handleSubventionSubmit = async (e) => {
+  const handleSubventionSubmit = (e) => {
     e.preventDefault();
     const method = isEditing ? 'put' : 'post';
-    const payload = isEditing ? { ...formSubvention, id: currentId } : formSubvention;
-
-    await api({
-      method,
-      url: '/subventions.php',
-      data: payload,
-      headers: { 'X-CSRF-Token': csrfToken }
-    });
-    fetchData();
-    setShowSubventionModal(false);
-    setIsEditing(false);
-    setCurrentId(null);
+    const data = isEditing ? { ...formSubvention, id: currentId } : formSubvention;
+    genericMutation.mutate({ url: '/subventions.php', method, data });
   };
 
-  const handleNewsletterSubmit = async (e) => {
+  const handleNewsletterSubmit = (e) => {
     e.preventDefault();
     const method = isEditing ? 'put' : 'post';
-    const payload = isEditing ? { ...formNewsletter, id: currentId } : formNewsletter;
-
-    await api({
-      method,
-      url: '/newsletter.php',
-      data: payload,
-      headers: { 'X-CSRF-Token': csrfToken }
-    });
-    fetchData();
-    setShowNewsletterModal(false);
-    setIsEditing(false);
-    setCurrentId(null);
+    const data = isEditing ? { ...formNewsletter, id: currentId } : formNewsletter;
+    genericMutation.mutate({ url: '/newsletter.php', method, data });
   };
 
-  // GESTION RÔLES UTILISATEURS
-  const handleRoleUpdate = async (userId, newRoleId) => {
+  const handleRoleUpdate = (userId, newRoleId) => {
     if (!window.confirm("Voulez-vous modifier les droits de cet utilisateur ?")) return;
-    try {
-      await api.put('/users.php', { id: userId, role_id: newRoleId }, {
-        headers: { 'X-CSRF-Token': csrfToken }
-      });
-      fetchData();
-      alert("Rôle mis à jour !");
-    } catch (err) {
-      console.error(err);
-    }
+    genericMutation.mutate({ url: '/users.php', method: 'put', data: { id: userId, role_id: newRoleId } });
   };
 
-  const handleUserSubmit = async (e) => {
+  const handleUserSubmit = (e) => {
     e.preventDefault();
-    try {
-      await api.post('/users.php', formUser, {
-        headers: { 'X-CSRF-Token': csrfToken }
-      });
-      alert("Utilisateur créé avec succès !");
-      setShowUserModal(false);
-      fetchData();
-    } catch (err) {
-      console.error(err);
-      const msg = err.response?.data?.error || "Erreur lors de la création.";
-      alert("Erreur : " + msg);
-    }
+    genericMutation.mutate({ url: '/users.php', method: 'post', data: formUser });
   };
 
   // GESTION DES ARTICLES
@@ -535,20 +457,18 @@ const Dashboard = () => {
     }
   };
 
-  const handleArticleSubmit = async (e) => {
+  const handleArticleSubmit = (e) => {
     e.preventDefault();
     if (!formArticle.titre || !formArticle.contenu) {
       alert("Veuillez remplir le titre et le contenu.");
       return;
     }
-    await api.post('/articles.php', formArticle, {
-      headers: { 'X-CSRF-Token': csrfToken }
-    });
+    genericMutation.mutate({ url: '/articles.php', method: 'post', data: formArticle });
     setFormArticle({ titre: '', contenu: '', image: null });
     // Reset editor content if needed (manual via DOM or state ref)
-    document.getElementById('article-content').value = "";
-    fetchData();
-    alert("Article publié avec succès !");
+    if (document.getElementById('article-content')) {
+      document.getElementById('article-content').value = "";
+    }
   };
 
 
@@ -674,16 +594,7 @@ const Dashboard = () => {
   const specialChars = ['©', '®', '™', '€', '£', '¥', '§', '¶', '†', '‡', '•', '—', '–', '≠', '≤', '≥', '∞', 'µ', 'α', 'β', 'π', 'Ω'];
   const emojis = ['😀', '😂', '😍', '🤔', '😭', '😎', '👍', '👎', '🎉', '🔥', '❤️', '✅', '❌', '⚠️', '⭐', '💡', '📅', '📍', '✉️', '📞'];
 
-  // AUTH CHECK
-  const [userData] = useState(() => {
-    const stored = localStorage.getItem('user');
-    return stored ? JSON.parse(stored) : null;
-  });
-  
-  const [userRole] = useState(() => {
-    const stored = localStorage.getItem('user');
-    return stored ? (JSON.parse(stored).role || 'Donateur') : null;
-  });
+
 
   useEffect(() => {
     if (!userData) {
@@ -697,7 +608,7 @@ const Dashboard = () => {
   };
 
   // Protection des onglets selon le rôle
-  const allMenuItems = React.useMemo(() => [
+  const allMenuItems = useMemo(() => [
     { id: 'dashboard-view', label: 'Tableau de bord', icon: <LayoutDashboard size={20} />, roles: ['Admin', 'Responsable Bénévoles', 'Responsable Partenaires', 'Responsable Événements', 'Responsable Communication', 'Collaborateur'] },
     { id: 'benevoles', label: 'Bénévoles', icon: <Users size={20} />, roles: ['Admin', 'Responsable Bénévoles'] },
     { id: 'partenaires', label: 'Partenaires & Donateurs', icon: <Handshake size={20} />, roles: ['Admin', 'Responsable Partenaires'] },
@@ -736,6 +647,9 @@ const Dashboard = () => {
 
   const menuItems = allMenuItems.filter(item => userRole === 'Admin' || (item.roles && item.roles.includes(userRole)));
 
+  // Injection des données réelles dans les composants (Exemples)
+  // Note: Il reste à remplacer donateursData, benevoles, events, partenaires, subventions dans le JSX par donsData, benevolesData, etc.
+  
   return (
     <div className="dashboard-container">
       <style>{`
@@ -1561,10 +1475,10 @@ const Dashboard = () => {
             {/* On n'affiche les stats que sur l'onglet Analyse */}
             {activeTab === 'dashboard-view' && (
               <div className="stats-grid">
-                <StatCard label="Bénévoles Actifs" value={benevoles.length} icon={UserCheck} />
-                <StatCard label="Événements" value={events.length} icon={Calendar} />
+                <StatCard label="Bénévoles Actifs" value={benevolesData.length} icon={UserCheck} />
+                <StatCard label="Événements" value={eventsData.length} icon={Calendar} />
                 <StatCard label="Total des Dons" value={`${totalDons.toLocaleString()} €`} icon={Wallet} />
-                <StatCard label="Admin Bureau" value={nbAdmins} icon={ShieldCheck} />
+                <StatCard label="Admin Bureau" value={statsData?.nbAdmins || 0} icon={ShieldCheck} />
               </div>
             )}
 
@@ -1642,7 +1556,7 @@ const Dashboard = () => {
                             <div key={i} className={`calendar-day-cell ${isToday ? 'calendar-day-today' : ''} ${!isCurMonth ? 'calendar-day-other-month' : ''}`}>
                               <span className="calendar-day-number">{d.getDate()}</span>
                               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                {events.filter(ev => dStr >= ev.dateDebut && dStr <= ev.dateFin).map(ev => {
+                                 {eventsData.filter(ev => dStr >= ev.dateDebut && dStr <= ev.dateFin).map(ev => {
                                   const isStart = dStr === ev.dateDebut;
                                   const isEnd = dStr === ev.dateFin;
                                   const tooltipText = `📌 ${(ev.type || 'Elément').toUpperCase()}\n🏷️ ${ev.titre}\n📍 ${ev.lieu || 'N/A'}\n📅 Du ${ev.dateDebut} au ${ev.dateFin}`;
@@ -1684,17 +1598,17 @@ const Dashboard = () => {
                           <div style={{
                             flex: 1,
                             background: '#ED1B24',
-                            height: `${(stats?.donateurs_count / (Math.max(stats?.donateurs_count, stats?.users_count) || 1)) * 100}%`,
+                            height: `${(statsData?.donateurs_count / (Math.max(statsData?.donateurs_count, statsData?.users_count) || 1)) * 100}%`,
                             borderRadius: '4px 4px 0 0',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold'
-                          }}>{stats?.donateurs_count}</div>
+                          }}>{statsData?.donateurs_count}</div>
                           <div style={{
                             flex: 1,
                             background: '#2D3748',
-                            height: `${(stats?.users_count / (Math.max(stats?.donateurs_count, stats?.users_count) || 1)) * 100}%`,
+                            height: `${(statsData?.users_count / (Math.max(statsData?.donateurs_count, statsData?.users_count) || 1)) * 100}%`,
                             borderRadius: '4px 4px 0 0',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold'
-                          }}>{stats?.users_count}</div>
+                          }}>{statsData?.users_count}</div>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', marginTop: '5px', fontWeight: 'bold' }}>
                           <span style={{ color: '#ED1B24' }}>Donateurs</span>
@@ -1706,12 +1620,12 @@ const Dashboard = () => {
                         <h4 style={{ margin: '0 0 10px 0', color: '#718096' }}>Missions & Événements</h4>
                         <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', height: '100%' }}>
                           <div style={{ textAlign: 'center' }}>
-                            <div style={{ fontSize: '24px', fontWeight: '900', color: '#38A169' }}>{stats?.events_stats?.passed_events || 0}</div>
+                            <div style={{ fontSize: '24px', fontWeight: '900', color: '#38A169' }}>{statsData?.events_stats?.passed_events || 0}</div>
                             <div style={{ fontSize: '11px', color: '#718096' }}>Terminés</div>
                           </div>
                           <div style={{ width: '1px', height: '40px', background: '#E2E8F0' }}></div>
                           <div style={{ textAlign: 'center' }}>
-                            <div style={{ fontSize: '24px', fontWeight: '900', color: '#D69E2E' }}>{stats?.events_stats?.future_events || 0}</div>
+                            <div style={{ fontSize: '24px', fontWeight: '900', color: '#D69E2E' }}>{statsData?.events_stats?.future_events || 0}</div>
                             <div style={{ fontSize: '11px', color: '#718096' }}>À venir</div>
                           </div>
                         </div>
@@ -1723,7 +1637,7 @@ const Dashboard = () => {
                       <h4 style={{ margin: '0 0 20px 0', color: '#718096' }}>Dons Hebdomadaires (Dernières 12 semaines)</h4>
                       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', height: '150px', paddingTop: '20px' }}>
                         {(() => {
-                          const weeklyData = stats?.weekly_donations || [];
+                          const weeklyData = statsData?.weekly_donations || [];
                           const maxWeekly = Math.max(...weeklyData.map(w => Number(w.total)), 1);
 
                           return weeklyData.map((w, i) => (
@@ -1739,11 +1653,11 @@ const Dashboard = () => {
                                 }}
                                 title={`${w.total} €`}
                               ></div>
-                              <span style={{ fontSize: '9px', color: '#A0AEC0', whiteSpace: 'nowrap' }}>{w.date_label}</span>
+                                <span style={{ fontSize: '9px', color: '#A0AEC0', whiteSpace: 'nowrap' }}>{w.date_label}</span>
                             </div>
                           ));
                         })()}
-                        {(!stats?.weekly_donations || stats.weekly_donations.length === 0) && <p style={{ width: '100%', textAlign: 'center', color: '#A0AEC0', fontStyle: 'italic' }}>Pas de données récentes</p>}
+                        {(!statsData?.weekly_donations || statsData.weekly_donations.length === 0) && <p style={{ width: '100%', textAlign: 'center', color: '#A0AEC0', fontStyle: 'italic' }}>Pas de données récentes</p>}
                       </div>
                     </div>
 
@@ -1759,7 +1673,7 @@ const Dashboard = () => {
                           // Initialiser les totaux par mois
                           const monthlyTotals = new Array(12).fill(0);
 
-                          donateursData.forEach(d => {
+                          donsData.forEach(d => {
                             const date = new Date(d.date_don);
                             if (!isNaN(date.getMonth()) && date.getFullYear() === currentYear) {
                               monthlyTotals[date.getMonth()] += d.montant;
@@ -1795,7 +1709,7 @@ const Dashboard = () => {
               {activeTab === 'dashboard-view' && (
                 <div className="card">
                   <h3 style={{ margin: '0 0 20px 0', fontSize: '24px', fontWeight: 800, fontFamily: 'Outfit, sans-serif' }}>Derniers Donateurs</h3>
-                  {[...donateursData].sort((a, b) => new Date(b.date_don) - new Date(a.date_don)).slice(0, 4).map(d => (
+                   {[...donsData].sort((a, b) => new Date(b.date_don) - new Date(a.date_don)).slice(0, 4).map(d => (
                     <div key={d.id} className="activity-item">
                       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                         <div className="avatar" style={{ background: '#ED1B24' }}>{d.prenom.charAt(0)}{d.nom.charAt(0)}</div>
@@ -1812,8 +1726,8 @@ const Dashboard = () => {
         ) : activeTab === 'communication' ? (
           <div style={{ display: 'grid', gap: '30px' }}>
             <div className="stats-grid">
-              <StatCard label="Articles publiés" value={articles.length} icon={FileText} color="#ED1B24" />
-              <StatCard label="Abonnés Newsletter" value={newsletters.length} icon={Users} color="#ED1B24" />
+              <StatCard label="Articles publiés" value={articlesData.length} icon={FileText} color="#ED1B24" />
+              <StatCard label="Abonnés Newsletter" value={newslettersData.length} icon={Users} color="#ED1B24" />
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '20px' }}>
@@ -1828,8 +1742,8 @@ const Dashboard = () => {
                     GÉRER LES ARTICLES
                   </button>
                 </div>
-                {articles.length > 0 ? (
-                  [...articles].reverse().slice(0, 5).map(art => (
+                {articlesData.length > 0 ? (
+                  [...articlesData].reverse().slice(0, 5).map(art => (
                     <div key={art.id} className="activity-item">
                       <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                         <div style={{ width: 45, height: 45, borderRadius: 10, overflow: 'hidden', background: '#F4F7F9', flexShrink: 0, border: '1px solid #E2E8F0' }}>
@@ -1861,8 +1775,8 @@ const Dashboard = () => {
                     GÉRER LA LISTE
                   </button>
                 </div>
-                {newsletters.length > 0 ? (
-                  [...newsletters].reverse().slice(0, 5).map((news, i) => (
+                {newslettersData.length > 0 ? (
+                  [...newslettersData].reverse().slice(0, 5).map((news, i) => (
                     <div key={i} className="activity-item">
                       <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                         <div className="avatar" style={{ background: '#FEE2E2', color: '#ED1B24', fontWeight: '800', fontSize: 14 }}>
@@ -1910,7 +1824,7 @@ const Dashboard = () => {
           </div>
         ) : activeTab === 'communication-newsletters' ? (
           <div className="card">
-            <h3 style={{ margin: '0 0 20px 0', fontSize: '24px', fontWeight: 900, fontFamily: 'Outfit, sans-serif' }}>Abonnés Newsletter ({newsletters.length})</h3>
+            <h3 style={{ margin: '0 0 20px 0', fontSize: '24px', fontWeight: 900, fontFamily: 'Outfit, sans-serif' }}>Abonnés Newsletter ({newslettersData.length})</h3>
             <div className="table-container">
               <table>
                 <thead>
@@ -1921,7 +1835,7 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {newsletters.map((n, i) => (
+                  {newslettersData.map((n, i) => (
                     <tr key={i}>
                       <td className="clickable-name" onClick={() => openViewModal(n)}>{n.email}</td>
                       <td>{new Date(n.date_inscription).toLocaleDateString()}</td>
@@ -1962,7 +1876,7 @@ const Dashboard = () => {
                   style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '13px', outline: 'none', cursor: 'pointer' }}
                 >
                   <option value="">Toutes les villes</option>
-                  {[...new Set(benevoles.map(b => b.ville))].filter(Boolean).map(v => (
+                  {[...new Set(benevolesData.map(b => b.ville))].filter(Boolean).map(v => (
                     <option key={v} value={v}>{v}</option>
                   ))}
                 </select>
@@ -1974,7 +1888,7 @@ const Dashboard = () => {
                   style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #E2E8F0', fontSize: '13px', outline: 'none', cursor: 'pointer' }}
                 >
                   <option value="">Toutes les professions</option>
-                  {[...new Set(benevoles.map(b => b.profession))].filter(Boolean).map(p => (
+                  {[...new Set(benevolesData.map(b => b.profession))].filter(Boolean).map(p => (
                     <option key={p} value={p}>{p}</option>
                   ))}
                 </select>
@@ -2142,7 +2056,7 @@ const Dashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {partenaires.filter(p => p.nom.toLowerCase().includes(searchQuery.toLowerCase())).map(p => (
+                      {partenairesData.filter(p => p.nom.toLowerCase().includes(searchQuery.toLowerCase())).map(p => (
                         <tr key={p.id}>
                           <td className="clickable-name" onClick={() => openViewModal({ ...p, viewType: 'entreprise' })}>{p.nom}</td>
                           <td>{p.contact}</td>
@@ -2198,7 +2112,7 @@ const Dashboard = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {subventions.filter(s => s.nom.toLowerCase().includes(searchQuery.toLowerCase())).map(s => (
+                      {subventionsData.filter(s => s.nom.toLowerCase().includes(searchQuery.toLowerCase())).map(s => (
                         <tr key={s.id}>
                           <td className="clickable-name" onClick={() => openViewModal({ ...s, viewType: 'subvention' })}>{s.nom}</td>
                           <td>{s.organisme}</td>
@@ -3068,7 +2982,7 @@ const Dashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {users
+                    {usersData
                       .filter(u => u.role_id !== null && u.role_id !== undefined && u.role_id != 3) // Filtrage des donateurs
                       .map(u => (
                         <tr key={u.id}>
@@ -3108,7 +3022,7 @@ const Dashboard = () => {
                           </td>
                         </tr>
                       ))}
-                    {users.filter(u => u.role_id !== null && u.role_id !== undefined && u.role_id != 3).length === 0 && (
+                    {usersData.filter(u => u.role_id !== null && u.role_id !== undefined && u.role_id != 3).length === 0 && (
                       <tr><td colSpan="5" style={{ textAlign: 'center', padding: '30px' }}>Aucun administrateur trouvé.</td></tr>
                     )}
                   </tbody>
@@ -3138,7 +3052,7 @@ const Dashboard = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {logs
+                    {logsData
                       .filter(log =>
                         (log.user_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
                         (log.action_type || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -3166,7 +3080,7 @@ const Dashboard = () => {
                           </td>
                         </tr>
                       ))}
-                    {logs.length === 0 && (
+                    {logsData.length === 0 && (
                       <tr><td colSpan="5" style={{ textAlign: 'center', padding: '30px' }}>Aucun log trouvé.</td></tr>
                     )}
                   </tbody>

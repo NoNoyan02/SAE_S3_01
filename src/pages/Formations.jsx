@@ -1,6 +1,8 @@
 import React from "react";
 import {Helmet} from "react-helmet";
 import SEO from "@/components/SEO.jsx";
+import Breadcrumb from "@/components/Breadcrumb/Breadcrumb.jsx";
+import SearchBar from "../components/Formations/SearchBar.jsx";
 
 export default function Formations() {
     return (
@@ -41,7 +43,6 @@ export default function Formations() {
                     justify-content: space-between;
                     background-color: white;
                     border-bottom: 1px solid #e0e0e0;
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
                 }
 
                 .elements {
@@ -177,118 +178,21 @@ export default function Formations() {
                     display: block;
                 }
 
-                .sousnavbar {
-                    padding: 12px 40px;
-                    background-color: #f8f8f8;
-                    border-bottom: 1px solid #e0e0e0;
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-                }
-
-                .sousnavbar ol {
-                    list-style: none;
-                    display: flex;
-                    align-items: center;
-                    gap: 5px;
-                    margin: 0;
-                    padding: 0;
-                }
-
-                .sousnavbar li {
-                    display: flex;
-                    align-items: center;
-                    font-size: 13px;
-                }
-
-                .sousnavbar a {
-                    text-decoration: none;
-                    color: black;
-                    transition: color 0.2s;
-                }
-
-                .sousnavbar a:hover,
-                .sousnavbar a:focus {
-                    color: #e30613;
-                    outline: none;
-                }
-
-                .sousnavbar li:not(:last-child)::after {
-                    content: ">";
-                    margin: 0 8px;
-                    color: #666;
-                    font-weight: bold;
-                }
-
-                /* ==================== HERO SECTION ==================== */
-                .hero-formation-image {
+                /* HERO SECTION */
+                .hero-formation {
                     position: relative;
-                    width: 100%;
-                    height: 400px;
-                    background-image: url("https://i-sam.unimedias.fr/2022/06/15/gestes-premiers-secours.jpg?auto=format,compress&cs=tinysrgb&ixlib=php-4.1.0&w=1200");
-                    background-size: cover;
-                    background-position: center;
-                    background-repeat: no-repeat;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-                }
-
-                .hero-formation-content {
-                    position: absolute;
-                    top: 30%;
-                    color: #fff;
-                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-                    text-align: center;
-                    padding: 0 20px;
-                }
-
-                .hero-formation-content h1 {
-                    font-size: 4rem;
-                    font-weight: bold;
-                    margin: 0;
-                }
-
-                .search-container {
-                    display: flex;
-                    background-color: white;
-                    border-radius: 8px;
-                    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-                    overflow: hidden;
-                    position: absolute;
-                    bottom: 40px;
-                }
-
-                .search-container select,
-                .search-container input {
-                    border: none;
-                    outline: none;
-                    padding: 15px;
-                    font-size: 15px;
-                }
-
-                .search-container select {
-                    font-weight: bold;
-                    border-right: 1px solid #ddd;
-                    color: #333;
-                    cursor: pointer;
-                }
-
-                .search-container input {
-                    width: 250px;
-                    color: #333;
                 }
 
                 /* ==================== SECTION ENTREPRISE ==================== */
                 .entreprise {
                     background-color: white;
-                    padding: 50px 20px;
+                    margin-bottom: 64px;
                     display: flex;
                     justify-content: center;
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
                 }
 
                 .entreprise-container {
-                    background-color: #e9f2f3;
+                    background: linear-gradient(135deg, #f0f7f8 0%, #e9f2f3 100%);
                     border-radius: 20px;
                     padding: 40px 50px;
                     width: 70%;
@@ -337,9 +241,8 @@ export default function Formations() {
 
                 /* ==================== SECTION TEXTE BLEU ==================== */
                 .textbleu2 {
-                    background-color: #e9f2f3;
+                    background: linear-gradient(180deg, #f8fbfc 0%, #e9f2f3 100%);
                     padding: 50px 20px;
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
                 }
 
                 .formezvouspremiersecours {
@@ -371,13 +274,13 @@ export default function Formations() {
                 .tableau {
                     display: flex;
                     background-color: #ffffff;
-                    border: 0.5px solid gray;
+                    border: 1px solid #e0e0e0;
                     margin: 50px auto;
                     border-radius: 9px;
                     max-width: 900px;
                     align-content: center;
                     justify-content: center;
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
                 }
 
                 .container-tableau {
@@ -446,7 +349,6 @@ export default function Formations() {
                     max-width: 1200px;
                     margin: 0 auto;
                     background-color: #f8f9fa;
-                    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
                 }
 
                 .formation-card {
@@ -712,20 +614,9 @@ export default function Formations() {
                         padding: 0 15px;
                     }
 
-                    .search-container {
-                        flex-direction: column;
-                        width: 90%;
-                        bottom: 20px;
-                        left: 5%;
-                    }
-
-                    .search-container select {
-                        border-right: none;
-                        border-bottom: 1px solid #ddd;
-                    }
-
-                    .search-container input {
-                        width: 100%;
+                    .hero-formation-content h1 {
+                        font-size: 1.5rem;
+                        padding: 0 15px;
                     }
 
                     /* Entreprise */
@@ -862,36 +753,22 @@ export default function Formations() {
                 }
             `}</style>
 
-            <nav className="sousnavbar" aria-label="Fil d'Ariane">
-                <ol>
-                    <li><a href="/">Accueil</a></li>
-                    <li>Formations aux premiers secours</li>
-                </ol>
-            </nav>
+            <Breadcrumb paths={[{ label: 'Accueil', url: '/' }, { label: 'Formations aux premiers secours' }]} />
 
-                <section className="hero-formation">
-                    <div className="hero-formation-image">
-                        <div className="hero-formation-content">
-                            <h1>Formations aux premiers secours</h1>
-                        </div>
+                <section className="shared-hero hero-formation">
+                    <img
+                        className="shared-hero-bg"
+                        src="https://i-sam.unimedias.fr/2022/06/15/gestes-premiers-secours.jpg?auto=format,compress&cs=tinysrgb&ixlib=php-4.1.0&w=1200"
+                        alt="Background formations"
+                    />
+                    <div className="shared-hero-overlay"></div>
 
-                        <form className="search-container" role="search" aria-label="Recherche de formation">
-                            <label htmlFor="formation-type" className="visually-hidden">Type de formation</label>
-                            <select id="formation-type" name="formation-type">
-                                <option value="toutes">Toutes</option>
-                                <option value="psc1">PSC1</option>
-                                <option value="gqs">GQS</option>
-                                <option value="sst">SST</option>
-                            </select>
-
-                            <label htmlFor="location" className="visually-hidden">Localisation</label>
-                            <input type="text" id="location" name="location" placeholder="Code postal ou ville"
-                                   aria-label="Code postal ou ville"/>
-
-                            <button type="submit" className="visually-hidden">Rechercher</button>
-                        </form>
+                    <div className="shared-hero-content">
+                        <h1 className="shared-hero-title">Formations aux premiers secours</h1>
                     </div>
                 </section>
+
+                <SearchBar />
 
                 <section className="entreprise">
                     <div className="entreprise-container">

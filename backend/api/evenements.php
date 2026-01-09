@@ -33,25 +33,26 @@ switch ($method) {
         }
 
         try {
+            $titre = $data['titre'] ?? ($data['nom_element'] ?? 'Sans titre');
             $sql = "INSERT INTO evenements (type_element, nom_element, date_debut, date_fin, lieu, budget, logistique_materiel, benevoles_inscrits, document_url, notes) 
                     VALUES (:type_element, :nom_element, :date_debut, :date_fin, :lieu, :budget, :logistique_materiel, :benevoles_inscrits, :document_url, :notes)";
 
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
-                ':type_element' => $data['type'] ?? $data['type_element'],
-                ':nom_element' => $data['titre'] ?? $data['nom_element'],
-                ':date_debut' => $data['dateDebut'] ?? $data['date_debut'],
-                ':date_fin' => $data['dateFin'] ?? $data['date_fin'],
-                ':lieu' => $data['lieu'],
-                ':budget' => $data['budget'],
-                ':logistique_materiel' => $data['materiel'] ?? $data['logistique_materiel'],
-                ':benevoles_inscrits' => $data['benevolesInscrits'] ?? $data['benevoles_inscrits'],
-                ':document_url' => $data['documents'] ?? $data['document_url'],
-                ':notes' => $data['infos'] ?? $data['notes']
+                ':type_element' => $data['type'] ?? ($data['type_element'] ?? 'Événement'),
+                ':nom_element' => $titre,
+                ':date_debut' => $data['dateDebut'] ?? ($data['date_debut'] ?? null),
+                ':date_fin' => $data['dateFin'] ?? ($data['date_fin'] ?? null),
+                ':lieu' => $data['lieu'] ?? null,
+                ':budget' => $data['budget'] ?? null,
+                ':logistique_materiel' => $data['materiel'] ?? ($data['logistique_materiel'] ?? null),
+                ':benevoles_inscrits' => $data['benevolesInscrits'] ?? ($data['benevoles_inscrits'] ?? null),
+                ':document_url' => $data['documents'] ?? ($data['document_url'] ?? null),
+                ':notes' => $data['infos'] ?? ($data['notes'] ?? null)
             ]);
 
             $newId = $pdo->lastInsertId();
-            logActivity('CREATE', 'evenement', $newId, "Création de l'élément : " . $data['titre']);
+            logActivity('CREATE', 'evenement', $newId, "Création de l'élément : " . $titre);
 
             echo json_encode(["message" => "Événement ajouté avec succès", "id" => $newId]);
         } catch (PDOException $e) {
