@@ -3,17 +3,11 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { ErrorBoundary } from 'react-error-boundary'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App.jsx'
+import { ErrorFallback } from './components/ErrorFallback.jsx'
 
-function ErrorFallback({ error, resetErrorBoundary }) {
-    return (
-        <div style={{ padding: '20px', color: 'red' }}>
-            <h2>Une erreur est survenue</h2>
-            <pre>{error.message}</pre>
-            <button onClick={resetErrorBoundary}>Réessayer</button>
-        </div>
-    )
-}
+const queryClient = new QueryClient()
 
 const rootElement = document.getElementById('root')
 
@@ -23,10 +17,12 @@ if (!rootElement) {
 
 ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
+        <QueryClientProvider client={queryClient}>
             <ErrorBoundary FallbackComponent={ErrorFallback}>
                     <BrowserRouter>
                         <App />
                     </BrowserRouter>
             </ErrorBoundary>
+        </QueryClientProvider>
     </React.StrictMode>,
 )
