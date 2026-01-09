@@ -13,5 +13,8 @@ WORKDIR /var/www/html
 # Copie du dossier backend de ton projet vers le conteneur
 COPY ./backend .
 
+# Création du dossier uploads et permissions
+RUN mkdir -p uploads && chown -R www-data:www-data uploads && chmod -R 755 uploads
+
 # On ouvre le port 80 interne (celui d'Apache)
 EXPOSE 80
