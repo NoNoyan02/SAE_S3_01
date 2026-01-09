@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Routes, Outlet } from 'react-router-dom';
 
 import Header from "@/components/Header/Header.jsx";
 import Footer from "@/components/Footer/Footer.jsx";
 import ScrollToTop from '@/components/ScrollToTop';
+import api from '@/api/axios';
 
 // Importation de toutes les pages
 import Accueil from './pages/Accueil.jsx';
@@ -32,6 +33,21 @@ const MainLayout = () => {
 };
 
 function App() {
+
+    useEffect(() => {
+        const fetchCsrfToken = async () => {
+            try {
+                const response = await api.get('/csrf_token.php');
+                if (response.data && response.data.csrf_token) {
+                    api.defaults.headers.common['X-Csrf-Token'] = response.data.csrf_token;
+                    console.log("CSRF Token initialized");
+                }
+            } catch (error) {
+                console.error("Error fetching CSRF token:", error);
+            }
+        };
+        fetchCsrfToken();
+    }, []);
 
     return (
         <>

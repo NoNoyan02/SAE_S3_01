@@ -6,7 +6,7 @@ header("Content-Type: application/json; charset=UTF-8");
 require_once __DIR__ . "/../config/db.php";
 require_once __DIR__ . "/auth_middleware.php";
 
-checkStaffAuth();
+// checkStaffAuth(); // Retiré pour permettre l'inscription publique
 
 $method = $_SERVER['REQUEST_METHOD'];
 
@@ -47,6 +47,7 @@ switch ($method) {
         break;
 
     case 'PUT':
+        checkStaffAuth();
         verifyCsrfToken();
         $data = json_decode(file_get_contents("php://input"), true);
         $id = $data['id'] ?? null;
@@ -77,6 +78,7 @@ switch ($method) {
         break;
 
     case 'DELETE':
+        checkStaffAuth();
         verifyCsrfToken();
         $id = $_GET['id'] ?? null;
         if (!$id) {
@@ -95,6 +97,7 @@ switch ($method) {
         break;
 
     case 'GET':
+        checkStaffAuth();
         // Récupération de la liste pour le Dashboard
         try {
             $stmt = $pdo->query("SELECT * FROM newsletter ORDER BY date_inscription DESC");
