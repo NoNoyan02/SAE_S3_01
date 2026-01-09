@@ -40,28 +40,67 @@ try {
     $donateur_id = (int) $donateur["id"];
 
   } else {
-    // CAS 2 : Pas de numéro -> On crée le donateur
-    $newDonorNumber = strtoupper(bin2hex(random_bytes(4)));
+    // CAS 2 : Pas de numéro -> On vérifie si un donateur existe déjà avec cet email
+    $stmtCheck = $pdo->prepare("SELECT id, donor_number FROM donateurs WHERE email = :email");
+    $stmtCheck->execute([':email' => $email]);
+    $existingDonateur = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
-    // Découpage Nom Prénom (Approximatif)
-    $parts = explode(' ', $full_name, 2);
-    $prenom = $parts[0] ?? $full_name;
-    $nom = $parts[1] ?? ''; // Si un seul mot, le nom est vide ou inversement ? On mettra Nom dans Nom pour être sûr ?
-    // Correction: Mieux vaut First = Prenom, Last = Nom
-    if (empty($nom)) {
-      $nom = $prenom;
-      $prenom = "";
-    } // Au pire
+    if ($existingDonateur) {
+        $donateur_id = (int) $existingDonateur['id'];
+        // On récupère son numéro s'il en a un
+    } else {
+        // Sinon, on crée le donateur avec un numéro UNIQUE
+        $maxRetries = 5;
+        $retryCount = 0;
+        $isUnique = false;
+        $newDonorNumber = "";
 
-    $stmt = $pdo->prepare("INSERT INTO donateurs (nom, prenom, email, telephone, donor_number) VALUES (:nom, :prenom, :email, :phone, :dn)");
-    $stmt->execute([
-      ':nom' => $nom,
-      ':prenom' => $prenom,
-      ':email' => $email,
-      ':phone' => $phone,
-      ':dn' => $newDonorNumber
-    ]);
-    $donateur_id = $pdo->lastInsertId();
+        do {
+            $newDonorNumber = strtoupper(bin2hex(random_bytes(4))); 
+            
+            $stmtCheckNum = $pdo->prepare("SELECT id FROM donateurs WHERE donor_number = :dn");
+            $stmtCheckNum->execute([':dn' => $newDonorNumber]);
+            if (!$stmtCheckNum->fetch()) {
+                $isUnique = true;
+            } else {
+                $retryCount++;
+            }
+        } while (!$isUnique && $retryCount < $maxRetries);
+
+        if (!$isUnique) {
+             http_response_code(500);
+             echo json_encode(["error" => "Erreur interne (génération numéro donateur). Réessayez."]);
+             exit;
+        }
+
+        // Découpage Nom Prénom (Approximatif)
+        $parts = explode(' ', $full_name, 2);
+        $prenom = $parts[0] ?? $full_name;
+        $nom = $parts[1] ?? ''; 
+        if (empty($nom)) {
+          $nom = $prenom;
+          $prenom = "";
+        }
+
+        $stmt = $pdo->prepare("INSERT INTO donateurs (nom, prenom, email, telephone, donor_number) VALUES (:nom, :prenom, :email, :phone, :dn)");
+        $stmt->execute([
+          ':nom' => $nom,
+          ':prenom' => $prenom,
+          ':email' => $email,
+          ':phone' => $phone,
+          ':dn' => $newDonorNumber
+        ]);
+        $donateur_id = $pdo->lastInsertId();
+    }
+  }
+
+  // Vérification préalable : Est-ce que ce donateur a DEJA un user associé ?
+  $stmtCheckUser = $pdo->prepare("SELECT id FROM users WHERE donateur_id = :did");
+  $stmtCheckUser->execute([':did' => $donateur_id]);
+  if ($stmtCheckUser->fetch()) {
+      http_response_code(409);
+      echo json_encode(["error" => "Ce numéro donateur (ou adresse email) est déjà associé à un compte utilisateur."]);
+      exit;
   }
 
   // 2) Créer le user
@@ -78,9 +117,30 @@ try {
     ":donateur_id" => $donateur_id
   ]);
 
+  $userId = $pdo->lastInsertId();
+
+  // Démarrage session immédiat (auto-login)
+  session_start();
+  setcookie(session_name(), session_id(), [
+    'expires' => 0,
+    'path' => '/',
+    'domain' => '',
+    'secure' => false,
+    'httponly' => true,
+    'samesite' => 'Lax'
+  ]);
+
+  $userData = [
+      "id" => (int)$userId,
+      "full_name" => $full_name,
+      "email" => $email,
+      "role" => 'Donateur'
+  ];
+  $_SESSION['user'] = $userData;
+
   echo json_encode([
     "ok" => true,
-    "user_id" => $pdo->lastInsertId()
+    "user" => $userData
   ]);
 
 } catch (PDOException $e) {

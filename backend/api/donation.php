@@ -70,8 +70,29 @@ try {
         $donorNumber = $existingDonateur['donor_number'];
         // Optionnel : Mettre à jour les infos du donateur
     } else {
-        // 2. Créer le donateur
-        $donorNumber = strtoupper(bin2hex(random_bytes(4))); // Ex: 797C9A7D
+        // 2. Créer le donateur avec un numéro UNIQUE
+        $maxRetries = 5;
+        $retryCount = 0;
+        $isUnique = false;
+        $donorNumber = "";
+
+        do {
+            $donorNumber = strtoupper(bin2hex(random_bytes(4))); // Ex: 797C9A7D
+            
+            // Vérifier l'unicité
+            $stmtCheck = $pdo->prepare("SELECT id FROM donateurs WHERE donor_number = :dn");
+            $stmtCheck->execute([':dn' => $donorNumber]);
+            if (!$stmtCheck->fetch()) {
+                $isUnique = true;
+            } else {
+                $retryCount++;
+            }
+        } while (!$isUnique && $retryCount < $maxRetries);
+
+        if (!$isUnique) {
+            throw new Exception("Impossible de générer un numéro donateur unique après plusieurs tentatives.");
+        }
+
         $sqlDonateur = "INSERT INTO donateurs (nom, prenom, email, telephone, adresse, code_postal, ville, civilite, donor_number) 
                         VALUES (:nom, :prenom, :email, :telephone, :adresse, :code_postal, :ville, :civilite, :donor_number)";
         $stmt = $pdo->prepare($sqlDonateur);

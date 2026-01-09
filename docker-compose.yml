@@ -12,7 +12,9 @@ services:
     container_name: sae-backend
     # Redémarrage automatique en cas de crash
     restart: always
-    # Pas de 'ports' ici : le backend est protégé, seul le frontend lui parle.
+    # Volume partagé pour écrire les images
+    volumes:
+      - uploads_data:/var/www/html/uploads
 
   # --- FRONTEND (React + Nginx interne) ---
   frontend_service:
@@ -30,3 +32,10 @@ services:
     # Attend que le backend soit prêt avant de se lancer
     depends_on:
       - backend_service
+    # Volume partagé pour lire les images uploadées
+    volumes:
+      - uploads_data:/usr/share/nginx/html/uploads
+
+# Définition du volume persistant
+volumes:
+  uploads_data:
