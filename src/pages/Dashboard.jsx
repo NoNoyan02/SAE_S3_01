@@ -206,9 +206,15 @@ const Dashboard = () => {
       setStats(resStats);
 
       // FETCH LOGS (Admin uniquement)
-      if (userRole === 'Admin') {
-        const resLogs = await fetch('http://localhost:8000/api/logs.php', { credentials: 'include' }).then(r => r.json());
-        setLogs(Array.isArray(resLogs) ? resLogs : []);
+      if (role === 'Admin') {
+        // Renamed endpoint to avoid AdBlockers/Brave Shields
+        const resLogs = await fetch('http://localhost:8000/api/admin_history.php', { credentials: 'include' }).then(r => r.json());
+        if (Array.isArray(resLogs)) {
+          setLogs(resLogs);
+        } else {
+          console.error("Logs API Error:", resLogs);
+          setLogs([]);
+        }
       }
 
 
@@ -3199,7 +3205,7 @@ const Dashboard = () => {
                           <td>{log.entity_type || '-'} <span style={{ fontSize: '11px', color: '#A0AEC0' }}>({log.entity_id || 'N/A'})</span></td>
                           <td style={{ maxWidth: '300px', fontSize: '13px' }}>{log.details}</td>
                           <td style={{ fontSize: '12px', color: '#4A5568' }}>
-                            {new Date(log.created_at).toLocaleString('fr-FR')}
+                            {new Date(log.created_at.replace(' ', 'T')).toLocaleString('fr-FR')}
                           </td>
                         </tr>
                       ))}

@@ -12,8 +12,7 @@ function checkAdminAuth()
 
     if (!isset($_SESSION['user']) || !isset($_SESSION['user']['role']) || $_SESSION['user']['role'] !== 'Admin') {
         http_response_code(403);
-        $role = $_SESSION['user']['role'] ?? 'NONE';
-        echo json_encode(["error" => "Réservé aux Administrateurs. Accès refusé. (Rôle actuel: $role)"]);
+        echo json_encode(["error" => "Réservé aux Administrateurs. Accès refusé."]);
         exit();
     }
 }

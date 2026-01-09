@@ -90,18 +90,17 @@ try {
   $pdo->prepare("DELETE FROM login_attempts WHERE ip_address = :ip")->execute([':ip' => $ip_address]);
 
   // Start Session SÉCURISÉE
-  if (session_status() === PHP_SESSION_NONE) {
-    // Configuration des cookies de session (HttpOnly, Secure, SameSite)
-    session_set_cookie_params([
-      'lifetime' => 0,
-      'path' => '/',
-      'domain' => 'localhost',
-      'secure' => false,
-      'httponly' => true,
-      'samesite' => 'Lax'
-    ]);
-    session_start();
-  }
+  // Configuration des cookies de session (HttpOnly, Secure, SameSite)
+  session_start();
+  // On force les paramètres APRES le start pour être sûr (parfois requis sur certains PHP config)
+  setcookie(session_name(), session_id(), [
+    'expires' => 0,
+    'path' => '/',
+    'domain' => '',
+    'secure' => false,
+    'httponly' => true,
+    'samesite' => 'Lax'
+  ]);
 
   $_SESSION['user'] = [
     "id" => (int) $user["id"],
