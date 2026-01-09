@@ -34,13 +34,40 @@ switch ($method) {
         }
 
         try {
+            // Traitement de l'image (Base64 -> Fichier)
+            $imagePath = null;
+            if (!empty($data['image'])) {
+                // Créer le dossier uploads s'il n'existe pas
+                $uploadDir = __DIR__ . '/../uploads/';
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0777, true);
+                }
+
+                // Décoder l'image
+                $imageParts = explode(";base64,", $data['image']);
+                if (count($imageParts) >= 2) {
+                    $imageBase64 = base64_decode($imageParts[1]);
+                    $fileType = explode("image/", $imageParts[0])[1];
+                    $fileName = 'article_' . uniqid() . '.' . $fileType;
+                    $fileFullPath = $uploadDir . $fileName;
+
+                    if (file_put_contents($fileFullPath, $imageBase64)) {
+                        // On stocke le chemin relatif pour l'accessibilité web
+                        // Suppose que le serveur sert 'backend' ou que 'uploads' est accessible via /uploads/
+                        // Si le root est backend/, alors c'est uploads/$fileName
+                        // On va stocker '/uploads/' . $fileName pour être générique, à voir selon la config serveur
+                        $imagePath = '/uploads/' . $fileName;
+                    }
+                }
+            }
+
             $sql = "INSERT INTO articles (title, content, image_url, author, created_at) 
                     VALUES (:title, :content, :image_url, :author, NOW())";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([
                 ':title' => $data['titre'],
                 ':content' => $data['contenu'],
-                ':image_url' => $data['image'] ?? null,
+                ':image_url' => $imagePath, // Utilise le chemin du fichier ou null
                 ':author' => $data['author'] ?? 'Admin'
             ]);
             echo json_encode(["message" => "Article publié !", "id" => $pdo->lastInsertId()]);
