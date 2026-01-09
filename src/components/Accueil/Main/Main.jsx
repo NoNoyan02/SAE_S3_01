@@ -635,7 +635,7 @@ export default function Main() {
                 .carousel {
                     position: relative;
                     width: 100vw;
-                    height: 30vh;
+                    height: 50vh;
                     overflow: hidden;
                 }
 
