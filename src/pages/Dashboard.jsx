@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   LayoutDashboard, Users, Handshake, Calendar,
   BarChart3, LogOut, Plus, Search,
   TrendingUp, Wallet, UserCheck, ShieldCheck, FileText, Edit, Trash2, X, Eye, Package, MapPin,
   Undo2, Redo2, Bold, Italic, Underline, AlignLeft, AlignCenter, Outdent, Indent, List, ListOrdered,
-  Omega, Smile, Image, PlaySquare, Link, MoreHorizontal, Maximize, Printer, AlignRight, ChevronDown, Type, Highlighter
+  Omega, Smile, Image, PlaySquare, Link, MoreHorizontal, Maximize, Printer, AlignRight, ChevronDown, Type, Highlighter,
+  Home
 } from 'lucide-react';
 import StatCard from '../components/Dashboard/StatCard';
 import api from '@/api/axios';
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   // 1. ÉTATS GÉNÉRALS
   const [activeTab, setActiveTab] = useState('dashboard-view');
   const [searchQuery, setSearchQuery] = useState("");
@@ -82,7 +85,7 @@ const Dashboard = () => {
   const [csrfToken, setCsrfToken] = useState("");
 
   // --- QUERIES TANSTACK ---
-  
+
   // CSRF Token query (obligatoire pour les mutations)
   useQuery({
     queryKey: ['csrf'],
@@ -649,7 +652,7 @@ const Dashboard = () => {
 
   // Injection des données réelles dans les composants (Exemples)
   // Note: Il reste à remplacer donateursData, benevoles, events, partenaires, subventions dans le JSX par donsData, benevolesData, etc.
-  
+
   return (
     <div className="dashboard-container">
       <style>{`
@@ -1403,6 +1406,9 @@ const Dashboard = () => {
               <p style={{ margin: 0, fontSize: '10px', color: '#718096' }}>{userRole || 'Accès Protégé'}</p>
             </div>
           </div>
+          <button className="logout-btn" onClick={() => navigate('/')} style={{ marginBottom: '8px', background: '#4A5568' }}>
+            <Home size={14} style={{ marginRight: 8 }} /> RETOUR SITE
+          </button>
           <button className="logout-btn" onClick={handleLogout}><LogOut size={14} style={{ marginRight: 8 }} /> DÉCONNEXION</button>
         </div>
       </aside>
@@ -1556,7 +1562,7 @@ const Dashboard = () => {
                             <div key={i} className={`calendar-day-cell ${isToday ? 'calendar-day-today' : ''} ${!isCurMonth ? 'calendar-day-other-month' : ''}`}>
                               <span className="calendar-day-number">{d.getDate()}</span>
                               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                 {eventsData.filter(ev => dStr >= ev.dateDebut && dStr <= ev.dateFin).map(ev => {
+                                {eventsData.filter(ev => dStr >= ev.dateDebut && dStr <= ev.dateFin).map(ev => {
                                   const isStart = dStr === ev.dateDebut;
                                   const isEnd = dStr === ev.dateFin;
                                   const tooltipText = `📌 ${(ev.type || 'Elément').toUpperCase()}\n🏷️ ${ev.titre}\n📍 ${ev.lieu || 'N/A'}\n📅 Du ${ev.dateDebut} au ${ev.dateFin}`;
@@ -1653,7 +1659,7 @@ const Dashboard = () => {
                                 }}
                                 title={`${w.total} €`}
                               ></div>
-                                <span style={{ fontSize: '9px', color: '#A0AEC0', whiteSpace: 'nowrap' }}>{w.date_label}</span>
+                              <span style={{ fontSize: '9px', color: '#A0AEC0', whiteSpace: 'nowrap' }}>{w.date_label}</span>
                             </div>
                           ));
                         })()}
@@ -1709,7 +1715,7 @@ const Dashboard = () => {
               {activeTab === 'dashboard-view' && (
                 <div className="card">
                   <h3 style={{ margin: '0 0 20px 0', fontSize: '24px', fontWeight: 800, fontFamily: 'Outfit, sans-serif' }}>Derniers Donateurs</h3>
-                   {[...donsData].sort((a, b) => new Date(b.date_don) - new Date(a.date_don)).slice(0, 4).map(d => (
+                  {[...donsData].sort((a, b) => new Date(b.date_don) - new Date(a.date_don)).slice(0, 4).map(d => (
                     <div key={d.id} className="activity-item">
                       <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                         <div className="avatar" style={{ background: '#ED1B24' }}>{d.prenom.charAt(0)}{d.nom.charAt(0)}</div>
@@ -2007,7 +2013,7 @@ const Dashboard = () => {
             </table>
           </div>
         )
-          : activeTab !== 'dashboard-view' && activeTab !== 'calendrier' && activeTab !== 'benevoles' && activeTab !== 'evenements' && activeTab !== 'partenaires' && activeTab !== 'communication' && activeTab !== 'communication-articles' && activeTab !== 'communication-newsletters' && activeTab !== 'users' && (
+          : activeTab !== 'dashboard-view' && activeTab !== 'calendrier' && activeTab !== 'benevoles' && activeTab !== 'evenements' && activeTab !== 'partenaires' && activeTab !== 'communication' && activeTab !== 'communication-articles' && activeTab !== 'communication-newsletters' && activeTab !== 'users' && activeTab !== 'logs' && (
             <div className="placeholder-chart" style={{ height: 500 }}>
               <p>Interface de gestion pour le module {activeTab}<br />Utilisez la recherche pour filtrer les résultats.</p>
             </div>

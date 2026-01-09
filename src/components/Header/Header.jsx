@@ -117,7 +117,7 @@ export default function Header() {
         try {
             const response = await api.post(`/${endpoint}`, formData);
             const user = response.data.user;
-            
+
             setIsLoggedIn(true);
             setUserName(user.full_name || user.email || formData.email);
             setLoginOverlayOpen(false);
@@ -129,9 +129,38 @@ export default function Header() {
 
 
         } catch (err) {
-            const errorMessage = err.response?.data?.error || "Impossible de contacter le serveur";
-            setErrorMessage(errorMessage);
-            console.error(err);
+            console.error("Login/Register Error:", err);
+            let msg = "Impossible de contacter le serveur";
+
+            if (err.response) {
+                // Le serveur a répondu avec un code d'erreur
+                const data = err.response.data;
+                if (data && typeof data === 'object' && data.error) {
+                    msg = data.error;
+                } else if (typeof data === 'string') {
+                    // Si c'est une chaîne (ex: HTML d'erreur PHP ou Warning), on essaie d'extraire le JSON
+                    // ou on affiche un message générique si c'est du HTML sale
+                    try {
+                        // Parfois le json est collé à un warning "Warning...{json}"
+                        const match = data.match(/(\{.*\})/);
+                        if (match) {
+                            const json = JSON.parse(match[1]);
+                            if (json.error) msg = json.error;
+                        } else {
+                            msg = "Erreur serveur (" + err.response.status + ")";
+                        }
+                    } catch (e) {
+                        msg = "Erreur serveur (" + err.response.status + ")";
+                    }
+                } else {
+                    msg = "Erreur inconnue (" + err.response.status + ")";
+                }
+            } else if (err.request) {
+                // Pas de réponse reçue
+                msg = "Serveur injoignable. Vérifiez votre connexion.";
+            }
+
+            setErrorMessage(msg);
         }
     };
 
@@ -259,8 +288,8 @@ export default function Header() {
 
                     {/* Overlay Login (Identique à avant) */}
                     {loginOverlayOpen && (
-                        <div 
-                            className={styles.loginOverlay} 
+                        <div
+                            className={styles.loginOverlay}
                             onMouseDown={handleBackdropMouseDown}
                             onMouseUp={handleBackdropMouseUp}
                         >
