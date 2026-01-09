@@ -1,0 +1,60 @@
+{
+  "name": "sae-s3-01",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:front\" \"npm run dev:php\"",
+    "dev:front": "vite",
+    "dev:php": "php -S localhost:8000 -t backend",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.90.16",
+    "@tanstack/react-query-devtools": "^5.91.2",
+    "axios": "^1.13.2",
+    "body-parser": "^2.2.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "helmet": "^8.1.0",
+    "intl-tel-input": "^25.14.1",
+    "joi": "^18.0.2",
+    "lucide-react": "^0.562.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-error-boundary": "^6.0.2",
+    "react-helmet": "^6.1.0",
+    "react-router-dom": "^7.11.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.1",
+    "concurrently": "^9.2.1",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "vite": "npm:rolldown-vite@7.2.5"
+  },
+  "overrides": {
+    "vite": "npm:rolldown-vite@7.2.5"
+  },
+  "description": "Le projet **SAÉ S3-01** consiste à concevoir et développer une refonte du site de la Croix-Rouge Française.  \r Notre équipe a choisi de travailler sur la **Croix-Rouge Française**, afin d’améliorer la visibilité de ses actions et de moderniser son interface utilisateur.",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NoNoyan02/SAE_S3_01.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NoNoyan02/SAE_S3_01/issues"
+  },
+  "homepage": "https://github.com/NoNoyan02/SAE_S3_01#readme"
+}
