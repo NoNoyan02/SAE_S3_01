@@ -521,7 +521,7 @@ export default function Footer() {
                                     formation</a></li>
                                 <li><a href="/nos-partenaires-institutionnels" className="footer__link">Nos partenaires
                                     institutionnels</a></li>
-                                <li><a href="https://emploi.croix-rouge.fr" className="footer__link">Nos offres
+                                <li><a href="#" className="footer__link">Nos offres
                                     d'emploi</a></li>
                                 <li><a href="/annuaire" className="footer__link">Nos adresses</a></li>
                             </ul>
@@ -568,7 +568,7 @@ export default function Footer() {
                     <div className="footer__newsletter">
                         <div className="social-medias">
                             <ul className="social-medias__list">
-                                <li><a href="https://fr-fr.facebook.com/fr.CroixRouge/" className="social-link">
+                                <li><a href="#" className="social-link">
                                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
                                          xmlns="http://www.w3.org/2000/svg">
                                         <path
@@ -576,7 +576,7 @@ export default function Footer() {
                                             fill="currentColor"></path>
                                     </svg>
                                 </a></li>
-                                <li><a href="https://www.instagram.com/croixrougefr/" className="social-link">
+                                <li><a href="#" className="social-link">
                                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
                                          xmlns="http://www.w3.org/2000/svg">
                                         <path
@@ -584,7 +584,7 @@ export default function Footer() {
                                             fill="currentColor"></path>
                                     </svg>
                                 </a></li>
-                                <li><a href="https://twitter.com/CroixRouge" className="social-link">
+                                <li><a href="#" className="social-link">
                                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
                                          xmlns="http://www.w3.org/2000/svg">
                                         <path
@@ -592,7 +592,7 @@ export default function Footer() {
                                             fill="currentColor"></path>
                                     </svg>
                                 </a></li>
-                                <li><a href="https://www.linkedin.com/company/croix-rouge-fran-aise/"
+                                <li><a href="#"
                                        className="social-link">
                                     <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
                                          xmlns="http://www.w3.org/2000/svg">
@@ -601,7 +601,7 @@ export default function Footer() {
                                             fill="currentColor"></path>
                                     </svg>
                                 </a></li>
-                                <li><a href="https://www.youtube.com/channel/UCYX4PcgqrQlx5togadd5JEA"
+                                <li><a href="#"
                                        className="social-link">
                                     <svg width="32" height="32" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
                                         <path

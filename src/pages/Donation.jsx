@@ -576,6 +576,19 @@ export default function Donation() {
                     font-size: 1.2rem;
                 }
 
+               .acc-header {
+    padding: 20px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Align arrow to right */
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 1rem;
+}
                 .tab {
                     flex: 1;
                     padding: 10px 0;

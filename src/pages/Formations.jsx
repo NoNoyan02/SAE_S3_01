@@ -780,7 +780,7 @@ export default function Formations() {
                                 adaptée à vos besoins proposée par nos centres de formation Croix-Rouge Compétence.
                             </p>
                         </div>
-                        <a href="https://www.croix-rouge.fr/formation-professionnelle?domains=sante_securite_au_travail&page=3"
+                        <a href="#"
                            className="btn-entreprise">
                             Premiers secours pour les professionnels
                         </a>
