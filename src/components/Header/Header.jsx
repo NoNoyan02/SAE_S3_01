@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Menu, Search, User, X, ShieldCheck } from 'lucide-react';
 import styles from './Header.module.css';
 
-const API_BASE = '/api';
+import api from '@/api/axios';
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -89,22 +89,16 @@ export default function Header() {
         setErrorMessage("");
         const endpoint = isLoginMode ? "login.php" : "register.php";
         try {
-            const response = await fetch(`${API_BASE}/${endpoint}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(formData)
-            });
-            const data = await response.json();
-            if (!response.ok) {
-                setErrorMessage(data.error || "Erreur serveur");
-                return;
-            }
+            const response = await api.post(`/${endpoint}`, formData);
+            const data = response.data;
+            
             setIsLoggedIn(true);
             setUserName(data.user?.full_name || data.user?.email || formData.email);
             setLoginOverlayOpen(false);
             setFormData({ donorNumber: "", nom: "", tel: "", email: "", password: "" });
         } catch (err) {
-            setErrorMessage("Impossible de contacter le serveur");
+            const errorMessage = err.response?.data?.error || "Impossible de contacter le serveur";
+            setErrorMessage(errorMessage);
             console.error(err);
         }
     };

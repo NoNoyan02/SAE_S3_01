@@ -28,7 +28,13 @@ export default function JeDeviens() {
     const [startPos, setStartPos] = useState(0);
     const [currentTranslate, setCurrentTranslate] = useState(0);
     const [prevTranslate, setPrevTranslate] = useState(0);
-    const [itemsPerSlide, setItemsPerSlide] = useState(1);
+    const [itemsPerSlide, setItemsPerSlide] = useState(() => {
+        if (typeof window === 'undefined') return 3;
+        const width = window.innerWidth;
+        if (width >= 1100) return 3;
+        if (width >= 700) return 2;
+        return 1;
+    });
 
     const carouselRef = useRef(null);
 
@@ -67,7 +73,6 @@ export default function JeDeviens() {
     };
 
     useEffect(() => {
-        updateItemsPerSlide();
         window.addEventListener('resize', updateItemsPerSlide);
         return () => window.removeEventListener('resize', updateItemsPerSlide);
     }, []);

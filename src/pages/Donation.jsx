@@ -12,21 +12,15 @@ import logo from "assets/images/donation/Logo_Croix-Rouge_Française.svg";
 import paypal from "assets/images/donation/payment/paypal.svg";
 import virement from "assets/images/donation/payment/virement.svg";
 
-// Configuration API (Méthode de message (1).txt)
-const API_URL = "http://localhost:8000/api";
+import api from "@/api/axios";
 
 async function submitDonation(payload) {
-    const res = await fetch(`${API_URL}/donation.php`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-    });
-    const data = await res.json().catch(() => ({}));
-
-    if (!res.ok) {
-        throw new Error(data.error || "Erreur serveur");
+    try {
+        const res = await api.post('/donation.php', payload);
+        return res.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.error || error.message || "Erreur serveur");
     }
-    return data;
 }
 
 export default function Donation() {
@@ -93,14 +87,17 @@ export default function Donation() {
                  }
             };
             
+            // Store ref current value to ensure cleanup works even if ref changes
+            const phoneInput = phoneInputRef.current;
+            
             // Listen to standard input event and custom country change
-            phoneInputRef.current.addEventListener('input', handlePhoneInput);
-            phoneInputRef.current.addEventListener('countrychange', handlePhoneInput);
+            phoneInput.addEventListener('input', handlePhoneInput);
+            phoneInput.addEventListener('countrychange', handlePhoneInput);
 
             return () => {
                 if (itiRef.current) {
-                    phoneInputRef.current?.removeEventListener('input', handlePhoneInput);
-                    phoneInputRef.current?.removeEventListener('countrychange', handlePhoneInput);
+                    phoneInput?.removeEventListener('input', handlePhoneInput);
+                    phoneInput?.removeEventListener('countrychange', handlePhoneInput);
                     itiRef.current.destroy();
                 }
             };

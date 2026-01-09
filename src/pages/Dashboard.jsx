@@ -28,18 +28,18 @@ const Dashboard = () => {
   const [formEntreprise, setFormEntreprise] = useState({ 
     nom: '', contact: '', email: '', telephone: '' 
   });
-  const [searchEnt, setSearchEnt] = useState(""); // Recherche locale Entreprises
+  // const [searchEnt, setSearchEnt] = useState(""); // Recherche locale Entreprises unused
 
   // ÉTATS POUR LES SUBVENTIONS
   const [showSubventionModal, setShowSubventionModal] = useState(false);
   const [formSubvention, setFormSubvention] = useState({ 
     nom: '', organisme: '', montant: '', status: 'Reçue' 
   });
-  const [searchSub, setSearchSub] = useState(""); // Recherche locale Subventions
+  // const [searchSub, setSearchSub] = useState(""); // Recherche locale Subventions unused
 
   // ÉTATS POUR LES DONATEURS DE PARTENAIRES ET SUBVENTIONS
   // Données simulées basées sur le payload de Donation.jsx
-const [donateursData, setDonateursData] = useState([
+  const [donateursData] = useState([
   {
     id: 1,
     viewType: 'donateur',
@@ -205,7 +205,7 @@ const handleBenevoleSubmit = (e) => {
     if (isEditing) {
       setBenevoles(benevoles.map(b => b.id === currentId ? { ...formBenevole, id: currentId, status: formBenevole.cotisation === 'À jour' ? 'actif' : 'retard' } : b));
     } else {
-      setBenevoles([...benevoles, { ...formBenevole, id: Date.now(), status: formBenevole.cotisation === 'À jour' ? 'actif' : 'retard' }]);
+      setBenevoles([...benevoles, { ...formBenevole, id: crypto.randomUUID(), status: formBenevole.cotisation === 'À jour' ? 'actif' : 'retard' }]);
     }
     closeModals();
   };
@@ -216,7 +216,7 @@ const handleBenevoleSubmit = (e) => {
     if (isEditing) {
       setEvents(events.map(ev => ev.id === currentId ? { ...formEvent, id: currentId } : ev));
     } else {
-      setEvents([...events, { ...formEvent, id: Date.now() }]);
+      setEvents([...events, { ...formEvent, id: crypto.randomUUID() }]);
     }
     closeModals();
   };
@@ -224,7 +224,7 @@ const handleBenevoleSubmit = (e) => {
   // Gestion des Entreprises - CORRIGÉ
   const handleEntrepriseSubmit = (e) => {
     e.preventDefault();
-    const data = { ...formEntreprise, id: isEditing ? currentId : Date.now(), viewType: 'entreprise' };
+    const data = { ...formEntreprise, id: isEditing ? currentId : crypto.randomUUID(), viewType: 'entreprise' };
     if (isEditing) {
       setPartenaires(partenaires.map(p => p.id === currentId ? data : p));
     } else {
@@ -237,7 +237,7 @@ const handleBenevoleSubmit = (e) => {
   // Gestion des Subventions - CORRIGÉ
   const handleSubventionSubmit = (e) => {
     e.preventDefault();
-    const data = { ...formSubvention, id: isEditing ? currentId : Date.now(), viewType: 'subvention' };
+    const data = { ...formSubvention, id: isEditing ? currentId : crypto.randomUUID(), viewType: 'subvention' };
     if (isEditing) {
       setSubventions(subventions.map(s => s.id === currentId ? data : s));
     } else {

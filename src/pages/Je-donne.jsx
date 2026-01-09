@@ -19,37 +19,9 @@ import DonationFormVertical from "@/components/Form/DonationFormVertical.jsx";
 
 export default function JeDonne() {
     // --- ETATS (STATE) ---
-    const [modePaiement, setModePaiement] = useState("unefois");
-    const [montantSelectionne, setMontantSelectionne] = useState(130);
-    const [montantLibre, setMontantLibre] = useState("");
     const [carouselIndex, setCarouselIndex] = useState(0);
     const trackRef = useRef(null);
     const [faqOpen, setFaqOpen] = useState(null);
-
-    // --- LOGIQUE FORMULAIRE HERO ---
-    const montants = {
-        unefois: [90, 130, 150, 200],
-        touslesmois: [10, 20, 30, 50]
-    };
-
-    const coutReel = Math.floor(montantSelectionne * 0.25);
-
-    const handleModeChange = (mode) => {
-        setModePaiement(mode);
-        setMontantLibre("");
-        setMontantSelectionne(mode === "unefois" ? 130 : 10);
-    };
-
-    const handleMontantClick = (montant) => {
-        setMontantSelectionne(montant);
-        setMontantLibre("");
-    };
-
-    const handleMontantLibreChange = (e) => {
-        const val = e.target.value;
-        setMontantLibre(val);
-        setMontantSelectionne(val ? parseFloat(val) : 0);
-    };
 
     // --- LOGIQUE CARROUSEL ---
     const getVisibleCount = () => {

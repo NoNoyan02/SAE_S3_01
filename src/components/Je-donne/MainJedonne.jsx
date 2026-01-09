@@ -3,6 +3,7 @@ import DonationFormHorizontal from "../Form/DonationFormHorizontal.jsx";
 import Alex_Bonnemaison from "assets/images/je-donne/Alex_Bonnemaison.webp";
 import LC_20374 from "assets/images/Je-donne/LC_20374.webp";
 import Page_carrefour_Cagnotte_solidaire_Guillaume_BINET from "assets/images/je-donne/Page_carrefour_Cagnotte_solidaire_Guillaume_BINET"
+import FormulaireDon from "./FormulaireDon.jsx";
 
 export default function MainJedonne() {
     // États pour le formulaire de don
@@ -16,12 +17,6 @@ export default function MainJedonne() {
 
     // États pour les questions fréquentes
     const [questionsOuvertes, setQuestionsOuvertes] = useState({});
-
-    // Montants selon le mode de paiement
-    const montants = {
-        unefois: [90, 130, 150, 200],
-        touslesmois: [10, 20, 30, 50]
-    };
 
     // Calcul de la déduction fiscale
     const deductionFiscale = Math.floor(montantSelectionne * 0.25);
@@ -58,10 +53,9 @@ export default function MainJedonne() {
         return 3;
     };
 
-    const updateCarousel = () => {
+    const updateCarousel = React.useCallback(() => {
         if (!trackRef.current) return;
 
-        const visibleCount = getVisibleCount();
         const blocs = trackRef.current.querySelectorAll(".sections-bloc");
         if (blocs.length === 0) return;
 
@@ -69,20 +63,20 @@ export default function MainJedonne() {
         const blockWidth = blocs[0].offsetWidth;
         const moveX = (blockWidth + gap) * carouselIndex;
         trackRef.current.style.transform = `translateX(-${moveX}px)`;
-    };
+    }, [carouselIndex]);
 
     useEffect(() => {
         updateCarousel();
         window.addEventListener("resize", updateCarousel);
         return () => window.removeEventListener("resize", updateCarousel);
-    }, [carouselIndex]);
+    }, [carouselIndex, updateCarousel]);
 
     const handlePrevCarousel = () => {
         if (carouselIndex > 0) {
             setCarouselIndex(carouselIndex - 1);
         }
     };
-
+    
     const handleNextCarousel = () => {
         const visibleCount = getVisibleCount();
         const totalBlocs = 4;
@@ -99,72 +93,6 @@ export default function MainJedonne() {
         }));
     };
 
-    // Composant formulaire de don réutilisable
-    const FormulaireDon = ({className = ""}) => (
-        <div className={className}>
-            <div className="selecteur-choix">
-                <div
-                    className={modePaiement === "unefois" ? "active choix1" : "choix1"}
-                    onClick={() => handleModeChange("unefois")}
-                >
-                    <label>
-                        <input
-                            type="radio"
-                            className="mode"
-                            name={`type-${className}`}
-                            value="unefois"
-                            checked={modePaiement === "unefois"}
-                            onChange={() => {
-                            }}
-                        />
-                        Je donne une fois
-                    </label>
-                </div>
-                <div
-                    className={modePaiement === "touslesmois" ? "active choix2" : "choix2"}
-                    onClick={() => handleModeChange("touslesmois")}
-                >
-                    <label>
-                        <input
-                            type="radio"
-                            className="mode"
-                            name={`type-${className}`}
-                            value="touslesmois"
-                            checked={modePaiement === "touslesmois"}
-                            onChange={() => {
-                            }}
-                        />
-                        Je donne tous les mois
-                    </label>
-                </div>
-            </div>
-            <div className="selecteur-montant">
-                {montants[modePaiement].map((montant, index) => (
-                    <button
-                        key={index}
-                        className={
-                            montantSelectionne === montant && !montantLibre
-                                ? "montant-btn active"
-                                : "montant-btn"
-                        }
-                        onClick={() => handleMontantClick(montant)}
-                    >
-                        {montant} €
-                    </button>
-                ))}
-            </div>
-            <div className="montant-libre-container">
-                <input
-                    type="number"
-                    className="montant-libre"
-                    placeholder="Montant libre"
-                    value={montantLibre}
-                    onChange={(e) => handleMontantLibreChange(e.target.value)}
-                />
-                <span>€</span>
-            </div>
-        </div>
-    );
 
     return (
         <>
@@ -1467,7 +1395,14 @@ export default function MainJedonne() {
                     </h1>
                     <div className="formulaire-don-vertical">
                         <p className="texte1">Mobilisons-nous ensemble !</p>
-                        <FormulaireDon/>
+                        <FormulaireDon
+                            modePaiement={modePaiement}
+                            handleModeChange={handleModeChange}
+                            montantSelectionne={montantSelectionne}
+                            handleMontantClick={handleMontantClick}
+                            montantLibre={montantLibre}
+                            handleMontantLibreChange={handleMontantLibreChange}
+                        />
                         <p className="texte2">
                             Soit <span className="fiscal">{deductionFiscale} €</span> après
                             déduction fiscale
@@ -1653,6 +1588,12 @@ export default function MainJedonne() {
                             </div>
                         </div>
                     </div>
+                    <button
+                        className={`arrow nextBtn`}
+                        onClick={handleNextCarousel}
+                    >
+                        ›
+                    </button>
                 </div>
             </section>
 
