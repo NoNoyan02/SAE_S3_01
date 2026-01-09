@@ -7,6 +7,7 @@ import {
   Omega, Smile, Image, PlaySquare, Link, MoreHorizontal, Maximize, Printer, AlignRight, ChevronDown, Type, Highlighter
 } from 'lucide-react';
 import StatCard from '../components/dashboard/StatCard';
+import api from '@/api/axios';
 
 const Dashboard = () => {
   // 1. ÉTATS GÉNÉRALS
@@ -41,7 +42,7 @@ const Dashboard = () => {
   const [formSubvention, setFormSubvention] = useState({
     nom: '', organisme: '', montant: '', status: 'Reçue'
   });
-  const [searchSub, setSearchSub] = useState(""); // Recherche locale Subventions
+
 
   // FORMULAIRE NEWSLETTER
   const [formNewsletter, setFormNewsletter] = useState({
@@ -99,33 +100,32 @@ const Dashboard = () => {
   // CHARGEMENT DES DONNÉES DEPUIS L'API
   const fetchData = async () => {
     try {
-      const opts = { credentials: 'include' };
       const storedUser = JSON.parse(localStorage.getItem('user'));
       const role = storedUser?.role || 'Donateur';
 
       const fetches = {
-        resDons: fetch('http://localhost:8000/api/historique_dons.php', opts).then(r => r.json()),
-        resCsrf: fetch('http://localhost:8000/api/csrf_token.php', opts).then(r => r.json()),
-        resStats: fetch('http://localhost:8000/api/stats.php', opts).then(r => r.json())
+        resDons: api.get('/historique_dons.php').then(r => r.data),
+        resCsrf: api.get('/csrf_token.php').then(r => r.data),
+        resStats: api.get('/stats.php').then(r => r.data)
       };
 
       if (['Admin', 'Responsable Bénévoles'].includes(role)) {
-        fetches.resBen = fetch('http://localhost:8000/api/benevoles.php', opts).then(r => r.json());
+        fetches.resBen = api.get('/benevoles.php').then(r => r.data);
       }
       if (['Admin', 'Responsable Événements'].includes(role)) {
-        fetches.resEvt = fetch('http://localhost:8000/api/evenements.php', opts).then(r => r.json());
+        fetches.resEvt = api.get('/evenements.php').then(r => r.data);
       }
       if (['Admin', 'Responsable Partenaires'].includes(role)) {
-        fetches.resEnt = fetch('http://localhost:8000/api/entreprises.php', opts).then(r => r.json());
-        fetches.resSub = fetch('http://localhost:8000/api/subventions.php', opts).then(r => r.json());
+        fetches.resEnt = api.get('/entreprises.php').then(r => r.data);
+        fetches.resSub = api.get('/subventions.php').then(r => r.data);
       }
       if (role === 'Admin') {
-        fetches.resAdmins = fetch('http://localhost:8000/api/admins.php', opts).then(r => r.json());
-        fetches.resUsers = fetch('http://localhost:8000/api/users.php', opts).then(r => r.json());
-        fetches.resNews = fetch('http://localhost:8000/api/newsletter.php', opts).then(r => r.json());
+        fetches.resAdmins = api.get('/admins.php').then(r => r.data);
+        fetches.resUsers = api.get('/users.php').then(r => r.data);
+        fetches.resNews = api.get('/newsletter.php').then(r => r.data);
       }
       if (['Admin', 'Responsable Communication'].includes(role)) {
-        fetches.resArts = fetch('http://localhost:8000/api/articles.php', opts).then(r => r.json());
+        fetches.resArts = api.get('/articles.php').then(r => r.data);
       }
 
       const keys = Object.keys(fetches);
@@ -205,10 +205,8 @@ const Dashboard = () => {
       // FETCH STATS
       setStats(resStats);
 
-      // FETCH LOGS (Admin uniquement)
       if (role === 'Admin') {
-        // Renamed endpoint to avoid AdBlockers/Brave Shields
-        const resLogs = await fetch('http://localhost:8000/api/admin_history.php', { credentials: 'include' }).then(r => r.json());
+        const resLogs = await api.get('/admin_history.php').then(r => r.data);
         if (Array.isArray(resLogs)) {
           setLogs(resLogs);
         } else {
@@ -224,6 +222,7 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData();
   }, []);
 
@@ -321,21 +320,17 @@ const Dashboard = () => {
   const handleDelete = async (id, type) => {
     if (!window.confirm("Supprimer cet élément ?")) return;
 
-    let url = "";
-    if (type === 'benevoles') url = `http://localhost:8000/api/benevoles.php?id=${id}`;
-    if (type === 'evenements') url = `http://localhost:8000/api/evenements.php?id=${id}`;
-    if (type === 'entreprises') url = `http://localhost:8000/api/entreprises.php?id=${id}`;
-    if (type === 'entreprises') url = `http://localhost:8000/api/entreprises.php?id=${id}`;
-    if (type === 'subventions') url = `http://localhost:8000/api/subventions.php?id=${id}`;
-    if (type === 'subventions') url = `http://localhost:8000/api/subventions.php?id=${id}`;
-    if (type === 'newsletter') url = `http://localhost:8000/api/newsletter.php?id=${id}`;
+    let endpoint = "";
+    if (type === 'benevoles') endpoint = `/benevoles.php?id=${id}`;
+    if (type === 'evenements') endpoint = `/evenements.php?id=${id}`;
+    if (type === 'entreprises') endpoint = `/entreprises.php?id=${id}`;
+    if (type === 'subventions') endpoint = `/subventions.php?id=${id}`;
+    if (type === 'newsletter') endpoint = `/newsletter.php?id=${id}`;
     // Pas de suppression user pour l'instant via dashboard classique
 
-    if (url) {
-      await fetch(url, {
-        method: 'DELETE',
-        headers: { 'X-CSRF-Token': csrfToken },
-        credentials: 'include'
+    if (endpoint) {
+      await api.delete(endpoint, {
+        headers: { 'X-CSRF-Token': csrfToken }
       });
       fetchData(); // Rafraichir
     }
@@ -416,14 +411,14 @@ const Dashboard = () => {
 
   const handleBenevoleSubmit = async (e) => {
     e.preventDefault();
-    const method = isEditing ? 'PUT' : 'POST';
+    const method = isEditing ? 'put' : 'post';
     const payload = isEditing ? { ...formBenevole, id: currentId } : formBenevole;
 
-    await fetch('http://localhost:8000/api/benevoles.php', {
-      method: method,
-      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
-      credentials: 'include',
-      body: JSON.stringify(payload)
+    await api({
+      method,
+      url: '/benevoles.php',
+      data: payload,
+      headers: { 'X-CSRF-Token': csrfToken }
     });
     fetchData();
     closeModals();
@@ -432,14 +427,14 @@ const Dashboard = () => {
   // MODIF : Nouvelle fonction pour enregistrer une mission
   const handleEventSubmit = async (e) => {
     e.preventDefault();
-    const method = isEditing ? 'PUT' : 'POST';
+    const method = isEditing ? 'put' : 'post';
     const payload = isEditing ? { ...formEvent, id: currentId } : formEvent;
 
-    await fetch('http://localhost:8000/api/evenements.php', {
-      method: method,
-      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
-      credentials: 'include',
-      body: JSON.stringify(payload)
+    await api({
+      method,
+      url: '/evenements.php',
+      data: payload,
+      headers: { 'X-CSRF-Token': csrfToken }
     });
     fetchData();
     closeModals();
@@ -448,14 +443,14 @@ const Dashboard = () => {
   // Gestion des Entreprises - CORRIGÉ
   const handleEntrepriseSubmit = async (e) => {
     e.preventDefault();
-    const method = isEditing ? 'PUT' : 'POST';
+    const method = isEditing ? 'put' : 'post';
     const payload = isEditing ? { ...formEntreprise, id: currentId } : formEntreprise;
 
-    await fetch('http://localhost:8000/api/entreprises.php', {
-      method: method,
-      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
-      credentials: 'include',
-      body: JSON.stringify(payload)
+    await api({
+      method,
+      url: '/entreprises.php',
+      data: payload,
+      headers: { 'X-CSRF-Token': csrfToken }
     });
     fetchData(); // Reload API
     setShowEntrepriseModal(false);
@@ -466,14 +461,14 @@ const Dashboard = () => {
   // Gestion des Subventions - CORRIGÉ
   const handleSubventionSubmit = async (e) => {
     e.preventDefault();
-    const method = isEditing ? 'PUT' : 'POST';
+    const method = isEditing ? 'put' : 'post';
     const payload = isEditing ? { ...formSubvention, id: currentId } : formSubvention;
 
-    await fetch('http://localhost:8000/api/subventions.php', {
-      method: method,
-      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
-      credentials: 'include',
-      body: JSON.stringify(payload)
+    await api({
+      method,
+      url: '/subventions.php',
+      data: payload,
+      headers: { 'X-CSRF-Token': csrfToken }
     });
     fetchData();
     setShowSubventionModal(false);
@@ -483,14 +478,14 @@ const Dashboard = () => {
 
   const handleNewsletterSubmit = async (e) => {
     e.preventDefault();
-    const method = isEditing ? 'PUT' : 'POST';
+    const method = isEditing ? 'put' : 'post';
     const payload = isEditing ? { ...formNewsletter, id: currentId } : formNewsletter;
 
-    await fetch('http://localhost:8000/api/newsletter.php', {
-      method: method,
-      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
-      credentials: 'include',
-      body: JSON.stringify(payload)
+    await api({
+      method,
+      url: '/newsletter.php',
+      data: payload,
+      headers: { 'X-CSRF-Token': csrfToken }
     });
     fetchData();
     setShowNewsletterModal(false);
@@ -502,19 +497,11 @@ const Dashboard = () => {
   const handleRoleUpdate = async (userId, newRoleId) => {
     if (!window.confirm("Voulez-vous modifier les droits de cet utilisateur ?")) return;
     try {
-      const res = await fetch('http://localhost:8000/api/users.php', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': csrfToken
-        },
-        body: JSON.stringify({ id: userId, role_id: newRoleId }),
-        credentials: 'include'
+      await api.put('/users.php', { id: userId, role_id: newRoleId }, {
+        headers: { 'X-CSRF-Token': csrfToken }
       });
-      if (res.ok) {
-        fetchData();
-        alert("Rôle mis à jour !");
-      }
+      fetchData();
+      alert("Rôle mis à jour !");
     } catch (err) {
       console.error(err);
     }
@@ -523,26 +510,16 @@ const Dashboard = () => {
   const handleUserSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('http://localhost:8000/api/users.php', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-Token': csrfToken
-        },
-        body: JSON.stringify(formUser),
-        credentials: 'include'
+      await api.post('/users.php', formUser, {
+        headers: { 'X-CSRF-Token': csrfToken }
       });
-      const data = await res.json();
-      if (res.ok) {
-        alert("Utilisateur créé avec succès !");
-        setShowUserModal(false);
-        fetchData();
-      } else {
-        alert("Erreur : " + data.error);
-      }
+      alert("Utilisateur créé avec succès !");
+      setShowUserModal(false);
+      fetchData();
     } catch (err) {
       console.error(err);
-      alert("Erreur lors de la création.");
+      const msg = err.response?.data?.error || "Erreur lors de la création.";
+      alert("Erreur : " + msg);
     }
   };
 
@@ -564,10 +541,8 @@ const Dashboard = () => {
       alert("Veuillez remplir le titre et le contenu.");
       return;
     }
-    await fetch('http://localhost:8000/api/articles.php', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken },
-      body: JSON.stringify(formArticle)
+    await api.post('/articles.php', formArticle, {
+      headers: { 'X-CSRF-Token': csrfToken }
     });
     setFormArticle({ titre: '', contenu: '', image: null });
     // Reset editor content if needed (manual via DOM or state ref)
@@ -578,22 +553,7 @@ const Dashboard = () => {
 
 
   // Constante pour l'article
-  const applyFormat = (tag) => {
-    const textarea = document.getElementById('article-content');
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    const selectedText = text.substring(start, end);
 
-    // Exemple simple : entoure le texte de balises (ex: **gras**)
-    const before = text.substring(0, start);
-    const after = text.substring(end);
-
-    const newText = `${before}${tag}${selectedText}${tag}${after}`;
-
-    // Mise à jour de l'état (assurez-vous d'avoir un état pour le contenu)
-    setFormArticle({ ...formArticle, contenu: newText });
-  };
 
   const toolbarButtonStyle = {
     background: 'none',
@@ -618,14 +578,7 @@ const Dashboard = () => {
     outline: 'none'
   };
 
-  const colorInputStyle = {
-    width: '30px',
-    height: '30px',
-    padding: '0',
-    border: 'none',
-    background: 'none',
-    cursor: 'pointer'
-  };
+
 
   const separatorStyle = {
     width: '1px',
@@ -722,19 +675,21 @@ const Dashboard = () => {
   const emojis = ['😀', '😂', '😍', '🤔', '😭', '😎', '👍', '👎', '🎉', '🔥', '❤️', '✅', '❌', '⚠️', '⭐', '💡', '📅', '📍', '✉️', '📞'];
 
   // AUTH CHECK
-  const [userData, setUserData] = useState(null);
-  const [userRole, setUserRole] = useState(null);
+  const [userData] = useState(() => {
+    const stored = localStorage.getItem('user');
+    return stored ? JSON.parse(stored) : null;
+  });
+  
+  const [userRole] = useState(() => {
+    const stored = localStorage.getItem('user');
+    return stored ? (JSON.parse(stored).role || 'Donateur') : null;
+  });
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (!storedUser) {
+    if (!userData) {
       window.location.href = '/';
-    } else {
-      const user = JSON.parse(storedUser);
-      setUserData(user);
-      setUserRole(user.role || 'Donateur');
     }
-  }, []);
+  }, [userData]);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -742,6 +697,15 @@ const Dashboard = () => {
   };
 
   // Protection des onglets selon le rôle
+  const allMenuItems = React.useMemo(() => [
+    { id: 'dashboard-view', label: 'Tableau de bord', icon: <LayoutDashboard size={20} />, roles: ['Admin', 'Responsable Bénévoles', 'Responsable Partenaires', 'Responsable Événements', 'Responsable Communication', 'Collaborateur'] },
+    { id: 'benevoles', label: 'Bénévoles', icon: <Users size={20} />, roles: ['Admin', 'Responsable Bénévoles'] },
+    { id: 'partenaires', label: 'Partenaires & Donateurs', icon: <Handshake size={20} />, roles: ['Admin', 'Responsable Partenaires'] },
+    { id: 'evenements', label: 'Événements & Missions', icon: <Calendar size={20} />, roles: ['Admin', 'Responsable Événements'] },
+    { id: 'communication', label: 'Communication & Contenus', icon: <Package size={20} />, roles: ['Admin', 'Responsable Communication'] },
+    { id: 'users', label: 'Utilisateurs & Droits', icon: <ShieldCheck size={20} />, roles: ['Admin'] },
+    { id: 'logs', label: "Journal d'activité", icon: <FileText size={20} />, roles: ['Admin'] },
+  ], []);
   useEffect(() => {
     if (!userRole) return;
     if (userRole === 'Admin') return;
@@ -755,9 +719,10 @@ const Dashboard = () => {
     const item = allMenuItems.find(i => i.id === baseTab);
     if (item && item.roles && !item.roles.includes(userRole)) {
       console.warn(`Accès refusé à ${activeTab} pour le rôle ${userRole}`);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveTab('dashboard-view');
     }
-  }, [activeTab, userRole]);
+  }, [activeTab, userRole, allMenuItems]);
 
   const closeModals = () => {
     setShowBenevoleModal(false); setShowEventModal(false); setShowViewModal(false); setIsEditing(false); setShowNewsletterModal(false); setShowUserModal(false);
@@ -767,15 +732,7 @@ const Dashboard = () => {
     setFormUser({ full_name: '', email: '', password: '', role_id: '2', phone: '' });
   };
 
-  const allMenuItems = [
-    { id: 'dashboard-view', label: 'Tableau de bord', icon: <LayoutDashboard size={20} />, roles: ['Admin', 'Responsable Bénévoles', 'Responsable Partenaires', 'Responsable Événements', 'Responsable Communication', 'Collaborateur'] },
-    { id: 'benevoles', label: 'Bénévoles', icon: <Users size={20} />, roles: ['Admin', 'Responsable Bénévoles'] },
-    { id: 'partenaires', label: 'Partenaires & Donateurs', icon: <Handshake size={20} />, roles: ['Admin', 'Responsable Partenaires'] },
-    { id: 'evenements', label: 'Événements & Missions', icon: <Calendar size={20} />, roles: ['Admin', 'Responsable Événements'] },
-    { id: 'communication', label: 'Communication & Contenus', icon: <Package size={20} />, roles: ['Admin', 'Responsable Communication'] },
-    { id: 'users', label: 'Utilisateurs & Droits', icon: <ShieldCheck size={20} />, roles: ['Admin'] },
-    { id: 'logs', label: "Journal d'activité", icon: <FileText size={20} />, roles: ['Admin'] },
-  ];
+
 
   const menuItems = allMenuItems.filter(item => userRole === 'Admin' || (item.roles && item.roles.includes(userRole)));
 
@@ -1804,7 +1761,7 @@ const Dashboard = () => {
 
                           donateursData.forEach(d => {
                             const date = new Date(d.date_don);
-                            if (!isNaN(date.getMonth())) {
+                            if (!isNaN(date.getMonth()) && date.getFullYear() === currentYear) {
                               monthlyTotals[date.getMonth()] += d.montant;
                             }
                           });

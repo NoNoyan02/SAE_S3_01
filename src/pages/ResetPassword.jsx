@@ -1,22 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
+import api from '../api/axios';
 
 const ResetPassword = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const [password, setPassword] = useState('');
-    const [confirm, setConfirm] = useState('');
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState('');
-
     const token = searchParams.get('token');
     const email = searchParams.get('email');
 
-    useEffect(() => {
-        if (!token || !email) {
-            setError("Lien invalide ou manquant.");
-        }
-    }, [token, email]);
+    const [password, setPassword] = useState('');
+    const [confirm, setConfirm] = useState('');
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState((!token || !email) ? "Lien invalide ou manquant." : '');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,20 +24,16 @@ const ResetPassword = () => {
         }
 
         try {
-            const res = await fetch('http://localhost:8000/api/reset_password.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, token, password })
-            });
-            const data = await res.json();
+            const res = await api.post('/reset_password.php', { email, token, password });
+            const data = res.data;
 
-            if (res.ok) {
+            if (res.status === 200) {
                 setMessage("Mot de passe modifié ! Redirection...");
                 setTimeout(() => navigate('/'), 3000);
             } else {
                 setError(data.error || "Erreur lors de la réinitialisation.");
             }
-        } catch (e) {
+        } catch {
             setError("Erreur serveur.");
         }
     };

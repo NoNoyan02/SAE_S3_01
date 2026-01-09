@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ShieldCheck } from 'lucide-react';
+import api from '../api/axios';
 
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
@@ -11,17 +12,8 @@ const AdminLogin = () => {
         setError('');
 
         try {
-            const response = await fetch('/api/login.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-            const data = await response.json();
-
-            if (!response.ok) {
-                setError(data.error || 'Erreur de connexion');
-                return;
-            }
+            const response = await api.post('/login.php', { email, password });
+            const data = response.data;
 
             if (data.user.role === 'Donateur') {
                 setError('Accès réservé au personnel administratif.');
@@ -33,7 +25,8 @@ const AdminLogin = () => {
             window.location.href = '/admin/dashboard';
 
         } catch (err) {
-            setError('Erreur serveur. Veuillez réessayer.');
+            const msg = err.response?.data?.error || 'Erreur serveur. Veuillez réessayer.';
+            setError(msg);
         }
     };
 

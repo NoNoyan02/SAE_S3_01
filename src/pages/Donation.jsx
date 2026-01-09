@@ -118,8 +118,6 @@ export default function Donation() {
         const deductionTotale = calculerDeductionUnique(annuel);
         const mensuelApresDeduction = (annuel - deductionTotale) / 12;
         return mensuelApresDeduction;
-        const mensuelApresDeduction = (annuel - deductionTotale) / 12;
-        return mensuelApresDeduction;
     };
 
     // Ticker de donations
@@ -1347,11 +1345,7 @@ export default function Donation() {
                             </form>
                         </div>
                     </section>
-                    </section>
 
-                    {/* Bloc 3: Mon règlement */}
-                    <section className="don-reglement">
-                        <div className="reglement-card">
                     {/* Bloc 3: Mon règlement */}
                     <section className="don-reglement">
                         <div className="reglement-card">

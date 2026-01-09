@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import api from '../api/axios';
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('');
@@ -12,16 +13,11 @@ const ForgotPassword = () => {
         setMessage('');
 
         try {
-            const res = await fetch('http://localhost:8000/api/forgot_password.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email })
-            });
-            const data = await res.json();
+            const res = await api.post('/forgot_password.php', { email });
+            const data = res.data;
 
-            // On affiche toujours le message de succès pour sécurité
             setMessage(data.message || "Si le compte existe, un email a été envoyé.");
-        } catch (error) {
+        } catch {
             setMessage("Une erreur est survenue.");
         } finally {
             setLoading(false);

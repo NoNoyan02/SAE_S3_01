@@ -17,8 +17,15 @@ export default function Header() {
 
     const [loginOverlayOpen, setLoginOverlayOpen] = useState(false);
     const [isLoginMode, setIsLoginMode] = useState(true);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userName, setUserName] = useState('Invité');
+    const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem('user'));
+    const [userName, setUserName] = useState(() => {
+        const stored = localStorage.getItem('user');
+        if (stored) {
+            const user = JSON.parse(stored);
+            return user.full_name || user.email || 'Invité';
+        }
+        return 'Invité';
+    });
 
     const [formData, setFormData] = useState({
         donorNumber: "",
@@ -85,15 +92,7 @@ export default function Header() {
         setSearchExpanded(!searchExpanded);
     };
 
-    // Initialiser l'état depuis le localStorage
-    useEffect(() => {
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            const user = JSON.parse(storedUser);
-            setIsLoggedIn(true);
-            setUserName(user.full_name || user.email);
-        }
-    }, []);
+
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -101,7 +100,7 @@ export default function Header() {
         const endpoint = isLoginMode ? "login.php" : "register.php";
         try {
             const response = await api.post(`/${endpoint}`, formData);
-            const data = response.data;
+            const user = response.data.user;
             
             setIsLoggedIn(true);
             setUserName(user.full_name || user.email || formData.email);
