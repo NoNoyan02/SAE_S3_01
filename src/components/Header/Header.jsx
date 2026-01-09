@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Menu, Search, User, X, ShieldCheck } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import styles from './Header.module.css';
 
 import api from '@/api/axios';
@@ -84,6 +85,16 @@ export default function Header() {
         setSearchExpanded(!searchExpanded);
     };
 
+    // Initialiser l'état depuis le localStorage
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+            const user = JSON.parse(storedUser);
+            setIsLoggedIn(true);
+            setUserName(user.full_name || user.email);
+        }
+    }, []);
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setErrorMessage("");
@@ -93,9 +104,15 @@ export default function Header() {
             const data = response.data;
             
             setIsLoggedIn(true);
-            setUserName(data.user?.full_name || data.user?.email || formData.email);
+            setUserName(user.full_name || user.email || formData.email);
             setLoginOverlayOpen(false);
             setFormData({ donorNumber: "", nom: "", tel: "", email: "", password: "" });
+
+            // Persistance
+            localStorage.setItem('user', JSON.stringify(user));
+
+
+
         } catch (err) {
             const errorMessage = err.response?.data?.error || "Impossible de contacter le serveur";
             setErrorMessage(errorMessage);
@@ -105,6 +122,9 @@ export default function Header() {
 
     const handleLogout = () => {
         setIsLoggedIn(false);
+        setUserName('Invité');
+        localStorage.removeItem('user');
+        window.location.href = '/';
     };
 
     return (
@@ -199,9 +219,11 @@ export default function Header() {
                                     </div>
                                 )}
 
-                                <a href="/espace-donateur" className={`${styles.donorSpaceButton} ${styles.donorSpaceMobileTablet}`}>
-                                    <User className={styles.donorIcon} /> <span>Espace donateur</span>
-                                </a>
+                                {!isLoggedIn && (
+                                    <button onClick={() => setLoginOverlayOpen(true)} className={`${styles.donorSpaceButton} ${styles.donorSpaceMobileTablet}`}>
+                                        <User className={styles.donorIcon} /> <span>Espace donateur</span>
+                                    </button>
+                                )}
 
                                 <a href="faire-un-don/~mon-don" className={styles.donationButton}>
                                     <span className={styles.donationTextSmall}>Pour soutenir la Croix-Rouge</span>
@@ -256,7 +278,7 @@ export default function Header() {
                                         <label htmlFor="password">Mot de passe</label>
                                         <input type="password" id="password" value={formData.password} required onChange={handleInputChange} />
                                     </div>
-                                    {isLoginMode && <a href="#" className={styles.forgotPassword}>Mot de passe oublié ?</a>}
+                                    {isLoginMode && <Link to="/forgot-password" className={styles.forgotPassword} onClick={() => setLoginOverlayOpen(false)}>Mot de passe oublié ?</Link>}
                                     {errorMessage && <p style={{ color: "red", fontSize: "14px", textAlign: "center" }}>{errorMessage}</p>}
                                     <button type="submit" className={styles.submitBtn}>{isLoginMode ? 'Se connecter' : "S'inscrire"}</button>
                                     <div className={styles.toggleMode}>
@@ -301,12 +323,17 @@ export default function Header() {
                                         </div>
                                     ))}
                                 </nav>
-                                <a href="/admin" className={styles.donorSpaceButtonMobile}>
-                                    <ShieldCheck className={styles.donorIconMobile} /> <span>Administrateur</span>
-                                </a>
-                                <a href="/espace-donateur" className={styles.donorSpaceButtonMobile}>
-                                    <User className={styles.donorIconMobile} /> <span>Espace donateur</span>
-                                </a>
+
+                                {!isLoggedIn && (
+                                    <div className={styles.donorSpaceButtonMobile} onClick={() => { setMobileMenuOpen(false); setLoginOverlayOpen(true); }}>
+                                        <User className={styles.donorIconMobile} /> <span>Espace donateur</span>
+                                    </div>
+                                )}
+                                {isLoggedIn && (
+                                    <div className={styles.donorSpaceButtonMobile} onClick={handleLogout}>
+                                        <User className={styles.donorIconMobile} /> <span>Déconnexion</span>
+                                    </div>
+                                )}
                                 <a href="faire-un-don/~mon-don" className={styles.donationButtonMobile}>
                                     <span className={styles.donationTextSmallMobile}>Pour soutenir la Croix-Rouge</span>
                                     <span className={styles.donationTextLargeMobile}>Je fais un don</span>

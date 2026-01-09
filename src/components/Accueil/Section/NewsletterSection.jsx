@@ -5,9 +5,36 @@ const NewsletterSection = () => {
     const [acceptConditions, setAcceptConditions] = useState(false);
     const [acceptEntreprise, setAcceptEntreprise] = useState(false);
 
-    const handleSubmit = () => {
-        console.log('Newsletter subscription:', { email, acceptConditions, acceptEntreprise });
-        alert(`Merci !`);
+    const handleSubmit = async () => {
+        if (!email || !email.includes('@')) {
+            alert("Veuillez entrer une adresse email valide.");
+            return;
+        }
+        if (!acceptConditions) {
+            alert("Veuillez accepter les conditions générales.");
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8000/api/newsletter.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, acceptConditions, acceptEntreprise })
+            });
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(data.message || "Inscription réussie !");
+                setEmail('');
+                setAcceptConditions(false);
+                setAcceptEntreprise(false);
+            } else {
+                alert(data.error || "Une erreur est survenue.");
+            }
+        } catch (error) {
+            console.error("Erreur inscription:", error);
+            alert("Impossible de communiquer avec le serveur.");
+        }
     };
 
     return (

@@ -1,10 +1,21 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 export default function CroixRougeHomepage() {
     const [searchType, setSearchType] = useState('Toutes');
     const [searchLocation, setSearchLocation] = useState('');
+    const [articles, setArticles] = useState([]);
     const formationsCarouselRef = useRef(null);
     const dossiersCarouselRef = useRef(null);
+    const articlesCarouselRef = useRef(null);
+
+    useEffect(() => {
+        fetch('http://localhost:8000/api/articles.php')
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data)) setArticles(data);
+            })
+            .catch(err => console.error(err));
+    }, []);
 
     const formations = [{
         title: "PSC - Formation premiers secours citoyen (ancien PSC1)",
@@ -1134,7 +1145,7 @@ export default function CroixRougeHomepage() {
                     <header className="section-head">
                         <h2 className="title">
                             Je veux <span
-                            className="mark-secondary">me former aux métiers du sanitaire et du social</span>
+                                className="mark-secondary">me former aux métiers du sanitaire et du social</span>
                         </h2>
                         <p className="subtitle">
                             Peu importe votre profil, il y a forcément une formation faite pour vous !
@@ -1146,7 +1157,7 @@ export default function CroixRougeHomepage() {
                             <div className="cta-cover">
                                 <img
                                     src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=350&fit=crop"
-                                    alt="Professionnel" className="cta-image"/>
+                                    alt="Professionnel" className="cta-image" />
                             </div>
                             <div className="cta-text">
                                 <p className="cta-title">Vous êtes un professionnel ?</p>
@@ -1158,7 +1169,7 @@ export default function CroixRougeHomepage() {
                             <div className="cta-cover">
                                 <img
                                     src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=350&fit=crop"
-                                    alt="Étudiant" className="cta-image"/>
+                                    alt="Étudiant" className="cta-image" />
                             </div>
                             <div className="cta-text">
                                 <p className="cta-title">Vous êtes un futur étudiant ?</p>
@@ -1252,7 +1263,7 @@ export default function CroixRougeHomepage() {
                                                     <a href="#" className="training-card">
                                                         <div className="training-card__cover">
                                                             <img src={formation.image} alt={formation.title}
-                                                                 className="training-card__img"/>
+                                                                className="training-card__img" />
                                                         </div>
                                                         <div className="training-card__text">
                                                             <strong
@@ -1295,7 +1306,7 @@ export default function CroixRougeHomepage() {
                             <div className="cta-cover">
                                 <img
                                     src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&h=350&fit=crop"
-                                    alt="Emploi" className="cta-image"/>
+                                    alt="Emploi" className="cta-image" />
                             </div>
                             <div className="cta-text">
                                 <p className="cta-title">Trouvez un emploi</p>
@@ -1307,7 +1318,7 @@ export default function CroixRougeHomepage() {
                             <div className="cta-cover">
                                 <img
                                     src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=350&fit=crop"
-                                    alt="Bénévole" className="cta-image"/>
+                                    alt="Bénévole" className="cta-image" />
                             </div>
                             <div className="cta-text">
                                 <p className="cta-title">Devenez bénévole</p>
@@ -1329,7 +1340,7 @@ export default function CroixRougeHomepage() {
                     <div className="icons-list">
                         <a href="#" className="icon-card">
                             <div className="icon-wrapper">
-                                <img src="https://api.iconify.design/mdi/food-apple.svg" alt="" className="icon-image"/>
+                                <img src="https://api.iconify.design/mdi/food-apple.svg" alt="" className="icon-image" />
                             </div>
                             <span className="icon-title">Épiceries sociales</span>
                         </a>
@@ -1337,7 +1348,7 @@ export default function CroixRougeHomepage() {
                         <a href="#" className="icon-card">
                             <div className="icon-wrapper">
                                 <img src="https://api.iconify.design/mdi/tshirt-crew.svg" alt=""
-                                     className="icon-image"/>
+                                    className="icon-image" />
                             </div>
                             <span className="icon-title">Boutiques solidaires</span>
                         </a>
@@ -1345,10 +1356,63 @@ export default function CroixRougeHomepage() {
                         <a href="#" className="icon-card">
                             <div className="icon-wrapper">
                                 <img src="https://api.iconify.design/mdi/baby-carriage.svg" alt=""
-                                     className="icon-image"/>
+                                    className="icon-image" />
                             </div>
                             <span className="icon-title">Crèches</span>
                         </a>
+                    </div>
+                </div>
+            </section>
+
+            <section className="section">
+                <div className="container">
+                    <header className="section-head">
+                        <h2 className="title">Nos derniers <span className="mark-secondary">Articles</span></h2>
+                        <p className="subtitle">L'actualité de nos actions sur le terrain</p>
+                    </header>
+
+                    <div className="carousel-wrapper">
+                        <button
+                            className="carousel-nav carousel-nav-left"
+                            onClick={() => handleScroll(articlesCarouselRef, 'left')}
+                            aria-label="Précédent"
+                        >
+                            ‹
+                        </button>
+                        <div className="dossiers-carousel" ref={articlesCarouselRef}>
+                            {articles.map((article, index) => (
+                                <a href="#" key={index} className="folder-card">
+                                    <div className="folder-cover">
+                                        <img src={article.image_url || "https://placehold.co/600x400?text=Article"} alt={article.title} className="folder-image" />
+                                    </div>
+                                    <div className="folder-text">
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#767676', marginBottom: '8px' }}>
+                                            <span>{new Date(article.created_at).toLocaleDateString()}</span>
+                                            <span>{article.author}</span>
+                                        </div>
+                                        <strong className="folder-title" dangerouslySetInnerHTML={{ __html: article.title }}></strong>
+                                        <span className="btn-link">
+                                            <svg className="arrow-icon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill="currentColor" d="M5.727 11.053 8.78 8 5.727 4.94l.94-.94 4 4-4 4-.94-.947Z" />
+                                            </svg>
+                                            Lire l'article
+                                        </span>
+                                    </div>
+                                </a>
+                            ))}
+                            {articles.length === 0 && (
+                                <div style={{ width: '100%', textAlign: 'center', padding: '40px', color: '#666', background: '#F8F9FA', borderRadius: 8 }}>
+                                    Aucun article publié pour le moment.
+                                </div>
+                            )}
+                        </div>
+                        <button
+                            className="carousel-nav carousel-nav-right"
+                            onClick={() => handleScroll(articlesCarouselRef, 'right')}
+                            aria-label="Suivant"
+                        >
+                            ›
+                        </button>
                     </div>
                 </div>
             </section>
@@ -1371,15 +1435,15 @@ export default function CroixRougeHomepage() {
                             {dossiers.map((dossier, index) => (
                                 <a href="#" key={index} className="folder-card">
                                     <div className="folder-cover">
-                                        <img src={dossier.image} alt={dossier.title} className="folder-image"/>
+                                        <img src={dossier.image} alt={dossier.title} className="folder-image" />
                                     </div>
                                     <div className="folder-text">
                                         <strong className="folder-title">{dossier.title}</strong>
                                         <span className="btn-link">
                                             <svg className="arrow-icon" viewBox="0 0 16 16"
-                                                 xmlns="http://www.w3.org/2000/svg">
+                                                xmlns="http://www.w3.org/2000/svg">
                                                 <path fill="currentColor"
-                                                      d="M5.727 11.053 8.78 8 5.727 4.94l.94-.94 4 4-4 4-.94-.947Z"/>
+                                                    d="M5.727 11.053 8.78 8 5.727 4.94l.94-.94 4 4-4 4-.94-.947Z" />
                                             </svg>
                                             Lire le dossier
                                         </span>

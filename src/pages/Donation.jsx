@@ -25,6 +25,7 @@ async function submitDonation(payload) {
 
 export default function Donation() {
     // --- ÉTATS (States) ---
+    // --- ÉTATS (States) ---
     const [activeTab, setActiveTab] = useState("once");
     const [selectedAmount, setSelectedAmount] = useState(null);
     const [customAmount, setCustomAmount] = useState("");
@@ -117,8 +118,11 @@ export default function Donation() {
         const deductionTotale = calculerDeductionUnique(annuel);
         const mensuelApresDeduction = (annuel - deductionTotale) / 12;
         return mensuelApresDeduction;
+        const mensuelApresDeduction = (annuel - deductionTotale) / 12;
+        return mensuelApresDeduction;
     };
 
+    // Ticker de donations
     // Ticker de donations
     useEffect(() => {
         const names = ["Claude", "Sophie", "Amine", "Léa", "Marc", "Emma", "Julien", "Nora", "Antoine", "Maya"];
@@ -142,6 +146,7 @@ export default function Donation() {
     }, []);
 
     // Gestion des onglets
+    // Gestion des onglets
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSelectedAmount(null);
@@ -149,6 +154,7 @@ export default function Donation() {
         setShowInfo(false);
     };
 
+    // Sélection montant fixe
     // Sélection montant fixe
     const handleAmountSelect = (amount) => {
         setSelectedAmount(amount);
@@ -160,6 +166,7 @@ export default function Donation() {
         setShowInfo(true);
     };
 
+    // Montant libre
     // Montant libre
     const handleCustomAmountChange = (value) => {
         setCustomAmount(value);
@@ -338,10 +345,17 @@ export default function Donation() {
                 <meta property="og:title" content="Soutenez la Croix-Rouge française" />
                 <meta property="og:description" content="Soutenez notre association en effectuant un don" />
             </Helmet>
+            <Helmet>
+                <title>Soutenez la Croix-Rouge française</title>
+                <meta name="description" content="Soutenez notre association en effectuant un don" />
+                <meta property="og:title" content="Soutenez la Croix-Rouge française" />
+                <meta property="og:description" content="Soutenez notre association en effectuant un don" />
+            </Helmet>
 
 
             {/* DÉBUT DU CSS INTÉGRÉ (Version corrigée et modernisée) */}
             <style>{`
+                /* Donation Bar */
                 /* Donation Bar */
                 :root {
                     --bar-bg-1: #e30219;
@@ -865,7 +879,6 @@ export default function Donation() {
                     padding: 20px;
                     width: 100%;
                     display: flex;
-                    justify-content: space-between;
                     align-items: center;
                     background: transparent;
                     border: none;
@@ -1116,6 +1129,7 @@ export default function Donation() {
                                 <h2>2. Mes coordonnées</h2>
                             </div>
 
+
                             <form className="card-body">
                                 <div className="form-group-donation">
                                     <label htmlFor="email">Email *</label>
@@ -1150,6 +1164,7 @@ export default function Donation() {
                                         <option value="">Choisir...</option>
                                         <option value="Mme">Madame</option>
                                         <option value="M.">Monsieur</option>
+                                        <option value="Autre">Autre</option>
                                     </select>
                                     {errors.civilite && <span className="error-message">{errors.civilite}</span>}
                                 </div>
@@ -1332,7 +1347,11 @@ export default function Donation() {
                             </form>
                         </div>
                     </section>
+                    </section>
 
+                    {/* Bloc 3: Mon règlement */}
+                    <section className="don-reglement">
+                        <div className="reglement-card">
                     {/* Bloc 3: Mon règlement */}
                     <section className="don-reglement">
                         <div className="reglement-card">
