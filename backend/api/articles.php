@@ -12,9 +12,22 @@ switch ($method) {
     case 'GET':
         // Public ou Admin ? Pour l'instant public pour l'accueil
         try {
-            $stmt = $pdo->query("SELECT * FROM articles ORDER BY created_at DESC");
-            $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            echo json_encode($data);
+            if (isset($_GET['id'])) {
+                $stmt = $pdo->prepare("SELECT * FROM articles WHERE id = :id");
+                $stmt->execute([':id' => $_GET['id']]);
+                $article = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($article) {
+                    echo json_encode($article);
+                } else {
+                    http_response_code(404);
+                    echo json_encode(["error" => "Article introuvable"]);
+                }
+            } else {
+                $stmt = $pdo->query("SELECT * FROM articles ORDER BY created_at DESC");
+                $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                echo json_encode($data);
+            }
         } catch (PDOException $e) {
             http_response_code(500);
             echo json_encode(["error" => "Erreur récupération : " . $e->getMessage()]);

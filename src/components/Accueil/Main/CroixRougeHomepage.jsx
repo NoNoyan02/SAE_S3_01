@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '@/api/axios';
 
 export default function CroixRougeHomepage() {
@@ -1004,7 +1005,7 @@ export default function CroixRougeHomepage() {
                     }
 
                     .block-formations__search-input {
-                        margin-right: -64px;
+                        margin-right: 0;
                     }
 
                     .search-bar {
@@ -1388,7 +1389,7 @@ export default function CroixRougeHomepage() {
                         </button>
                         <div className="dossiers-carousel" ref={articlesCarouselRef}>
                             {articles.map((article, index) => (
-                                <a href="#" key={index} className="folder-card">
+                                <Link to={`/article/${article.id}`} key={index} className="folder-card">
                                     <div className="folder-cover">
                                         <img src={article.image_url || "https://placehold.co/600x400?text=Article"} alt={article.title} className="folder-image" />
                                     </div>
@@ -1405,7 +1406,7 @@ export default function CroixRougeHomepage() {
                                             Lire l'article
                                         </span>
                                     </div>
-                                </a>
+                                </Link>
                             ))}
                             {articles.length === 0 && (
                                 <div style={{ width: '100%', textAlign: 'center', padding: '40px', color: '#666', background: '#F8F9FA', borderRadius: 8 }}>

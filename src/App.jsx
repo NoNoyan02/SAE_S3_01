@@ -17,6 +17,7 @@ import AdminLogin from "./pages/AdminLogin.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
+import ArticleDetail from "./pages/ArticleDetail.jsx";
 
 const MainLayout = () => {
     return (
@@ -41,6 +42,7 @@ function App() {
                     <Route path="/je-deviens-benevole" element={<JeDeviens />} />
                     <Route path="/je-donne" element={<JeDonne />} />
                     <Route path="/formations" element={<Formations />} />
+                    <Route path="/article/:id" element={<ArticleDetail />} />
                     <Route path="*" element={<PageIntrouvable />} />
                 </Route>
                 <Route path="/faire-un-don/~mon-don" element={<Donation />} />
