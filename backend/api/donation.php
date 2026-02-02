@@ -1,5 +1,5 @@
 <?php
-// ### api/donation.php
+// api/donation.php
 
 // 1. Configuration des Headers (CORS & Format)
 // En production, remplacez "*" par votre domaine exact (ex: "https://mon-site.com")
@@ -78,7 +78,7 @@ try {
 
         do {
             $donorNumber = strtoupper(bin2hex(random_bytes(4))); // Ex: 797C9A7D
-            
+
             // Vérifier l'unicité
             $stmtCheck = $pdo->prepare("SELECT id FROM donateurs WHERE donor_number = :dn");
             $stmtCheck->execute([':dn' => $donorNumber]);

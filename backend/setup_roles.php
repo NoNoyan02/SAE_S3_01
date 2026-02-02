@@ -2,14 +2,14 @@
 require_once __DIR__ . '/config/db.php';
 
 try {
-    // 1. Create 'roles' table
+    // 1. Création de la table 'roles'
     $pdo->exec("CREATE TABLE IF NOT EXISTS roles (
         id INT AUTO_INCREMENT PRIMARY KEY,
         name VARCHAR(50) NOT NULL UNIQUE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
     echo "Table 'roles' checked/created.\n";
 
-    // 2. Insert default roles
+    // 2. Insertion des rôles par défaut
     $roles = [
         'Admin',
         'Collaborateur',
@@ -19,7 +19,7 @@ try {
         'Responsable Communication'
     ];
 
-    // First, remove 'Donateurs' if it exists in roles table
+    // D'abord, supprimer 'Donateurs' s'il existe dans la table roles
     $pdo->exec("DELETE FROM roles WHERE name = 'Donateurs' OR name = 'Donateur'");
 
     $stmt = $pdo->prepare("INSERT IGNORE INTO roles (name) VALUES (?)");
@@ -28,7 +28,7 @@ try {
     }
     echo "Default roles updated.\n";
 
-    // 3. Add 'role_id' to `users` table
+    // 3. Ajout de 'role_id' à la table `users`
     $stmt = $pdo->query("SHOW COLUMNS FROM users LIKE 'role_id'");
     if ($stmt->rowCount() == 0) {
         $pdo->exec("ALTER TABLE users ADD COLUMN role_id INT DEFAULT NULL");
@@ -36,13 +36,13 @@ try {
         echo "Column 'role_id' added to 'users' table.\n";
     }
 
-    // 4. Get Role IDs
+    // 4. Récupération des IDs de rôle
     $stmt = $pdo->query("SELECT id, name FROM roles");
     $roleMap = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
     $adminId = array_search('Admin', $roleMap);
     $commId = array_search('Responsable Communication', $roleMap);
 
-    // 5. Create specific users
+    // 5. Création des utilisateurs spécifiques
     $usersToCreate = [
         ['full_name' => 'Noyan', 'email' => 'noyan@example.com', 'password_hash' => password_hash('admin123', PASSWORD_DEFAULT), 'phone' => '0600000001', 'role_id' => $adminId],
         ['full_name' => 'Dorian', 'email' => 'dorian@example.com', 'password_hash' => password_hash('dorian123', PASSWORD_DEFAULT), 'phone' => '0600000002', 'role_id' => $commId]
@@ -56,8 +56,8 @@ try {
     }
     echo "Users Noyan and Dorian checked/created.\n";
 
-    // 6. Final Cleanup: Revoke administrative roles from all other users
-    // This ensures only the two accounts above have dashboard access
+    // 6. Nettoyage final : Révocation des rôles administratifs pour tous les autres utilisateurs
+    // Cela garantit que seuls les deux comptes ci-dessus ont accès au tableau de bord
     $pdo->prepare("UPDATE users SET role_id = NULL WHERE email NOT IN ('noyan@example.com', 'dorian@example.com')")->execute();
     echo "Administrative roles revoked for all other legacy users.\n";
 

@@ -26,8 +26,6 @@ try {
     // CRÉATION DE LA VARIABLE $pdo
     $pdo = new PDO($dsn, $user, $pass, $options);
 
-    // ⚠️ IMPORTANT : ON NE MET AUCUN 'ECHO' ICI !
-    // Si on met un echo, ça casse le JSON du login.
 
 } catch (PDOException $e) {
     // Si la connexion échoue, on arrête tout immédiatement

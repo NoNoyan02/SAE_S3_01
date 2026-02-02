@@ -30,20 +30,31 @@ html {
     }
 }
 
-*, :after, :before {
+*,
+:after,
+:before {
     box-sizing: inherit
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     margin: 0;
     font-weight: inherit
 }
 
-figure, ol, p, ul {
+figure,
+ol,
+p,
+ul {
     margin: 0
 }
 
-ol, ul {
+ol,
+ul {
     list-style: none;
     padding-left: 0
 }
@@ -53,7 +64,8 @@ a {
     transition: all .2s linear
 }
 
-a:focus, a:hover {
+a:focus,
+a:hover {
     text-decoration: none
 }
 
@@ -66,7 +78,7 @@ button {
     cursor: pointer
 }
 
-details > summary {
+details>summary {
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -84,7 +96,8 @@ img {
     vertical-align: middle
 }
 
-iframe, img {
+iframe,
+img {
     max-width: 100%
 }
 
@@ -117,10 +130,9 @@ body {
 
 .code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+        monospace;
 }
 
-/* SVG icons */
 .icon {
     width: 1em;
     height: 1em;
@@ -138,7 +150,6 @@ body {
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* --- Shared Hero Modern Style --- */
 .shared-hero {
     position: relative;
     width: 100%;
@@ -166,7 +177,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.7) 100%);
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.7) 100%);
     z-index: 1;
 }
 
@@ -188,7 +199,7 @@ body {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.4));
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
 }
 
 .shared-hero-subtitle {
@@ -196,7 +207,7 @@ body {
     font-size: clamp(1.6rem, 2.5vw, 2.2rem);
     font-weight: 400;
     opacity: 0.9;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     max-width: 800px;
     margin: 0 auto;
 }

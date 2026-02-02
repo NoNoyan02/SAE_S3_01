@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
 export default function SearchBar() {
     const [query, setQuery] = useState("");
@@ -16,7 +16,6 @@ export default function SearchBar() {
 
     return (
         <div className="searchbar-wrapper">
-            {/* DÉBUT DU CSS INTÉGRÉ */}
             <style>{`
                 .visually-hidden {
                     border: 0;
@@ -161,7 +160,6 @@ export default function SearchBar() {
                     }
                 }
             `}</style>
-            {/* FIN DU CSS INTÉGRÉ */}
 
             <div className="searchbar-container">
                 <form className="searchbar-form" onSubmit={(e) => e.preventDefault()}>

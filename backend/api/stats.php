@@ -17,7 +17,6 @@ try {
     // Ou peut-être 'Users qui sont donateurs' = SELECT COUNT(*) FROM users WHERE donateur_id IS NOT NULL
 
     // 2. Dons par semaine (Weekly Donation Amount)
-    // Group by Year-Week and provide a readable label (Monday of the week)
     $sqlWeekly = "SELECT 
                     DATE_FORMAT(DATE_SUB(created_at, INTERVAL WEEKDAY(created_at) DAY), '%Y-%u') as semaine,
                     DATE_FORMAT(DATE_SUB(created_at, INTERVAL WEEKDAY(created_at) DAY), '%d/%m') as date_label,

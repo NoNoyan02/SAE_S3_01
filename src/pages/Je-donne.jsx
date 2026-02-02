@@ -3,7 +3,6 @@ import { Helmet } from 'react-helmet';
 
 
 // Import des composants globaux
-// Assurez-vous que le chemin est bon par rapport à votre structure
 import DonationFormHorizontal from "../components/Form/DonationFormHorizontal.jsx";
 import LC_20374 from "assets/images/je-donne/LC_20374.webp";
 import Alex_Bonnemaison from "assets/images/je-donne/Alex_Bonnemaison.webp";
@@ -438,7 +437,7 @@ export default function JeDonne() {
             `}</style>
 
             <main className="page-je-donne">
-                
+
                 <Breadcrumb paths={[{ label: 'Accueil', url: '/' }, { label: 'Je fais un don' }]} />
 
                 {/* 1. Hero Section */}
@@ -448,10 +447,10 @@ export default function JeDonne() {
 
                     <div className="section-hero">
                         <h1 className="shared-hero-title" style={{ textAlign: 'left', maxWidth: '600px' }}>
-                            Grâce à vos dons nous<br/>pouvons agir
+                            Grâce à vos dons nous<br />pouvons agir
                         </h1>
 
-                        <DonationFormVertical/>
+                        <DonationFormVertical />
                     </div>
                 </div>
 
@@ -577,7 +576,7 @@ export default function JeDonne() {
                     </div>
                 </div>
 
-                <div className="section-split" style={{flexDirection: 'row-reverse'}}>
+                <div className="section-split" style={{ flexDirection: 'row-reverse' }}>
                     <div className="col-img">
                         <img src={Alex_Bonnemaison} alt="Philanthrope" />
                     </div>
@@ -728,7 +727,7 @@ export default function JeDonne() {
                         </header>
                     </div>
                     <div className="fqs-container fqs-container-medium">
-                        
+
                         {/* Question 1 */}
                         <article className="fqs-accordion">
                             <div
@@ -823,7 +822,6 @@ export default function JeDonne() {
                 </section>
 
                 {/* 11. FORMULAIRE HORIZONTAL EN BAS */}
-                {/* Il utilisera le CSS intégré dans le composant DonationFormHorizontal que vous avez corrigé */}
                 <DonationFormHorizontal />
 
             </main>

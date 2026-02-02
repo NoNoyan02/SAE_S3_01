@@ -2,7 +2,7 @@ import React from "react";
 import {Helmet} from "react-helmet";
 
 // Composants
-import Header from "../components/Header/Header";
+import Header from "../components/Header/Header";f
 
 import Hero from "../components/Je-deviens/Main/Hero/Hero";
 import SearchBar from "../components/Je-deviens/Main/SearchBar/SearchBar";

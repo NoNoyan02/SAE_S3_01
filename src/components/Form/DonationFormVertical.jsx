@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import { useState } from 'react';
 
 export default function DonationFormVertical() {
     const [frequency, setFrequency] = useState('once');
@@ -18,7 +18,7 @@ export default function DonationFormVertical() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const finalAmount = customAmount || amount;
-        console.log('Donation submitted:', {frequency, amount: finalAmount});
+        console.log('Donation submitted:', { frequency, amount: finalAmount });
         alert(`Merci ! Donation de ${finalAmount}€ (${frequency === 'once' ? 'une fois' : 'mensuelle'})`);
     };
 
@@ -34,7 +34,7 @@ export default function DonationFormVertical() {
 
     return (
         <>
-        <style>{`
+            <style>{`
         
             /* CARD */
             .donation-card {
@@ -380,101 +380,101 @@ export default function DonationFormVertical() {
             border: 0;
             padding: 0;
         }`}
-        </style>
-        <div className="donation-card donation-card--vertical">
-            <header className="donation-header donation-header--small">
-                <h2 className="donation-title donation-title--small">Mobilisons-nous ensemble !</h2>
-            </header>
+            </style>
+            <div className="donation-card donation-card--vertical">
+                <header className="donation-header donation-header--small">
+                    <h2 className="donation-title donation-title--small">Mobilisons-nous ensemble !</h2>
+                </header>
 
-            <div className="donation-form donation-form--vertical">
-                <ul className="donation-tabs donation-tabs--vertical">
-                    <li>
-                        <span className="donation-choice donation-choice--radio">
-                            <input
-                                id="vertical_once_freq"
-                                name="vertical_frequency"
-                                type="radio"
-                                value="once"
-                                checked={frequency === 'once'}
-                                onChange={(e) => setFrequency(e.target.value)}
-                            />
-                            <label htmlFor="vertical_once_freq">Je donne une fois</label>
-                        </span>
-                    </li>
-                    <li>
-                        <span className="donation-choice donation-choice--radio">
-                            <input
-                                id="vertical_regular_freq"
-                                name="vertical_frequency"
-                                type="radio"
-                                value="regular"
-                                checked={frequency === 'regular'}
-                                onChange={(e) => setFrequency(e.target.value)}
-                            />
-                            <label htmlFor="vertical_regular_freq">Je donne tous les mois</label>
-                        </span>
-                    </li>
-                </ul>
-
-                <fieldset className="donation-amount-section donation-amount-section--vertical">
-                    <legend className="donation-visually-hidden">
-                        {frequency === 'once' ? 'Je donne une fois' : 'Je donne tous les mois'}
-                    </legend>
-
-                    <ul className="donation-options donation-options--vertical">
-                        {presetAmounts.map((value) => (
-                            <li key={value}>
-                                <span className="donation-choice donation-choice--hidden-input">
-                                    <input
-                                        id={`vertical_amount_${value}`}
-                                        name="vertical_amount"
-                                        type="radio"
-                                        value={value}
-                                        checked={amount === value && !customAmount}
-                                        onChange={() => handlePresetAmountClick(value)}
-                                    />
-                                    <label htmlFor={`vertical_amount_${value}`}>{value} €</label>
-                                </span>
-                            </li>
-                        ))}
+                <div className="donation-form donation-form--vertical">
+                    <ul className="donation-tabs donation-tabs--vertical">
+                        <li>
+                            <span className="donation-choice donation-choice--radio">
+                                <input
+                                    id="vertical_once_freq"
+                                    name="vertical_frequency"
+                                    type="radio"
+                                    value="once"
+                                    checked={frequency === 'once'}
+                                    onChange={(e) => setFrequency(e.target.value)}
+                                />
+                                <label htmlFor="vertical_once_freq">Je donne une fois</label>
+                            </span>
+                        </li>
+                        <li>
+                            <span className="donation-choice donation-choice--radio">
+                                <input
+                                    id="vertical_regular_freq"
+                                    name="vertical_frequency"
+                                    type="radio"
+                                    value="regular"
+                                    checked={frequency === 'regular'}
+                                    onChange={(e) => setFrequency(e.target.value)}
+                                />
+                                <label htmlFor="vertical_regular_freq">Je donne tous les mois</label>
+                            </span>
+                        </li>
                     </ul>
 
-                    <div className="donation-input-group">
-                        <label htmlFor="vertical_amount_free" className="donation-input-label donation-visually-hidden">
-                            Montant libre
-                        </label>
-                        <span className="donation-input-field">
-                            <span className="donation-input-unit">€</span>
-                            <input
-                                id="vertical_amount_free"
-                                name="vertical_amount_custom"
-                                placeholder="Montant libre"
-                                min="4"
-                                step="0.01"
-                                type="number"
-                                value={customAmount}
-                                onChange={handleCustomAmountChange}
-                                className="donation-input"
-                            />
-                        </span>
-                    </div>
-                </fieldset>
+                    <fieldset className="donation-amount-section donation-amount-section--vertical">
+                        <legend className="donation-visually-hidden">
+                            {frequency === 'once' ? 'Je donne une fois' : 'Je donne tous les mois'}
+                        </legend>
 
-                <p className="donation-tax-info">
-                    Soit <mark>{calculateTaxDeduction()} €</mark> après déduction fiscale
-                </p>
+                        <ul className="donation-options donation-options--vertical">
+                            {presetAmounts.map((value) => (
+                                <li key={value}>
+                                    <span className="donation-choice donation-choice--hidden-input">
+                                        <input
+                                            id={`vertical_amount_${value}`}
+                                            name="vertical_amount"
+                                            type="radio"
+                                            value={value}
+                                            checked={amount === value && !customAmount}
+                                            onChange={() => handlePresetAmountClick(value)}
+                                        />
+                                        <label htmlFor={`vertical_amount_${value}`}>{value} €</label>
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
 
-                <p className="donation-button-wrapper">
-                    <button
-                        type="button"
-                        onClick={handleSubmit}
-                        className="donation-btn donation-btn--full"
-                    >
-                        Je donne
-                    </button>
-                </p>
+                        <div className="donation-input-group">
+                            <label htmlFor="vertical_amount_free" className="donation-input-label donation-visually-hidden">
+                                Montant libre
+                            </label>
+                            <span className="donation-input-field">
+                                <span className="donation-input-unit">€</span>
+                                <input
+                                    id="vertical_amount_free"
+                                    name="vertical_amount_custom"
+                                    placeholder="Montant libre"
+                                    min="4"
+                                    step="0.01"
+                                    type="number"
+                                    value={customAmount}
+                                    onChange={handleCustomAmountChange}
+                                    className="donation-input"
+                                />
+                            </span>
+                        </div>
+                    </fieldset>
+
+                    <p className="donation-tax-info">
+                        Soit <mark>{calculateTaxDeduction()} €</mark> après déduction fiscale
+                    </p>
+
+                    <p className="donation-button-wrapper">
+                        <button
+                            type="button"
+                            onClick={handleSubmit}
+                            className="donation-btn donation-btn--full"
+                        >
+                            Je donne
+                        </button>
+                    </p>
+                </div>
             </div>
-        </div>
         </>
     );
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 
 // Composants
 import Header from "../components/Header/Header";
@@ -30,7 +30,7 @@ export default function Formations() {
                     content="Formez-vous aux premiers secours. N'hésitez plus, trouvez une session de formation près de chez vous et inscrivez-vous !"
                 />
             </Helmet>
-            <Header/>
+            <Header />
 
             <nav className="sousnavbar" aria-label="Fil d'Ariane">
                 <ol>
@@ -57,7 +57,7 @@ export default function Formations() {
 
                             <label htmlFor="location" className="visually-hidden">Localisation</label>
                             <input type="text" id="location" name="location" placeholder="Code postal ou ville"
-                                   aria-label="Code postal ou ville"/>
+                                aria-label="Code postal ou ville" />
 
                             <button type="submit" className="visually-hidden">Rechercher</button>
                         </form>
@@ -75,7 +75,7 @@ export default function Formations() {
                             </p>
                         </div>
                         <a href="https://www.croix-rouge.fr/formation-professionnelle?domains=sante_securite_au_travail&page=3"
-                           className="btn-entreprise">
+                            className="btn-entreprise">
                             Premiers secours pour les professionnels
                         </a>
                     </div>
@@ -193,7 +193,7 @@ export default function Formations() {
                         <article className="formation-card">
                             <img
                                 src="https://images.ctfassets.net/ksb78y40v1oe/32PfeiYxRr97nIDRQYQBXV/09360475a35ff1d3c34491ea473ac9f5/formation_psc1.webp?fm=webp&q=85&w=570&h=400&fit=thumb"
-                                alt="Formation PSC1 - Gestes de premiers secours"/>
+                                alt="Formation PSC1 - Gestes de premiers secours" />
                             <div className="formation-card-content">
                                 <span className="badge grand-public">GRAND PUBLIC</span>
                                 <h3>Prévention et secours civiques de niveau 1 (PSC1)</h3>
@@ -204,14 +204,14 @@ export default function Formations() {
                                 <p>Formation de base aux premiers secours. Apprenez à réagir face aux situations
                                     d'urgence du quotidien.</p>
                                 <a href="https://www.croix-rouge.fr/formation/prevention-et-secours-civique-de-niveau-1-psc1"
-                                   className="btn-formation">Je m'inscris</a>
+                                    className="btn-formation">Je m'inscris</a>
                             </div>
                         </article>
 
                         <article className="formation-card">
                             <img
                                 src="https://images.ctfassets.net/ksb78y40v1oe/1WPKrtg9vlvihafSbMZqP8/552eec8470a8c88bf9b624fad850728a/Gestes_qui_sauvent_10-09-22_CroixRouge_JMPS2022_Christophe_Hargoues.jpg?fm=webp&q=85&w=570&h=400&fit=thumb"
-                                alt="Formation GQS - Gestes qui sauvent"/>
+                                alt="Formation GQS - Gestes qui sauvent" />
                             <div className="formation-card-content">
                                 <span className="badge initiation">INITIATION</span>
                                 <h3>Les gestes qui sauvent (GQS)</h3>
@@ -222,14 +222,14 @@ export default function Formations() {
                                 <p>Sensibilisation de 2 heures aux gestes d'urgence : alerter, masser, défibriller,
                                     traiter les hémorragies.</p>
                                 <a href="https://www.croix-rouge.fr/formation/les-gestes-qui-sauvent"
-                                   className="btn-formation">Je m'inscris</a>
+                                    className="btn-formation">Je m'inscris</a>
                             </div>
                         </article>
 
                         <article className="formation-card">
                             <img
                                 src="https://images.ctfassets.net/ksb78y40v1oe/6LN6jahmi0ESeyPTZUqoCS/e47f9e8151604ef78b79ff77f81b752b/defibrillation_10-09-22_JMPS2022_Christophe_Hargoues_036BD.jpg?fm=webp&q=85&w=570&h=400&fit=thumb"
-                                alt="Formation SST - Sauveteur Secouriste du Travail"/>
+                                alt="Formation SST - Sauveteur Secouriste du Travail" />
                             <div className="formation-card-content">
                                 <span className="badge professionnel">PROFESSIONNEL</span>
                                 <h3>Sauveteur Secouriste du Travail (SST)</h3>
@@ -240,14 +240,14 @@ export default function Formations() {
                                 <p>Formation pour intervenir efficacement face à une situation d'accident en milieu
                                     professionnel.</p>
                                 <a href="https://www.croix-rouge.fr/formation-professionnelle/intervenir-en-tant-que-sauveteur-secouriste-du-travail-sst"
-                                   className="btn-formation">Je m'inscris</a>
+                                    className="btn-formation">Je m'inscris</a>
                             </div>
                         </article>
 
                         <article className="formation-card">
                             <img
                                 src="https://images.ctfassets.net/ksb78y40v1oe/2148IDKg95BwmRA9cT7oji/eca321bf85415373aebc30044be21b24/IPSEN_etouffement_912-22_-_Joan_Bardeletti.jpg?fm=webp&q=85&w=570&h=400&fit=thumb"
-                                alt="Formation IPSEN - Premiers secours enfant et nourrisson"/>
+                                alt="Formation IPSEN - Premiers secours enfant et nourrisson" />
                             <div className="formation-card-content">
                                 <span className="badge parents">PARENTS</span>
                                 <h3>Initiation premiers secours enfant et nourrisson (IPSEN)</h3>
@@ -258,14 +258,14 @@ export default function Formations() {
                                 <p>Spécialement conçue pour les parents et futurs parents. Apprenez les gestes adaptés
                                     aux jeunes enfants.</p>
                                 <a href="https://www.croix-rouge.fr/formation/initiation-aux-premiers-secours-enfant-et-nourrisson"
-                                   className="btn-formation">Je m'inscris</a>
+                                    className="btn-formation">Je m'inscris</a>
                             </div>
                         </article>
 
                         <article className="formation-card">
                             <img
                                 src="https://images.ctfassets.net/ksb78y40v1oe/1iMlrM0qMzAFRyfJY1Hkcm/1478af479ba126ef29c6c795c6add923/CRF_Formation_PSE2.jpg?fm=webp&q=85&w=570&h=400&fit=thumb"
-                                alt="Formation PSE - Premiers secours en équipe"/>
+                                alt="Formation PSE - Premiers secours en équipe" />
                             <div className="formation-card-content">
                                 <span className="badge equipier">ÉQUIPIER</span>
                                 <h3>Premiers secours en équipe (PSE 1 & 2)</h3>
@@ -276,14 +276,14 @@ export default function Formations() {
                                 <p>Formation approfondie pour devenir équipier secouriste et intervenir en équipe lors
                                     d'événements.</p>
                                 <a href="https://www.croix-rouge.fr/formation/premiers-secours-en-equipe-de-niveau-1-et-2"
-                                   className="btn-formation">Je m'inscris</a>
+                                    className="btn-formation">Je m'inscris</a>
                             </div>
                         </article>
 
                         <article className="formation-card">
                             <img
                                 src="https://images.ctfassets.net/ksb78y40v1oe/3AUvOEr3ZpAtxl64n1pPoO/5b9b2c05b608bb9d73272964531e8169/brevet_s_curit__et_sauvetage_aquatique.jpg?fm=webp&q=85&w=570&h=400&fit=thumb"
-                                alt="Formation BNSSA - Sauvetage aquatique"/>
+                                alt="Formation BNSSA - Sauvetage aquatique" />
                             <div className="formation-card-content">
                                 <span className="badge aquatique">AQUATIQUE</span>
                                 <h3>Brevet national de sécurité et de sauvetage aquatique</h3>
@@ -293,14 +293,14 @@ export default function Formations() {
                                 </div>
                                 <p>Surveillez et assurez la sécurité des baignades en piscine ou en milieu naturel.</p>
                                 <a href="https://www.croix-rouge.fr/formation/bnssa-brevet-national-de-securite-et-de-sauvetage-aquatique"
-                                   className="btn-formation">Je m'inscris</a>
+                                    className="btn-formation">Je m'inscris</a>
                             </div>
                         </article>
 
                         <article className="formation-card">
                             <img
                                 src="https://images.ctfassets.net/ksb78y40v1oe/3kn9etgqYZjXYuRlwbbc1P/f57ae51a140b59f45e37d9b98f6c2687/massage_cardiaque_enfant_14-05-22_journeeNationaleParisDijon_Christophe_Hargoues_044.jpg?fm=webp&q=85&w=570&h=400&fit=thumb"
-                                alt="Formation remise à niveau PSC1"/>
+                                alt="Formation remise à niveau PSC1" />
                             <div className="formation-card-content">
                                 <span className="badge recyclage">RECYCLAGE</span>
                                 <h3>Remise à niveau formation premiers secours citoyen</h3>
@@ -311,14 +311,14 @@ export default function Formations() {
                                 <p>Pour lutter contre l'oubli, venez vous rafraîchir la mémoire sur les gestes de
                                     premiers secours !</p>
                                 <a href="https://www.croix-rouge.fr/formation/formation-continue-prevention-et-secours-civique-de-niveau-1"
-                                   className="btn-formation">Je m'inscris</a>
+                                    className="btn-formation">Je m'inscris</a>
                             </div>
                         </article>
 
                         <article className="formation-card">
                             <img
                                 src="https://images.ctfassets.net/ksb78y40v1oe/1Ud6J3fApPyNxcLRmdsPBe/458b7f5da3ddabb91504c7063c2055a9/formateur_PSC_formation_Croix-Rouge_2.jpg?fm=webp&q=85&w=570&h=400&fit=thumb"
-                                alt="Formation formateur premiers secours"/>
+                                alt="Formation formateur premiers secours" />
                             <div className="formation-card-content">
                                 <span className="badge formateur">FORMATEUR</span>
                                 <h3>Formateur premiers secours citoyen (FPSC)</h3>
@@ -328,13 +328,13 @@ export default function Formations() {
                                 </div>
                                 <p>Devenez formateur et transmettez les gestes qui sauvent au plus grand nombre.</p>
                                 <a href="https://www.croix-rouge.fr/formation/formateur-psc1-picf-fpsc-pedagogie-appliquee-a-lemploi-de-formateur-en"
-                                   className="btn-formation">Je m'inscris</a>
+                                    className="btn-formation">Je m'inscris</a>
                             </div>
                         </article>
                     </section>
                 </section>
             </main>
-            <Footer/>
+            <Footer />
         </>
     );
 }

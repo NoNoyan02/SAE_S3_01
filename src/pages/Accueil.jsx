@@ -12,7 +12,7 @@ export default function Accueil() {
                 description="La Croix-Rouge française agit pour protéger et relever sans condition, les personnes en situation de vulnérabilité et construire avec elles leur résilience."
                 image="/crf_logo.png"
             />
-            <Main/>
+            <Main />
         </>
     );
 }

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import CroixRougeHomepage from "./CroixRougeHomepage";
 import DonationFormVertical from "../../Form/DonationFormVertical";
 import DonationFormHorizontal from '../../Form/DonationFormHorizontal';
@@ -7,9 +7,9 @@ import "./Hero.css"
 import "./Wrapper.css"
 
 const slides = [
-    {title: "Ensemble, redonnons le goût de vivre à ceux qui en ont besoin", image: "https://moselle.croix-rouge.fr/wp-content/uploads/sites/36/2019/05/aide-alimentaire-croixrouge.jpg"},
-    {title: "Des équipes mobilisées chaque jour pour sauver des vies", image: "https://cdn-s-www.dna.fr/images/1D20E08A-8ADF-43D9-82DE-FCB9FD5C3427/NW_raw/des-benevoles-de-la-croix-rouge-recoivent-une-formation-a-la-clinique-sainte-anne-pour-ameliorer-leurs-interventions-de-secourisme-en-echangeant-avec-des-professionnels-de-sante-photo-dna-laurent-rea-1457546557.jpg"},
-    {title: "Agir chaque jour pour sauver des vies", image: "https://images.lanouvellerepublique.fr/image/upload/t_1020w/f_auto/63bdaf0868b680007e8b4583.jpg"},
+    { title: "Ensemble, redonnons le goût de vivre à ceux qui en ont besoin", image: "https://moselle.croix-rouge.fr/wp-content/uploads/sites/36/2019/05/aide-alimentaire-croixrouge.jpg" },
+    { title: "Des équipes mobilisées chaque jour pour sauver des vies", image: "https://cdn-s-www.dna.fr/images/1D20E08A-8ADF-43D9-82DE-FCB9FD5C3427/NW_raw/des-benevoles-de-la-croix-rouge-recoivent-une-formation-a-la-clinique-sainte-anne-pour-ameliorer-leurs-interventions-de-secourisme-en-echangeant-avec-des-professionnels-de-sante-photo-dna-laurent-rea-1457546557.jpg" },
+    { title: "Agir chaque jour pour sauver des vies", image: "https://images.lanouvellerepublique.fr/image/upload/t_1020w/f_auto/63bdaf0868b680007e8b4583.jpg" },
 ];
 
 export default function Main() {
@@ -51,20 +51,20 @@ export default function Main() {
             <div className="carousel">
                 <div
                     className="slides"
-                    style={{transform: `translateX(-${current * 100}%)`}}
+                    style={{ transform: `translateX(-${current * 100}%)` }}
                 >
                     {slides.map((slide, index) => (
-                       <div
-    className="slide"
-    key={index}
-    style={{
-        backgroundImage: `url(${slide.image})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-    }}
->
-    <h1 className="slide-title">{slide.title}</h1>
-</div>
+                        <div
+                            className="slide"
+                            key={index}
+                            style={{
+                                backgroundImage: `url(${slide.image})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center'
+                            }}
+                        >
+                            <h1 className="slide-title">{slide.title}</h1>
+                        </div>
                     ))}
                 </div>
 
@@ -95,7 +95,7 @@ export default function Main() {
                             {/* Article principal - grande image */}
                             <div className="news-top__container">
                                 <a href="/israel-gaza-alerte-sur-la-situation-humanitaire/appel-a-dons-pour-gaza-votre-soutien-est-vital"
-                                   className="news-top__link">
+                                    className="news-top__link">
                                     <img
                                         src="/assets/images/enfant_qui_mange_a_table.jpg"
                                         alt=""
@@ -116,7 +116,7 @@ export default function Main() {
 
                             {/* Placeholder pour le formulaire de don */}
                             <div className="donation-form-placeholder">
-                                <DonationFormVertical/>
+                                <DonationFormVertical />
                             </div>
                         </div>
 
@@ -193,9 +193,9 @@ export default function Main() {
                     </div>
                 </section>
             </div>
-            <CroixRougeHomepage/>
-            <NewsletterSection/>
-            <DonationFormHorizontal/>
+            <CroixRougeHomepage />
+            <NewsletterSection />
+            <DonationFormHorizontal />
         </div>
     );
 };

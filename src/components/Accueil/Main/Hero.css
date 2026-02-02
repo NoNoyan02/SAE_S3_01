@@ -44,7 +44,7 @@
     transform: translateY(-50%);
     font-size: 2rem;
     color: white;
-    background: rgba(0,0,0,0.4);
+    background: rgba(0, 0, 0, 0.4);
     border: none;
     padding: 15px 25px;
     cursor: pointer;
@@ -54,7 +54,7 @@
 }
 
 .arrow:hover {
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.7);
     transform: translateY(-50%) scale(1.1);
 }
 

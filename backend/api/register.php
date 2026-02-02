@@ -46,51 +46,51 @@ try {
     $existingDonateur = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
     if ($existingDonateur) {
-        $donateur_id = (int) $existingDonateur['id'];
-        // On récupère son numéro s'il en a un
+      $donateur_id = (int) $existingDonateur['id'];
+      // On récupère son numéro s'il en a un
     } else {
-        // Sinon, on crée le donateur avec un numéro UNIQUE
-        $maxRetries = 5;
-        $retryCount = 0;
-        $isUnique = false;
-        $newDonorNumber = "";
+      // Sinon, on crée le donateur avec un numéro UNIQUE
+      $maxRetries = 5;
+      $retryCount = 0;
+      $isUnique = false;
+      $newDonorNumber = "";
 
-        do {
-            $newDonorNumber = strtoupper(bin2hex(random_bytes(4))); 
-            
-            $stmtCheckNum = $pdo->prepare("SELECT id FROM donateurs WHERE donor_number = :dn");
-            $stmtCheckNum->execute([':dn' => $newDonorNumber]);
-            if (!$stmtCheckNum->fetch()) {
-                $isUnique = true;
-            } else {
-                $retryCount++;
-            }
-        } while (!$isUnique && $retryCount < $maxRetries);
+      do {
+        $newDonorNumber = strtoupper(bin2hex(random_bytes(4)));
 
-        if (!$isUnique) {
-             http_response_code(500);
-             echo json_encode(["error" => "Erreur interne (génération numéro donateur). Réessayez."]);
-             exit;
+        $stmtCheckNum = $pdo->prepare("SELECT id FROM donateurs WHERE donor_number = :dn");
+        $stmtCheckNum->execute([':dn' => $newDonorNumber]);
+        if (!$stmtCheckNum->fetch()) {
+          $isUnique = true;
+        } else {
+          $retryCount++;
         }
+      } while (!$isUnique && $retryCount < $maxRetries);
 
-        // Découpage Nom Prénom (Approximatif)
-        $parts = explode(' ', $full_name, 2);
-        $prenom = $parts[0] ?? $full_name;
-        $nom = $parts[1] ?? ''; 
-        if (empty($nom)) {
-          $nom = $prenom;
-          $prenom = "";
-        }
+      if (!$isUnique) {
+        http_response_code(500);
+        echo json_encode(["error" => "Erreur interne (génération numéro donateur). Réessayez."]);
+        exit;
+      }
 
-        $stmt = $pdo->prepare("INSERT INTO donateurs (nom, prenom, email, telephone, donor_number) VALUES (:nom, :prenom, :email, :phone, :dn)");
-        $stmt->execute([
-          ':nom' => $nom,
-          ':prenom' => $prenom,
-          ':email' => $email,
-          ':phone' => $phone,
-          ':dn' => $newDonorNumber
-        ]);
-        $donateur_id = $pdo->lastInsertId();
+      // Découpage Nom Prénom (Approximatif)
+      $parts = explode(' ', $full_name, 2);
+      $prenom = $parts[0] ?? $full_name;
+      $nom = $parts[1] ?? '';
+      if (empty($nom)) {
+        $nom = $prenom;
+        $prenom = "";
+      }
+
+      $stmt = $pdo->prepare("INSERT INTO donateurs (nom, prenom, email, telephone, donor_number) VALUES (:nom, :prenom, :email, :phone, :dn)");
+      $stmt->execute([
+        ':nom' => $nom,
+        ':prenom' => $prenom,
+        ':email' => $email,
+        ':phone' => $phone,
+        ':dn' => $newDonorNumber
+      ]);
+      $donateur_id = $pdo->lastInsertId();
     }
   }
 
@@ -98,9 +98,9 @@ try {
   $stmtCheckUser = $pdo->prepare("SELECT id FROM users WHERE donateur_id = :did");
   $stmtCheckUser->execute([':did' => $donateur_id]);
   if ($stmtCheckUser->fetch()) {
-      http_response_code(409);
-      echo json_encode(["error" => "Ce numéro donateur (ou adresse email) est déjà associé à un compte utilisateur."]);
-      exit;
+    http_response_code(409);
+    echo json_encode(["error" => "Ce numéro donateur (ou adresse email) est déjà associé à un compte utilisateur."]);
+    exit;
   }
 
   // 2) Créer le user
@@ -131,10 +131,10 @@ try {
   ]);
 
   $userData = [
-      "id" => (int)$userId,
-      "full_name" => $full_name,
-      "email" => $email,
-      "role" => 'Donateur'
+    "id" => (int) $userId,
+    "full_name" => $full_name,
+    "email" => $email,
+    "role" => 'Donateur'
   ];
   $_SESSION['user'] = $userData;
 

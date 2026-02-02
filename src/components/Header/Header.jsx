@@ -10,10 +10,8 @@ export default function Header() {
     const [activeSubMenu, setActiveSubMenu] = useState(null);
     const [submenuPosition, setSubmenuPosition] = useState({ left: 0 });
 
-    // --- NOUVEAU : État pour la barre de recherche déroulante ---
     const [searchExpanded, setSearchExpanded] = useState(false);
     const searchInputRef = useRef(null);
-    // ------------------------------------------------------------
 
     const [loginOverlayOpen, setLoginOverlayOpen] = useState(false);
     const [isMouseDownOnBackdrop, setIsMouseDownOnBackdrop] = useState(false);

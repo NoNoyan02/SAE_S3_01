@@ -1,11 +1,11 @@
-import React, {useState} from 'react';
-import {Menu, Search, User, X} from 'lucide-react';
+import React, { useState } from 'react';
+import { Menu, Search, User, X } from 'lucide-react';
 import './Header.css';
 
 const Header = () => {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [activeSubMenu, setActiveSubMenu] = useState(null);
-    const [submenuPosition, setSubmenuPosition] = useState({left: 0});
+    const [submenuPosition, setSubmenuPosition] = useState({ left: 0 });
     const [loginOverlayOpen, setLoginOverlayOpen] = useState(false);
     const [isLoginMode, setIsLoginMode] = useState(true);
 
@@ -16,31 +16,31 @@ const Header = () => {
         {
             title: "Je m'engage",
             subItems: [
-                {title: "Je donne", path: "/je-donne"},
-                {title: "Je deviens bénévole", path: "/je-deviens-benevole"}
+                { title: "Je donne", path: "/je-donne" },
+                { title: "Je deviens bénévole", path: "/je-deviens-benevole" }
             ]
         },
         {
             title: "Je me forme",
             subItems: [
-                {title: "Formations aux premiers secours", path: "/formations"}
+                { title: "Formations aux premiers secours", path: "/formations" }
             ]
         },
         {
             title: "Je trouve un service",
             subItems: [
-                {title: "Aides matérielles", path: "/aides-materielles"}
+                { title: "Aides matérielles", path: "/aides-materielles" }
             ]
         },
-        {title: "Nos actualités", path: "/actualites"},
-        {title: "Nos adresses", path: "/adresses"},
-        {title: "Contactez-nous", path: "/contact"}
+        { title: "Nos actualités", path: "/actualites" },
+        { title: "Nos adresses", path: "/adresses" },
+        { title: "Contactez-nous", path: "/contact" }
     ];
 
     const handleMouseEnter = (index, event) => {
         if (menuItems[index].subItems) {
             const rect = event.currentTarget.getBoundingClientRect();
-            setSubmenuPosition({left: rect.left});
+            setSubmenuPosition({ left: rect.left });
             setActiveSubMenu(index);
         }
     };
@@ -69,7 +69,7 @@ const Header = () => {
                         <div className="left-section">
                             <a href="/" className="logo-link" aria-label="Retour à l'accueil">
                                 <img src="/assets/icon/crf_logo.svg" alt="Logo de la croix rouge"
-                                     className="logo-icon"/>
+                                    className="logo-icon" />
                             </a>
 
                             {/* Desktop Nav */}
@@ -93,7 +93,7 @@ const Header = () => {
                                                 {activeSubMenu === index && (
                                                     <div
                                                         className="submenu-desktop"
-                                                        style={{left: `${submenuPosition.left}px`}}
+                                                        style={{ left: `${submenuPosition.left}px` }}
                                                         onMouseEnter={() => setActiveSubMenu(index)}
                                                         onMouseLeave={() => setActiveSubMenu(null)}
                                                     >
@@ -131,11 +131,11 @@ const Header = () => {
                                     onClick={() => setLoginOverlayOpen(true)}
                                     className="donor-space-button donor-space-desktop"
                                 >
-                                    <User className="donor-icon"/> <span>Espace donateur</span>
+                                    <User className="donor-icon" /> <span>Espace donateur</span>
                                 </button>
                             ) : (
                                 <div className="user-profile-desktop">
-                                    <User className="donor-icon"/>
+                                    <User className="donor-icon" />
                                     <span className="user-name">{userName}</span>
                                     <button onClick={handleLogout} className="logout-btn">Déconnexion</button>
                                 </div>
@@ -172,7 +172,7 @@ const Header = () => {
                                 className="close-modal"
                                 onClick={() => setLoginOverlayOpen(false)}
                             >
-                                <X size={24}/>
+                                <X size={24} />
                             </button>
 
                             <div className="login-header">
@@ -185,23 +185,23 @@ const Header = () => {
                                     <>
                                         <div className="form-group">
                                             <label htmlFor="nom">Nom complet</label>
-                                            <input type="text" id="nom" placeholder="Jean Dupont" required/>
+                                            <input type="text" id="nom" placeholder="Jean Dupont" required />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="tel">Téléphone</label>
-                                            <input type="tel" id="tel" placeholder="06 12 34 56 78"/>
+                                            <input type="tel" id="tel" placeholder="06 12 34 56 78" />
                                         </div>
                                     </>
                                 )}
 
                                 <div className="form-group">
                                     <label htmlFor="email">Email</label>
-                                    <input type="email" id="email" placeholder="exemple@email.com" required/>
+                                    <input type="email" id="email" placeholder="exemple@email.com" required />
                                 </div>
 
                                 <div className="form-group">
                                     <label htmlFor="password">Mot de passe</label>
-                                    <input type="password" id="password" placeholder="••••••••" required/>
+                                    <input type="password" id="password" placeholder="••••••••" required />
                                 </div>
 
                                 {isLoginMode && (
@@ -215,11 +215,11 @@ const Header = () => {
                                 <div className="toggle-mode">
                                     {isLoginMode ? (
                                         <p>Pas encore de compte ? <button type="button"
-                                                                          onClick={() => setIsLoginMode(false)}>S'inscrire</button>
+                                            onClick={() => setIsLoginMode(false)}>S'inscrire</button>
                                         </p>
                                     ) : (
                                         <p>Déjà un compte ? <button type="button"
-                                                                    onClick={() => setIsLoginMode(true)}>Se
+                                            onClick={() => setIsLoginMode(true)}>Se
                                             connecter</button></p>
                                     )}
                                 </div>

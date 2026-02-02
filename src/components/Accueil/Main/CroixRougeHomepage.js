@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react';
+import { useRef, useState } from 'react';
 import "./CroixRougeHomepage.css"
 
 export default function CroixRougeHomepage() {
@@ -46,7 +46,7 @@ export default function CroixRougeHomepage() {
         image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=200&fit=crop"
     }];
 
-     const actualites = [{
+    const actualites = [{
         date: "04/09/25",
         title: "Rétablissement des liens familiaux : clarifier le sort des personnes disparues et apporter",
         image: "https://images.ctfassets.net/ksb78y40v1oe/2IQ7uDilkzVZ282qCMbrWx/6ba0f0ac4f92f9a584c3a37d244b4dba/2022_liens-familiaux_Calais__L_Witter-RLF-700-450.jpg?fm=webp&q=85&w=570&h=400&fit=thumb"
@@ -63,10 +63,10 @@ export default function CroixRougeHomepage() {
 
     const handleScroll = (ref, direction) => {
         if (ref.current) {
-            const cardWidth = window.innerWidth <= 480 ? 280 : 
-                             window.innerWidth <= 768 ? 320 : 370;
-            const scrollAmount = cardWidth + 20; 
-            
+            const cardWidth = window.innerWidth <= 480 ? 280 :
+                window.innerWidth <= 768 ? 320 : 370;
+            const scrollAmount = cardWidth + 20;
+
             ref.current.scrollBy({
                 left: direction === 'right' ? scrollAmount : -scrollAmount,
                 behavior: 'smooth'
@@ -81,7 +81,7 @@ export default function CroixRougeHomepage() {
                     <header className="section-head">
                         <h2 className="title">
                             Je veux <span
-                            className="mark-secondary">me former aux métiers du sanitaire et du social</span>
+                                className="mark-secondary">me former aux métiers du sanitaire et du social</span>
                         </h2>
                         <p className="subtitle">
                             Peu importe votre profil, il y a forcément une formation faite pour vous !
@@ -93,7 +93,7 @@ export default function CroixRougeHomepage() {
                             <div className="cta-cover">
                                 <img
                                     src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=350&fit=crop"
-                                    alt="Professionnel" className="cta-image"/>
+                                    alt="Professionnel" className="cta-image" />
                             </div>
                             <div className="cta-text">
                                 <p className="cta-title">Vous êtes un professionnel ?</p>
@@ -105,7 +105,7 @@ export default function CroixRougeHomepage() {
                             <div className="cta-cover">
                                 <img
                                     src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=400&h=350&fit=crop"
-                                    alt="Étudiant" className="cta-image"/>
+                                    alt="Étudiant" className="cta-image" />
                             </div>
                             <div className="cta-text">
                                 <p className="cta-title">Vous êtes un futur étudiant ?</p>
@@ -199,7 +199,7 @@ export default function CroixRougeHomepage() {
                                                     <a href="#" className="training-card">
                                                         <div className="training-card__cover">
                                                             <img src={formation.image} alt={formation.title}
-                                                                 className="training-card__img"/>
+                                                                className="training-card__img" />
                                                         </div>
                                                         <div className="training-card__text">
                                                             <strong
@@ -242,7 +242,7 @@ export default function CroixRougeHomepage() {
                             <div className="cta-cover">
                                 <img
                                     src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=400&h=350&fit=crop"
-                                    alt="Emploi" className="cta-image"/>
+                                    alt="Emploi" className="cta-image" />
                             </div>
                             <div className="cta-text">
                                 <p className="cta-title">Trouvez un emploi</p>
@@ -254,7 +254,7 @@ export default function CroixRougeHomepage() {
                             <div className="cta-cover">
                                 <img
                                     src="https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=350&fit=crop"
-                                    alt="Bénévole" className="cta-image"/>
+                                    alt="Bénévole" className="cta-image" />
                             </div>
                             <div className="cta-text">
                                 <p className="cta-title">Devenez bénévole</p>
@@ -276,7 +276,7 @@ export default function CroixRougeHomepage() {
                     <div className="icons-list">
                         <a href="#" className="icon-card">
                             <div className="icon-wrapper">
-                                <img src="https://api.iconify.design/mdi/food-apple.svg" alt="" className="icon-image"/>
+                                <img src="https://api.iconify.design/mdi/food-apple.svg" alt="" className="icon-image" />
                             </div>
                             <span className="icon-title">Épiceries sociales</span>
                         </a>
@@ -284,7 +284,7 @@ export default function CroixRougeHomepage() {
                         <a href="#" className="icon-card">
                             <div className="icon-wrapper">
                                 <img src="https://api.iconify.design/mdi/tshirt-crew.svg" alt=""
-                                     className="icon-image"/>
+                                    className="icon-image" />
                             </div>
                             <span className="icon-title">Boutiques solidaires</span>
                         </a>
@@ -292,7 +292,7 @@ export default function CroixRougeHomepage() {
                         <a href="#" className="icon-card">
                             <div className="icon-wrapper">
                                 <img src="https://api.iconify.design/mdi/baby-carriage.svg" alt=""
-                                     className="icon-image"/>
+                                    className="icon-image" />
                             </div>
                             <span className="icon-title">Crèches</span>
                         </a>
@@ -318,15 +318,15 @@ export default function CroixRougeHomepage() {
                             {dossiers.map((dossier, index) => (
                                 <a href="#" key={index} className="folder-card">
                                     <div className="folder-cover">
-                                        <img src={dossier.image} alt={dossier.title} className="folder-image"/>
+                                        <img src={dossier.image} alt={dossier.title} className="folder-image" />
                                     </div>
                                     <div className="folder-text">
                                         <strong className="folder-title">{dossier.title}</strong>
                                         <span className="btn-link">
                                             <svg className="arrow-icon" viewBox="0 0 16 16"
-                                                 xmlns="http://www.w3.org/2000/svg">
+                                                xmlns="http://www.w3.org/2000/svg">
                                                 <path fill="currentColor"
-                                                      d="M5.727 11.053 8.78 8 5.727 4.94l.94-.94 4 4-4 4-.94-.947Z"/>
+                                                    d="M5.727 11.053 8.78 8 5.727 4.94l.94-.94 4 4-4 4-.94-.947Z" />
                                             </svg>
                                             Lire le dossier
                                         </span>

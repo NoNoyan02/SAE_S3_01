@@ -13,7 +13,6 @@ export default function ResponsiveOverflowAnalyzer() {
     const [url, setUrl] = useState("");
     const iframeRef = useRef(null);
 
-    // 🔹 Nouveau : importer un fichier HTML
     const handleFileImport = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -25,7 +24,6 @@ export default function ResponsiveOverflowAnalyzer() {
         reader.readAsText(file);
     };
 
-    // ✅ Analyse principale
     const analyzeScroll = async (url = null, htmlContent = null) => {
         setAnalyzing(true);
         setProgress(0);
@@ -138,7 +136,7 @@ export default function ResponsiveOverflowAnalyzer() {
 
     const generateCSS = () => {
         if (zones.length === 0) return "";
-        let css = "/* 🎯 Corrections suggérées pour le scroll horizontal */\n\n";
+        let css = "/* Corrections suggérées pour le scroll horizontal */\n\n";
         css += "html, body {\n  max-width: 100vw;\n  overflow-x: hidden;\n}\n\n";
         css += "* {\n  max-width: 100%;\n  box-sizing: border-box;\n}\n\n";
 

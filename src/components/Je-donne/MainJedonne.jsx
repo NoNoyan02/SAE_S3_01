@@ -96,7 +96,6 @@ export default function MainJedonne() {
 
     return (
         <>
-            {/* DÉBUT DU CSS INTÉGRÉ */}
             <style>{`
                 body {
                     margin: 0;
@@ -1379,7 +1378,6 @@ export default function MainJedonne() {
                     }
                 }
             `}</style>
-            {/* FIN DU CSS INTÉGRÉ */}
 
             <div className="bloc-don">
                 <img

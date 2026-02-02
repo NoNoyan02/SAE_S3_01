@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import CroixRougeHomepage from "./CroixRougeHomepage.jsx";
 import DonationFormHorizontal from '../../Form/DonationFormHorizontal.jsx';
 import NewsletterSection from "../Section/NewsletterSection.jsx";
@@ -56,7 +56,6 @@ export default function Main() {
 
     return (
         <div>
-            {/* DÉBUT DU CSS INTÉGRÉ (HERO + NEWS + DONATION FORM) */}
             <style>{`
                 /* ============================================================
                    PARTIE 1 : CSS GÉNÉRAL (HERO, NEWS, WRAPPERS)
@@ -815,7 +814,7 @@ export default function Main() {
             <div className="carousel">
                 <div
                     className="slides"
-                    style={{transform: `translateX(-${current * 100}%)`}}
+                    style={{ transform: `translateX(-${current * 100}%)` }}
                 >
                     {slides.map((slide, index) => (
                         <div
@@ -861,7 +860,7 @@ export default function Main() {
                             {/* Article principal - grande image */}
                             <div className="news-top__container">
                                 <a href="/israel-gaza-alerte-sur-la-situation-humanitaire/appel-a-dons-pour-gaza-votre-soutien-est-vital"
-                                   className="news-top__link">
+                                    className="news-top__link">
                                     <img
                                         src={enfantquimangeatable}
                                         alt=""
@@ -882,7 +881,7 @@ export default function Main() {
 
                             {/* Placeholder pour le formulaire de don */}
                             <div className="donation-form-placeholder">
-                                <DonationFormVertical/>
+                                <DonationFormVertical />
                             </div>
                         </div>
 
@@ -959,9 +958,9 @@ export default function Main() {
                     </div>
                 </section>
             </div>
-            <CroixRougeHomepage/>
-            <NewsletterSection/>
-            <DonationFormHorizontal/>
+            <CroixRougeHomepage />
+            <NewsletterSection />
+            <DonationFormHorizontal />
         </div>
     );
 };

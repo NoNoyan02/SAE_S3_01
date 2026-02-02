@@ -1,14 +1,11 @@
 export default function Hero() {
     return (
         <>
-            {/* DÉBUT DU CSS INTÉGRÉ */}
-            {/* DÉBUT DU CSS INTÉGRÉ SPÉCIFIQUE (Si besoin de légers ajustements) */}
             <style>{`
                 .je-deviens-hero .shared-hero-content {
                     padding-bottom: 60px; /* Plus d'espace pour l'input code postal */
                 }
             `}</style>
-            {/* FIN DU CSS INTÉGRÉ */}
 
             <header className="shared-hero je-deviens-hero">
                 <img

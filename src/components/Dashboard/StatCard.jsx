@@ -1,14 +1,14 @@
 import React from 'react';
 
 const StatCard = ({ label, value, icon: Icon, color = "#ED1B24" }) => {
-    return (
-        <div className="stat-card">
-            <div>
-                <span className="stat-label">{label}</span>
-                <p className="stat-value">{value}</p>
-            </div>
-            {Icon && <Icon size={32} color={color} />}
-            <style>{`
+  return (
+    <div className="stat-card">
+      <div>
+        <span className="stat-label">{label}</span>
+        <p className="stat-value">{value}</p>
+      </div>
+      {Icon && <Icon size={32} color={color} />}
+      <style>{`
         .stat-card {
           background-color: white;
           padding: 24px;
@@ -40,8 +40,8 @@ const StatCard = ({ label, value, icon: Icon, color = "#ED1B24" }) => {
           margin: 0;
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };
 
 export default StatCard;

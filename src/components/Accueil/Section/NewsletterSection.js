@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import './NewsletterSection.css';
 
 const NewsletterSection = () => {
@@ -7,7 +7,7 @@ const NewsletterSection = () => {
     const [acceptEntreprise, setAcceptEntreprise] = useState(false);
 
     const handleSubmit = () => {
-        console.log('Newsletter subscription:', {email, acceptConditions, acceptEntreprise});
+        console.log('Newsletter subscription:', { email, acceptConditions, acceptEntreprise });
         alert(`Merci !`);
     };
 
@@ -43,8 +43,8 @@ const NewsletterSection = () => {
                                     className="newsletter-section-check"
                                 />
                                 <span className="newsletter-section-text">
-                  J'accepte les conditions générales et souhaite m'abonner.
-                </span>
+                                    J'accepte les conditions générales et souhaite m'abonner.
+                                </span>
                             </label>
 
                             <label className="newsletter-section-label">
@@ -55,8 +55,8 @@ const NewsletterSection = () => {
                                     className="newsletter-section-check"
                                 />
                                 <span className="newsletter-section-text">
-                  Je souhaite également recevoir l'actualité à destination des entreprises.
-                </span>
+                                    Je souhaite également recevoir l'actualité à destination des entreprises.
+                                </span>
                             </label>
                         </div>
                     </div>

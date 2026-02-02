@@ -19,9 +19,9 @@ ReactDOM.createRoot(rootElement).render(
     <React.StrictMode>
         <QueryClientProvider client={queryClient}>
             <ErrorBoundary FallbackComponent={ErrorFallback}>
-                    <BrowserRouter>
-                        <App />
-                    </BrowserRouter>
+                <BrowserRouter>
+                    <App />
+                </BrowserRouter>
             </ErrorBoundary>
         </QueryClientProvider>
     </React.StrictMode>,

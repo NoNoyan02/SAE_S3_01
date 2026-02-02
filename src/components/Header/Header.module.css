@@ -139,8 +139,15 @@
 }
 
 @keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .navItemSub {
@@ -173,14 +180,17 @@
     position: relative;
     display: flex;
     align-items: center;
-    justify-content: flex-end; /* Important pour l'expansion vers la gauche */
+    justify-content: flex-end;
+    /* Important pour l'expansion vers la gauche */
 }
 
 /* Conteneur de l'input qui va s'animer */
 .inputContainer {
-    width: 0; /* Caché par défaut */
+    width: 0;
+    /* Caché par défaut */
     opacity: 0;
-    overflow: hidden; /* Cache l'input quand la largeur est réduite */
+    overflow: hidden;
+    /* Cache l'input quand la largeur est réduite */
     transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease;
     display: flex;
     align-items: center;
@@ -188,16 +198,19 @@
 
 /* L'input lui-même */
 .searchInput {
-    width: 320px; /* Largeur fixe à l'intérieur du conteneur masque */
+    width: 320px;
+    /* Largeur fixe à l'intérieur du conteneur masque */
     height: 40px;
     background: var(--color-grey-light);
     border: 1px solid var(--color-grey);
-    border-radius: 20px 0 0 20px; /* Arrondi à gauche, droit à droite pour coller au bouton */
+    border-radius: 20px 0 0 20px;
+    /* Arrondi à gauche, droit à droite pour coller au bouton */
     padding: 0 16px;
     font-family: inherit;
     font-size: 16px;
     outline: none;
-    border-right: none; /* Pas de bordure droite car le bouton la remplace */
+    border-right: none;
+    /* Pas de bordure droite car le bouton la remplace */
 }
 
 /* Retirer la croix bleue/grise par défaut des navigateurs */
@@ -255,20 +268,24 @@
 /* -- ÉTAT DÉPLIÉ (Quand on clique) -- */
 
 .searchWrapper.expanded .inputContainer {
-    width: 320px; /* Largeur de déploiement */
+    width: 320px;
+    /* Largeur de déploiement */
     opacity: 1;
 }
 
 /* Quand c'est ouvert, on change le style du bouton pour qu'il fusionne avec l'input */
 .searchWrapper.expanded .searchToggleButton {
-    border-radius: 0 20px 20px 0; /* Arrondi à droite seulement */
-    background: var(--color-red); /* Optionnel : Bouton rouge quand ouvert pour "fermer" */
+    border-radius: 0 20px 20px 0;
+    /* Arrondi à droite seulement */
+    background: var(--color-red);
+    /* Optionnel : Bouton rouge quand ouvert pour "fermer" */
     border-color: var(--color-red);
     border-left: none;
 }
 
 .searchWrapper.expanded .searchToggleButton .searchIcon {
-    color: var(--color-white); /* Croix blanche */
+    color: var(--color-white);
+    /* Croix blanche */
 }
 
 /* -- FORCER L'OUVERTURE SI ESPACE (Desktop) -- */
@@ -277,13 +294,14 @@
         width: 280px !important;
         opacity: 1 !important;
     }
-    
+
     .searchToggleButton {
         border-radius: 0 20px 20px 0 !important;
         background: var(--color-grey-light) !important;
         border-color: var(--color-grey) !important;
         border-left: none !important;
-        cursor: default; /* Ce n'est plus vraiment un toggle ici */
+        cursor: default;
+        /* Ce n'est plus vraiment un toggle ici */
     }
 
     .searchIcon {
@@ -325,8 +343,13 @@
     color: var(--color-red);
 }
 
-.donorSpaceDesktop { display: none; }
-.donorSpaceMobileTablet { display: flex; }
+.donorSpaceDesktop {
+    display: none;
+}
+
+.donorSpaceMobileTablet {
+    display: flex;
+}
 
 .donorIcon {
     width: 20px;
@@ -370,7 +393,10 @@
 /* MODALES & OVERLAYS */
 .loginOverlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     background: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
@@ -379,7 +405,15 @@
     animation: fadeIn 0.3s ease;
 }
 
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
 
 .loginModal {
     background: var(--color-white);
@@ -392,43 +426,120 @@
     animation: slideUp 0.3s ease;
 }
 
-@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 .closeModal {
     position: absolute;
-    top: 16px; right: 16px;
-    background: none; border: none;
-    cursor: pointer; color: var(--color-grey);
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-grey);
     padding: 4px;
 }
-.closeModal:hover { color: var(--color-black); }
 
-.loginHeader { text-align: center; margin-bottom: 32px; }
-.loginHeader h2 { font-size: 28px; font-weight: 700; color: var(--color-black); margin-bottom: 8px; }
-.loginHeader p { font-size: 16px; color: var(--color-grey); margin: 0; }
+.closeModal:hover {
+    color: var(--color-black);
+}
 
-.formGroup { margin-bottom: 20px; }
-.formGroup label { display: block; font-size: 16px; font-weight: 600; color: var(--color-black); margin-bottom: 8px; }
+.loginHeader {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.loginHeader h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-black);
+    margin-bottom: 8px;
+}
+
+.loginHeader p {
+    font-size: 16px;
+    color: var(--color-grey);
+    margin: 0;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+.formGroup label {
+    display: block;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-black);
+    margin-bottom: 8px;
+}
+
 .formGroup input {
-    width: 100%; height: 44px; padding: 0 16px;
-    font-size: 16px; color: var(--color-black);
-    background: var(--color-white); border: 1.5px solid var(--color-grey-light);
-    border-radius: 8px; outline: none;
+    width: 100%;
+    height: 44px;
+    padding: 0 16px;
+    font-size: 16px;
+    color: var(--color-black);
+    background: var(--color-white);
+    border: 1.5px solid var(--color-grey-light);
+    border-radius: 8px;
+    outline: none;
     transition: border-color var(--transition-speed);
 }
-.formGroup input:focus { border-color: var(--color-red); }
 
-.forgotPassword { display: block; text-align: right; font-size: 13px; color: var(--color-red); text-decoration: none; margin-bottom: 24px; }
-.submitBtn {
-    width: 100%; height: 48px;
-    background: var(--color-red); color: var(--color-white);
-    font-size: 16px; font-weight: 600; border: none; border-radius: 8px;
-    cursor: pointer; transition: background var(--transition-speed);
+.formGroup input:focus {
+    border-color: var(--color-red);
 }
-.submitBtn:hover { background: var(--color-red-dark); }
 
-.toggleMode { text-align: center; margin-top: 20px; }
-.toggleMode button { background: none; border: none; color: var(--color-red); font-weight: 600; cursor: pointer; text-decoration: underline; margin-left: 4px; }
+.forgotPassword {
+    display: block;
+    text-align: right;
+    font-size: 13px;
+    color: var(--color-red);
+    text-decoration: none;
+    margin-bottom: 24px;
+}
+
+.submitBtn {
+    width: 100%;
+    height: 48px;
+    background: var(--color-red);
+    color: var(--color-white);
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background var(--transition-speed);
+}
+
+.submitBtn:hover {
+    background: var(--color-red-dark);
+}
+
+.toggleMode {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.toggleMode button {
+    background: none;
+    border: none;
+    color: var(--color-red);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    margin-left: 4px;
+}
 
 /* BOUTON DON */
 .donationButton {
@@ -447,42 +558,106 @@
     text-decoration: none;
     transition: background var(--transition-speed), transform var(--transition-speed);
 }
-.donationButton:hover { background: var(--color-red-dark); transform: translateY(-2px); }
-.donationTextSmall { font-size: 10px; font-weight: 600; line-height: 10px; color: var(--color-white); }
-.donationTextLarge { font-size: 18px; font-weight: 600; line-height: 18px; color: var(--color-white); }
+
+.donationButton:hover {
+    background: var(--color-red-dark);
+    transform: translateY(-2px);
+}
+
+.donationTextSmall {
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 10px;
+    color: var(--color-white);
+}
+
+.donationTextLarge {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 18px;
+    color: var(--color-white);
+}
 
 /* MOBILE */
 .mobileMenuButton {
-    display: flex; align-items: center; justify-content: center;
-    width: 44px; height: 44px; background: none; border: none;
-    cursor: pointer; color: var(--color-black); z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-black);
+    z-index: 1001;
 }
-.menuIcon { width: 28px; height: 28px; }
+
+.menuIcon {
+    width: 28px;
+    height: 28px;
+}
 
 .mobileMenuOverlay {
-    position: fixed; top: var(--header-height); left: 0; right: 0; bottom: 0;
-    background: rgba(0, 0, 0, 0); pointer-events: none; z-index: 999;
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0);
+    pointer-events: none;
+    z-index: 999;
     transition: background var(--transition-speed);
 }
-.mobileMenuOverlay.active { background: rgba(0, 0, 0, 0.5); pointer-events: auto; }
+
+.mobileMenuOverlay.active {
+    background: rgba(0, 0, 0, 0.5);
+    pointer-events: auto;
+}
 
 .mobileMenu {
-    position: absolute; width: 75%; height: 100%; top: 0; left: 0;
+    position: absolute;
+    width: 75%;
+    height: 100%;
+    top: 0;
+    left: 0;
     max-height: calc(100vh - var(--header-height));
-    background: var(--color-white); transform: translateX(-100%); opacity: 0;
+    background: var(--color-white);
+    transform: translateX(-100%);
+    opacity: 0;
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s;
-    overflow-y: auto; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-.mobileMenu.open { transform: translateX(0); opacity: 1; }
 
-.mobileMenuContent { display: flex; flex-direction: column; padding: 24px 16px; gap: 8px; }
+.mobileMenu.open {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.mobileMenuContent {
+    display: flex;
+    flex-direction: column;
+    padding: 24px 16px;
+    gap: 8px;
+}
 
 /* RECHERCHE MOBILE (Toujours visible) */
-.searchWrapperMobile { position: relative; margin-bottom: 16px; }
+.searchWrapperMobile {
+    position: relative;
+    margin-bottom: 16px;
+}
+
 .searchInputMobile {
-    width: 100%; height: 40px; padding: 0 40px 0 16px;
-    background: var(--color-grey-bg); border: 1px solid var(--color-grey);
-    border-radius: 20px; font-size: 16px; font-weight: 600; color: var(--color-black); outline: none;
+    width: 100%;
+    height: 40px;
+    padding: 0 40px 0 16px;
+    background: var(--color-grey-bg);
+    border: 1px solid var(--color-grey);
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-black);
+    outline: none;
 }
 
 .searchInputMobile::-webkit-search-cancel-button,
@@ -492,47 +667,154 @@
     display: none;
     -webkit-appearance: none;
 }
-.searchButtonMobile { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 24px; height: 24px; background: none; border: none; }
-.searchIconMobile { width: 16px; height: 16px; color: var(--color-red); }
+
+.searchButtonMobile {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+}
+
+.searchIconMobile {
+    width: 16px;
+    height: 16px;
+    color: var(--color-red);
+}
 
 /* Mobile Nav */
-.mobileNav { display: flex; flex-direction: column; gap: 4px; margin-bottom: 16px; }
-.navItemMobile { padding: 16px; font-size: 16px; font-weight: 600; color: var(--color-black); text-decoration: none; border-radius: 8px; display: block; }
-.submenuMobile { padding-left: 16px; display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
-.navItemMobileSub { padding: 12px 16px; font-size: 16px; font-weight: 500; color: var(--color-black); text-decoration: none; border-radius: 6px; display: block; }
+.mobileNav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
+}
 
-.donorSpaceButtonMobile { display: flex; align-items: center; gap: 12px; padding: 16px; font-size: 16px; font-weight: 600; color: var(--color-black); text-decoration: none; border-radius: 8px; }
-.donorIconMobile { width: 20px; height: 20px; color: var(--color-red); }
+.navItemMobile {
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-black);
+    text-decoration: none;
+    border-radius: 8px;
+    display: block;
+}
+
+.submenuMobile {
+    padding-left: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.navItemMobileSub {
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--color-black);
+    text-decoration: none;
+    border-radius: 6px;
+    display: block;
+}
+
+.donorSpaceButtonMobile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-black);
+    text-decoration: none;
+    border-radius: 8px;
+}
+
+.donorIconMobile {
+    width: 20px;
+    height: 20px;
+    color: var(--color-red);
+}
 
 .donationButtonMobile {
-    margin-top: 16px; height: 54px; width: 100%;
-    padding: 12px 24px; background: var(--color-red); border: none; border-radius: 20px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 1.5px; text-decoration: none;
+    margin-top: 16px;
+    height: 54px;
+    width: 100%;
+    padding: 12px 24px;
+    background: var(--color-red);
+    border: none;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5px;
+    text-decoration: none;
 }
-.donationTextSmallMobile { font-size: 10px; font-weight: 600; line-height: 10px; color: var(--color-white); }
-.donationTextLargeMobile { font-size: 18px; font-weight: 600; line-height: 18px; color: var(--color-white); }
+
+.donationTextSmallMobile {
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 10px;
+    color: var(--color-white);
+}
+
+.donationTextLargeMobile {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 18px;
+    color: var(--color-white);
+}
 
 /* MEDIA QUERIES */
 @media (min-width: 768px) {
-    .rightSection { display: flex; }
+    .rightSection {
+        display: flex;
+    }
 }
 
 @media (min-width: 1024px) {
-    .searchWrapperMobile { display: none; }
+    .searchWrapperMobile {
+        display: none;
+    }
+
     /* Sur desktop, on affiche la recherche (celle du module CSS) */
-    .searchWrapper { display: flex !important; }
+    .searchWrapper {
+        display: flex !important;
+    }
 }
 
 @media (min-width: 1440px) {
-    .donorSpaceDesktop { display: flex !important; }
-    .donorSpaceMobileTablet { display: none; }
-    .userProfileDesktop { display: flex; }
+    .donorSpaceDesktop {
+        display: flex !important;
+    }
+
+    .donorSpaceMobileTablet {
+        display: none;
+    }
+
+    .userProfileDesktop {
+        display: flex;
+    }
 }
 
 @media (min-width: 1785px) {
-    .mobileMenuButton { display: none; }
-    .mobileMenuOverlay { display: none; }
-    .navDesktop { display: flex; }
-    .leftSection { gap: 40px; }
+    .mobileMenuButton {
+        display: none;
+    }
+
+    .mobileMenuOverlay {
+        display: none;
+    }
+
+    .navDesktop {
+        display: flex;
+    }
+
+    .leftSection {
+        gap: 40px;
+    }
 }

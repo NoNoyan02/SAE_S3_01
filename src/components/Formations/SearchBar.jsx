@@ -83,10 +83,10 @@ export default function SearchBar() {
                 </select>
 
                 <label htmlFor="location" className="visually-hidden">Localisation</label>
-                <input 
-                    type="text" 
-                    id="location" 
-                    name="location" 
+                <input
+                    type="text"
+                    id="location"
+                    name="location"
                     placeholder="Code postal ou ville"
                     aria-label="Code postal ou ville"
                 />

@@ -152,7 +152,7 @@
     }
 }
 
-.donation-tabs > * {
+.donation-tabs>* {
     flex: 1;
 }
 
@@ -190,7 +190,7 @@
     }
 }
 
-.donation-options > * {
+.donation-options>* {
     flex: 1;
 }
 
@@ -261,7 +261,7 @@
     border-color: #767676;
 }
 
-.donation-choice input:checked + label {
+.donation-choice input:checked+label {
     border-color: #000;
     color: #075c68;
     background-color: #e6eff0;
@@ -281,12 +281,12 @@
     box-shadow: 0 1px 8px rgba(0, 0, 0, .2);
 }
 
-.donation-choice--radio input:hover + label::before,
-.donation-choice--radio input:focus + label::before {
+.donation-choice--radio input:hover+label::before,
+.donation-choice--radio input:focus+label::before {
     background-color: #f6f7fa;
 }
 
-.donation-choice--radio input:checked + label::before {
+.donation-choice--radio input:checked+label::before {
     border-color: #000;
     box-shadow: inset 0 0 0 3px #075c68;
     background-color: #fff;

@@ -60,11 +60,9 @@
     text-shadow: 0 4px 4px rgba(0, 0, 0, 0.45);
     position: relative;
     z-index: 2;
-    background: radial-gradient(
-            50% 50% at 50% 50%,
+    background: radial-gradient(50% 50% at 50% 50%,
             rgba(0, 0, 0, 0.2) 0,
-            transparent 100%
-    );
+            transparent 100%);
     padding: 24px;
 }
 
@@ -121,6 +119,7 @@
 }
 
 @media (max-width: 1099px) {
+
     .with-cover,
     .with-background {
         margin-bottom: 48px;

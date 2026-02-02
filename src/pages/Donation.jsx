@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import "intl-tel-input/build/css/intlTelInput.css";
 import intlTelInput from "intl-tel-input";
 
-// Importation des assets (Méthode propre de aze.jsx)
+// Importation des assets
 import bouclier from "assets/images/donation/bouclier.svg";
 import cartedecredit from "assets/images/donation/payment/carte-de-credit.svg";
 import ggpayapppay from "assets/images/donation/payment/gg-pay-app-pay.svg";
@@ -25,7 +25,7 @@ async function submitDonation(payload) {
 
 export default function Donation() {
     // --- ÉTATS (States) ---
-    // --- ÉTATS (States) ---
+
     const [activeTab, setActiveTab] = useState("once");
     const [selectedAmount, setSelectedAmount] = useState(null);
     const [customAmount, setCustomAmount] = useState("");
@@ -36,7 +36,7 @@ export default function Donation() {
     const [donorText, setDonorText] = useState("");
     const [openAccordion, setOpenAccordion] = useState(null);
 
-    // États du formulaire (Issu de message (1).txt)
+    // États du formulaire
     const [email, setEmail] = useState("");
     const [civilite, setCivilite] = useState("");
     const [prenom, setPrenom] = useState("");
@@ -49,21 +49,20 @@ export default function Donation() {
     const [ville, setVille] = useState("");
     const [pays, setPays] = useState("FRANCE");
     const [dateNaissance, setDateNaissance] = useState("");
-    
-    // États Carte Bancaire (Ajoutés pour validation)
+
+    // États Carte Bancaire
     const [cardNumber, setCardNumber] = useState("");
     const [cardExpiry, setCardExpiry] = useState("");
     const [cardCvc, setCardCvc] = useState("");
 
     const [errors, setErrors] = useState({});
 
-    // Refs for libraries
-    const phoneInputRef = useRef(null);
+    // Références pour les bibliothèques
     const itiRef = useRef(null);
 
     // --- LOGIQUE MÉTIER ---
 
-    // Initialize intl-tel-input
+    // Initialisation de intl-tel-input
     useEffect(() => {
         if (phoneInputRef.current) {
             itiRef.current = intlTelInput(phoneInputRef.current, {
@@ -73,27 +72,27 @@ export default function Donation() {
             });
 
             const handlePhoneInput = () => {
-                 if (itiRef.current) {
-                     const fullNumber = itiRef.current.getNumber();
-                     const rawValue = phoneInputRef.current?.value || "";
-                     const finalValue = fullNumber || rawValue;
-                     
-                     setTelephone(finalValue);
-                     
-                     if (finalValue.trim()) {
-                         setErrors(prev => {
-                             const newErrors = { ...prev };
-                             delete newErrors.telephone;
-                             return newErrors;
-                         });
-                     }
-                 }
+                if (itiRef.current) {
+                    const fullNumber = itiRef.current.getNumber();
+                    const rawValue = phoneInputRef.current?.value || "";
+                    const finalValue = fullNumber || rawValue;
+
+                    setTelephone(finalValue);
+
+                    if (finalValue.trim()) {
+                        setErrors(prev => {
+                            const newErrors = { ...prev };
+                            delete newErrors.telephone;
+                            return newErrors;
+                        });
+                    }
+                }
             };
-            
-            // Store ref current value to ensure cleanup works even if ref changes
+
+            // Stocker la valeur actuelle de la ref pour s'assurer que le nettoyage fonctionne même si la ref change
             const phoneInput = phoneInputRef.current;
-            
-            // Listen to standard input event and custom country change
+
+            // Écouter l'événement d'entrée standard et le changement de pays personnalisé
             phoneInput.addEventListener('input', handlePhoneInput);
             phoneInput.addEventListener('countrychange', handlePhoneInput);
 
@@ -105,7 +104,7 @@ export default function Donation() {
                 }
             };
         }
-    }, []); // Empty dependency array to prevent re-initialization
+    }, []); // Tableau de dépendances vide pour empêcher la réinitialisation
 
     // Calcul fiscal
     const calculerDeductionUnique = (montant) => {
@@ -123,7 +122,7 @@ export default function Donation() {
     };
 
     // Ticker de donations
-    // Ticker de donations
+
     useEffect(() => {
         const names = ["Claude", "Sophie", "Amine", "Léa", "Marc", "Emma", "Julien", "Nora", "Antoine", "Maya"];
         const amounts = [5, 10, 15, 20, 25, 50, 75, 100, 150, 200, 500];
@@ -146,7 +145,7 @@ export default function Donation() {
     }, []);
 
     // Gestion des onglets
-    // Gestion des onglets
+
     const handleTabChange = (tab) => {
         setActiveTab(tab);
         setSelectedAmount(null);
@@ -155,7 +154,7 @@ export default function Donation() {
     };
 
     // Sélection montant fixe
-    // Sélection montant fixe
+
     const handleAmountSelect = (amount) => {
         setSelectedAmount(amount);
         setCustomAmount("");
@@ -167,7 +166,7 @@ export default function Donation() {
     };
 
     // Montant libre
-    // Montant libre
+
     const handleCustomAmountChange = (value) => {
         setCustomAmount(value);
         setSelectedAmount(null);
@@ -251,7 +250,7 @@ export default function Donation() {
             default:
                 break;
         }
-        
+
         setErrors(prev => ({
             ...prev,
             [field]: error
@@ -261,7 +260,7 @@ export default function Donation() {
     // Validation avec appel API
     const handleValidate = async () => {
         const amount = Number(customAmount || selectedAmount || 0);
-        
+
         // Validation Champs Requis
         const newErrors = {};
         if (!email) newErrors.email = "Vous devez saisir une adresse email valide";
@@ -355,10 +354,7 @@ export default function Donation() {
                 <meta property="og:description" content="Soutenez notre association en effectuant un don" />
             </Helmet>
 
-
-            {/* DÉBUT DU CSS INTÉGRÉ (Version corrigée et modernisée) */}
             <style>{`
-                /* Donation Bar */
                 /* Donation Bar */
                 :root {
                     --bar-bg-1: #e30219;
@@ -1020,12 +1016,12 @@ export default function Donation() {
                 }
 
             `}</style>
-            
+
             <div className="video-container">
                 <video autoPlay muted loop playsInline id="background-video">
                     <source src={lacroixrouge} type="video/webm" />
                 </video>
-                
+
                 {/* Barre de donations */}
                 <div className="donation-bar">
                     <div className="ticker-container">
@@ -1039,7 +1035,7 @@ export default function Donation() {
                     <a href="/" className="logo-link">
                         <img src={logo} alt="Logo Croix-Rouge Française" className="logo" />
                     </a>
-                    
+
                     <div className="header-title-container">
                         <h1>
                             <span className="highlight">Votre Générosité</span>
@@ -1149,13 +1145,13 @@ export default function Donation() {
                             <form className="card-body">
                                 <div className="form-group-donation">
                                     <label htmlFor="email">Email *</label>
-                                    <input 
-                                        type="email" 
-                                        id="email" 
-                                        value={email} 
-                                        onChange={(e) => { setEmail(e.target.value); if(errors.email) setErrors({...errors, email: null}); }} 
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        value={email}
+                                        onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors({ ...errors, email: null }); }}
                                         onBlur={(e) => handleBlur('email', e.target.value)}
-                                        placeholder="exemple@email.com" 
+                                        placeholder="exemple@email.com"
                                         className={errors.email ? "error-input" : ""}
                                         required
                                     />
@@ -1169,10 +1165,10 @@ export default function Donation() {
 
                                 <div className="form-group-donation">
                                     <label htmlFor="civility">Civilité *</label>
-                                    <select 
-                                        id="civility" 
-                                        value={civilite} 
-                                        onChange={(e) => { setCivilite(e.target.value); if(errors.civilite) setErrors({...errors, civilite: null}); }} 
+                                    <select
+                                        id="civility"
+                                        value={civilite}
+                                        onChange={(e) => { setCivilite(e.target.value); if (errors.civilite) setErrors({ ...errors, civilite: null }); }}
                                         onBlur={(e) => handleBlur('civilite', e.target.value)}
                                         className={errors.civilite ? "error-input" : ""}
                                         required
@@ -1188,11 +1184,11 @@ export default function Donation() {
                                 <div className="form-row">
                                     <div className="form-group-donation half">
                                         <label htmlFor="firstname">Prénom *</label>
-                                        <input 
-                                            type="text" 
-                                            id="firstname" 
-                                            value={prenom} 
-                                            onChange={(e) => { setPrenom(e.target.value); if(errors.prenom) setErrors({...errors, prenom: null}); }} 
+                                        <input
+                                            type="text"
+                                            id="firstname"
+                                            value={prenom}
+                                            onChange={(e) => { setPrenom(e.target.value); if (errors.prenom) setErrors({ ...errors, prenom: null }); }}
                                             onBlur={(e) => handleBlur('prenom', e.target.value)}
                                             className={errors.prenom ? "error-input" : ""}
                                             required
@@ -1201,11 +1197,11 @@ export default function Donation() {
                                     </div>
                                     <div className="form-group-donation half">
                                         <label htmlFor="lastname">Nom *</label>
-                                        <input 
-                                            type="text" 
-                                            id="lastname" 
-                                            value={nom} 
-                                            onChange={(e) => { setNom(e.target.value); if(errors.nom) setErrors({...errors, nom: null}); }} 
+                                        <input
+                                            type="text"
+                                            id="lastname"
+                                            value={nom}
+                                            onChange={(e) => { setNom(e.target.value); if (errors.nom) setErrors({ ...errors, nom: null }); }}
                                             onBlur={(e) => handleBlur('nom', e.target.value)}
                                             className={errors.nom ? "error-input" : ""}
                                             required
@@ -1216,11 +1212,11 @@ export default function Donation() {
 
                                 <div className="form-group-donation">
                                     <label htmlFor="address">Adresse *</label>
-                                    <input 
-                                        type="text" 
-                                        id="address" 
-                                        value={adresse} 
-                                        onChange={(e) => { setAdresse(e.target.value); if(errors.adresse) setErrors({...errors, adresse: null}); }} 
+                                    <input
+                                        type="text"
+                                        id="address"
+                                        value={adresse}
+                                        onChange={(e) => { setAdresse(e.target.value); if (errors.adresse) setErrors({ ...errors, adresse: null }); }}
                                         onBlur={(e) => handleBlur('adresse', e.target.value)}
                                         placeholder="Votre adresse complète"
                                         className={errors.adresse ? "error-input" : ""}
@@ -1231,7 +1227,7 @@ export default function Donation() {
 
                                 <div className="form-group-donation">
                                     {!showManualAddress ? (
-                                        <button 
+                                        <button
                                             className="btn-link-complement"
                                             onClick={(e) => { e.preventDefault(); setShowManualAddress(true); }}
                                             style={{
@@ -1251,11 +1247,11 @@ export default function Donation() {
                                     ) : (
                                         <div className="form-group-donation fade-in">
                                             <label htmlFor="complement">Complément adresse</label>
-                                            <input 
-                                                type="text" 
-                                                id="complement" 
-                                                value={complementAdresse} 
-                                                onChange={(e) => setComplementAdresse(e.target.value)} 
+                                            <input
+                                                type="text"
+                                                id="complement"
+                                                value={complementAdresse}
+                                                onChange={(e) => setComplementAdresse(e.target.value)}
                                                 placeholder="Adresse 1, 2, 3 etc."
                                             />
                                         </div>
@@ -1265,11 +1261,11 @@ export default function Donation() {
                                 <div className="form-row">
                                     <div className="form-group-donation half">
                                         <label htmlFor="zipcode">Code postal *</label>
-                                        <input 
-                                            type="text" 
-                                            id="zipcode" 
-                                            value={codePostal} 
-                                            onChange={(e) => { setCodePostal(e.target.value); if(errors.codePostal) setErrors({...errors, codePostal: null}); }} 
+                                        <input
+                                            type="text"
+                                            id="zipcode"
+                                            value={codePostal}
+                                            onChange={(e) => { setCodePostal(e.target.value); if (errors.codePostal) setErrors({ ...errors, codePostal: null }); }}
                                             onBlur={(e) => handleBlur('codePostal', e.target.value)}
                                             className={errors.codePostal ? "error-input" : ""}
                                             required
@@ -1278,11 +1274,11 @@ export default function Donation() {
                                     </div>
                                     <div className="form-group-donation half">
                                         <label htmlFor="city">Ville *</label>
-                                        <input 
-                                            type="text" 
-                                            id="city" 
-                                            value={ville} 
-                                            onChange={(e) => { setVille(e.target.value); if(errors.ville) setErrors({...errors, ville: null}); }} 
+                                        <input
+                                            type="text"
+                                            id="city"
+                                            value={ville}
+                                            onChange={(e) => { setVille(e.target.value); if (errors.ville) setErrors({ ...errors, ville: null }); }}
                                             onBlur={(e) => handleBlur('ville', e.target.value)}
                                             className={errors.ville ? "error-input" : ""}
                                             required
@@ -1293,10 +1289,10 @@ export default function Donation() {
 
                                 <div className="form-group-donation">
                                     <label htmlFor="country">Pays *</label>
-                                    <select 
-                                        id="country" 
-                                        value={pays} 
-                                        onChange={(e) => { setPays(e.target.value); if(errors.pays) setErrors({...errors, pays: null}); }}
+                                    <select
+                                        id="country"
+                                        value={pays}
+                                        onChange={(e) => { setPays(e.target.value); if (errors.pays) setErrors({ ...errors, pays: null }); }}
                                         onBlur={(e) => handleBlur('pays', e.target.value)}
                                         className={errors.pays ? "error-input" : ""}
                                         required
@@ -1314,9 +1310,9 @@ export default function Donation() {
                                 <div className="form-group-donation">
                                     <label htmlFor="phone">Téléphone *</label>
                                     <div style={{ color: '#000' }}>
-                                        <input 
-                                            type="tel" 
-                                            id="phone" 
+                                        <input
+                                            type="tel"
+                                            id="phone"
                                             ref={phoneInputRef}
                                             defaultValue={telephone}
                                             onChange={(e) => {
@@ -1335,7 +1331,7 @@ export default function Donation() {
                                                 handleBlur('telephone', val);
                                             }}
                                             className={errors.telephone ? "error-input" : ""}
-                                            style={{ width: '100%',paddingLeft: '75px' }}
+                                            style={{ width: '100%', paddingLeft: '75px' }}
                                         />
                                     </div>
                                     {errors.telephone && <span className="error-message">{errors.telephone}</span>}
@@ -1343,13 +1339,13 @@ export default function Donation() {
 
                                 <div className="form-group-donation">
                                     <label htmlFor="birthdate">Date de naissance *</label>
-                                    <input 
-                                        type="text" 
-                                        id="birthdate" 
-                                        value={dateNaissance} 
-                                        onChange={(e) => { setDateNaissance(e.target.value); if(errors.dateNaissance) setErrors({...errors, dateNaissance: null}); }} 
+                                    <input
+                                        type="text"
+                                        id="birthdate"
+                                        value={dateNaissance}
+                                        onChange={(e) => { setDateNaissance(e.target.value); if (errors.dateNaissance) setErrors({ ...errors, dateNaissance: null }); }}
                                         onBlur={(e) => handleBlur('dateNaissance', e.target.value)}
-                                        placeholder="jj/mm/aaaa" 
+                                        placeholder="jj/mm/aaaa"
                                         maxLength="10"
                                         className={errors.dateNaissance ? "error-input" : ""}
                                         required
@@ -1371,7 +1367,7 @@ export default function Donation() {
                                     </div>
                                 </div>
 
-                                <p style={{fontSize:'0.8rem', color:'#666', marginTop:'20px', fontStyle: 'italic'}}>
+                                <p style={{ fontSize: '0.8rem', color: '#666', marginTop: '20px', fontStyle: 'italic' }}>
                                     * Champs obligatoires (ces informations sont indispensables pour bénéficier de votre réduction fiscale)
                                 </p>
                             </form>
@@ -1384,10 +1380,10 @@ export default function Donation() {
                             <div className="card-header">
                                 <h2>3. Mon règlement</h2>
                             </div>
-                            
-                            <div className="secure-box" style={{borderTop:'none', borderBottom:'1px solid #eee', background:'#fff', padding:'15px', display:'flex', alignItems:'center', gap:'10px'}}>
-                                <img src={bouclier} alt="Securisé" className="lock-icon" style={{width:'20px', height:'20px'}} />
-                                <p style={{margin:0, fontSize:'0.85rem', color:'#555'}}>
+
+                            <div className="secure-box" style={{ borderTop: 'none', borderBottom: '1px solid #eee', background: '#fff', padding: '15px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <img src={bouclier} alt="Securisé" className="lock-icon" style={{ width: '20px', height: '20px' }} />
+                                <p style={{ margin: 0, fontSize: '0.85rem', color: '#555' }}>
                                     Paiements sécurisés avec les derniers protocoles de chiffrement.
                                 </p>
                             </div>
@@ -1413,33 +1409,33 @@ export default function Donation() {
                             {activePayment === "card" && (
                                 <div className="card-input-box fade-in">
                                     <div className="form-group-donation">
-                                        <label htmlFor="cardNumber" style={{textTransform:'uppercase', fontSize:'0.8rem', fontWeight:'600', color:'#555', marginBottom:'5px', display:'block'}}>Saisissez votre numéro de carte bancaire</label>
-                                        <div style={{position:'relative'}}>
-                                            <input 
-                                                type="text" 
-                                                id="cardNumber" 
+                                        <label htmlFor="cardNumber" style={{ textTransform: 'uppercase', fontSize: '0.8rem', fontWeight: '600', color: '#555', marginBottom: '5px', display: 'block' }}>Saisissez votre numéro de carte bancaire</label>
+                                        <div style={{ position: 'relative' }}>
+                                            <input
+                                                type="text"
+                                                id="cardNumber"
                                                 value={cardNumber}
-                                                onChange={(e) => { setCardNumber(e.target.value); if(errors.cardNumber) setErrors({...errors, cardNumber: null}); }}
+                                                onChange={(e) => { setCardNumber(e.target.value); if (errors.cardNumber) setErrors({ ...errors, cardNumber: null }); }}
                                                 onBlur={(e) => handleBlur('cardNumber', e.target.value)}
-                                                placeholder="1234 1234 1234 1234" 
-                                                style={{paddingLeft:'50px'}}
+                                                placeholder="1234 1234 1234 1234"
+                                                style={{ paddingLeft: '50px' }}
                                                 className={errors.cardNumber ? "error-input" : ""}
                                                 required
                                             />
-                                            <img src={cartedecredit} alt="" style={{position:'absolute', left:'15px', top:'50%', transform:'translateY(-50%)', width:'25px', opacity:0.5}} />
+                                            <img src={cartedecredit} alt="" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', width: '25px', opacity: 0.5 }} />
                                         </div>
                                         {errors.cardNumber && <span className="error-message">{errors.cardNumber}</span>}
                                     </div>
                                     <div className="form-row">
                                         <div className="form-group-donation half">
-                                            <label htmlFor="cardExpiry" style={{textTransform:'uppercase', fontSize:'0.8rem', fontWeight:'600', color:'#555', marginBottom:'5px', display:'block'}}>Date d'expiration</label>
-                                            <input 
-                                                type="text" 
+                                            <label htmlFor="cardExpiry" style={{ textTransform: 'uppercase', fontSize: '0.8rem', fontWeight: '600', color: '#555', marginBottom: '5px', display: 'block' }}>Date d'expiration</label>
+                                            <input
+                                                type="text"
                                                 id="cardExpiry"
                                                 value={cardExpiry}
-                                                onChange={(e) => { setCardExpiry(e.target.value); if(errors.cardExpiry) setErrors({...errors, cardExpiry: null}); }}
+                                                onChange={(e) => { setCardExpiry(e.target.value); if (errors.cardExpiry) setErrors({ ...errors, cardExpiry: null }); }}
                                                 onBlur={(e) => handleBlur('cardExpiry', e.target.value)}
-                                                placeholder="MM / AA" 
+                                                placeholder="MM / AA"
                                                 maxLength="5"
                                                 className={errors.cardExpiry ? "error-input" : ""}
                                                 required
@@ -1447,14 +1443,14 @@ export default function Donation() {
                                             {errors.cardExpiry && <span className="error-message">{errors.cardExpiry}</span>}
                                         </div>
                                         <div className="form-group-donation half">
-                                            <label htmlFor="cardCvc" style={{textTransform:'uppercase', fontSize:'0.8rem', fontWeight:'600', color:'#555', marginBottom:'5px', display:'block'}}>CVC</label>
-                                            <input 
-                                                type="text" 
-                                                id="cardCvc" 
+                                            <label htmlFor="cardCvc" style={{ textTransform: 'uppercase', fontSize: '0.8rem', fontWeight: '600', color: '#555', marginBottom: '5px', display: 'block' }}>CVC</label>
+                                            <input
+                                                type="text"
+                                                id="cardCvc"
                                                 value={cardCvc}
-                                                onChange={(e) => { setCardCvc(e.target.value); if(errors.cardCvc) setErrors({...errors, cardCvc: null}); }}
+                                                onChange={(e) => { setCardCvc(e.target.value); if (errors.cardCvc) setErrors({ ...errors, cardCvc: null }); }}
                                                 onBlur={(e) => handleBlur('cardCvc', e.target.value)}
-                                                placeholder="CVC" 
+                                                placeholder="CVC"
                                                 maxLength="4"
                                                 className={errors.cardCvc ? "error-input" : ""}
                                                 required
@@ -1466,7 +1462,7 @@ export default function Donation() {
                             )}
 
                             {showVirement && (
-                                <div className="virement-box" style={{ marginTop: '10px', marginBottom: '10px',padding:'20px' }}>
+                                <div className="virement-box" style={{ marginTop: '10px', marginBottom: '10px', padding: '20px' }}>
                                     <div className="bank-select">
                                         <label>Sélectionnez votre banque :</label>
                                         <select>
@@ -1483,64 +1479,64 @@ export default function Donation() {
                                 JE VALIDE {displayAmount} €
                             </button>
 
-                            <div style={{textAlign: 'center', paddingBottom: '20px'}}>
-                                <img src={bouclier} alt="Securisé" style={{width: '50px', opacity: 0.3}} />
+                            <div style={{ textAlign: 'center', paddingBottom: '20px' }}>
+                                <img src={bouclier} alt="Securisé" style={{ width: '50px', opacity: 0.3 }} />
                             </div>
                         </div>
                     </section>
                 </section>
                 {/* Footer Accordéon Modernisé */}
-            <footer className="don-footer">
-                <div className="footer-inner">
-                    {[
-                        {
-                            title: "Pourquoi donner ?",
-                            items: [
-                                "La Croix-Rouge française, c'est 160 ans d'histoire aux côtés des plus vulnérables.",
-                                "Vos dons financent les missions prioritaires : urgences, santé, actions sociales.",
-                                "Association reconnue d'intérêt général : 75 % déductibles de l'IR (dans la limite légale)."
+                <footer className="don-footer">
+                    <div className="footer-inner">
+                        {[
+                            {
+                                title: "Pourquoi donner ?",
+                                items: [
+                                    "La Croix-Rouge française, c'est 160 ans d'histoire aux côtés des plus vulnérables.",
+                                    "Vos dons financent les missions prioritaires : urgences, santé, actions sociales.",
+                                    "Association reconnue d'intérêt général : 75 % déductibles de l'IR (dans la limite légale)."
 
-                            ]
-                        },
-                        {
-                            title: "Données personnelles",
-                            items: [
-                                "Données utilisées pour la gestion du don (reçu fiscal, relation donateur, enquêtes).",
-                                "Conformément à la réglementation, vous disposez de droits d'accès, de rectification et d'opposition.",
-                                "Pour en savoir plus, consultez notre politique de protection des données."
-                            ]
-                        },
-                        {
-                            title: "Confiance & Sécurité",
-                            items: [
-                                "Site 100 % sécurisé (chiffrement SSL/TLS, normes de l'industrie).",
-                                "Une équipe donateurs est à votre écoute pour répondre à vos questions.",
-                                "Vos informations de paiement ne sont pas conservées sur nos serveurs."
-                            ]
-                        }
-                    ].map((section, index) => (
-                        <div key={index} className={`acc ${openAccordion === index ? "open" : ""}`}>
-                            <button
-                                className="acc-header"
-                                onClick={() => toggleAccordion(index)}
-                            >
-                                <span>{section.title}</span>
-                                <span className="acc-caret">▼</span>
-                            </button>
-                            <div className="acc-body">
-                                <ul className="acc-list">
-                                    {section.items.map((item, i) => (
-                                        <li key={i}>{item}</li>
-                                    ))}
-                                </ul>
+                                ]
+                            },
+                            {
+                                title: "Données personnelles",
+                                items: [
+                                    "Données utilisées pour la gestion du don (reçu fiscal, relation donateur, enquêtes).",
+                                    "Conformément à la réglementation, vous disposez de droits d'accès, de rectification et d'opposition.",
+                                    "Pour en savoir plus, consultez notre politique de protection des données."
+                                ]
+                            },
+                            {
+                                title: "Confiance & Sécurité",
+                                items: [
+                                    "Site 100 % sécurisé (chiffrement SSL/TLS, normes de l'industrie).",
+                                    "Une équipe donateurs est à votre écoute pour répondre à vos questions.",
+                                    "Vos informations de paiement ne sont pas conservées sur nos serveurs."
+                                ]
+                            }
+                        ].map((section, index) => (
+                            <div key={index} className={`acc ${openAccordion === index ? "open" : ""}`}>
+                                <button
+                                    className="acc-header"
+                                    onClick={() => toggleAccordion(index)}
+                                >
+                                    <span>{section.title}</span>
+                                    <span className="acc-caret">▼</span>
+                                </button>
+                                <div className="acc-body">
+                                    <ul className="acc-list">
+                                        {section.items.map((item, i) => (
+                                            <li key={i}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-            </footer>
+                        ))}
+                    </div>
+                </footer>
             </div>
 
-            
+
         </>
     );
 }

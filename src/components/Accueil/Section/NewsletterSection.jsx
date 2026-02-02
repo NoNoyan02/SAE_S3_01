@@ -305,7 +305,6 @@ const NewsletterSection = () => {
                     }
                 }
             `}</style>
-            {/* FIN DU CSS INTÉGRÉ */}
 
             <div className="newsletter-section-container">
                 <div className="newsletter-section-content">

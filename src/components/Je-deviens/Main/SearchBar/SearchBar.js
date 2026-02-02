@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import "./SearchBar.css"
 
 export default function SearchBar() {
@@ -32,8 +32,8 @@ export default function SearchBar() {
                                 className="searchbar-form__icon-clear"
                                 onClick={clearInput}
                             >
-                ✕
-              </span>
+                                ✕
+                            </span>
                         )}
                     </div>
 

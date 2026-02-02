@@ -43,6 +43,7 @@
     color: #000;
 }
 
-.breadcrumb__link:focus, .breadcrumb__link:hover {
+.breadcrumb__link:focus,
+.breadcrumb__link:hover {
     color: #e3001b;
 }

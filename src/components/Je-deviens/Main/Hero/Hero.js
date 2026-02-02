@@ -7,7 +7,7 @@ export default function Hero() {
                 <div className="hero-cover">
                     <img
                         src=""
-                        alt="Envie de vous engager bénévolement près de chez vous ?"/>
+                        alt="Envie de vous engager bénévolement près de chez vous ?" />
                 </div>
 
                 <div className="hero-container">

@@ -22,7 +22,6 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 
 require_once __DIR__ . "/../config/db.php";
 
-// --- RATE LIMITING (Brute Force Protection) ---
 $ip_address = $_SERVER['REMOTE_ADDR'];
 $limit = 5; // Essais max
 $time_window = 15; // Minutes
@@ -46,7 +45,6 @@ try {
   // Si erreur table, on continue (fail open ou closed selon politique, ici open pour pas bloquer tout le monde si bug)
   error_log("Rate Limit Error: " . $e->getMessage());
 }
-// ----------------------------------------------
 
 
 $input = json_decode(file_get_contents("php://input"), true);
